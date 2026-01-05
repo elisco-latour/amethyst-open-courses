@@ -1,6 +1,6 @@
 ---
-id: "py_basics_02"
-title: "Loops"
+id: "py_basics_02_repo"
+title: "Loops repo"
 type: "coding"
 xp: 200
 ---

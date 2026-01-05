@@ -1,6 +1,6 @@
 ---
-id: "py_ds_01"
-title: "Lists"
+id: "py_ds_01_repo"
+title: "Lists repo"
 type: "coding"
 xp: 400
 ---

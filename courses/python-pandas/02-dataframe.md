@@ -1,6 +1,6 @@
 ---
-id: "py_pandas_02"
-title: "Pandas DataFrame"
+id: "py_pandas_02_repo"
+title: "Pandas DataFrame repo"
 type: "coding"
 xp: 500
 ---

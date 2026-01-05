@@ -1,6 +1,6 @@
 ---
-id: "py_basics_01"
-title: "Variables"
+id: "py_basics_01_repo"
+title: "Variables repo"
 type: "coding"
 xp: 100
 ---

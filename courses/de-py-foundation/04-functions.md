@@ -1,6 +1,6 @@
 ---
-id: "de_py_foundation_04"
-title: "The Factory"
+id: "de_py_foundation_04_repo"
+title: "The Factory repo"
 type: "coding"
 xp: 100
 ---
