@@ -1,7 +1,7 @@
 # Course: Python Data Structures
 id: python-data-structures
-path_id: python-data-analysis-repo
+path_id: python-data-analysis
 title: "Python Data Structures"
-description: "Lists, Dictionaries, and Sets for data manipulation."
-xp: 1600
+description: "Lists, Dictionaries, and Sets - with reading materials and quizzes."
+xp: 660
 sort_order: 2
