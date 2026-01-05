@@ -1,68 +1,42 @@
 ---
 id: "finguard_01_04"
-title: "Type Hints"
+title: "The Blueprint: Hints"
 type: "coding"
 xp: 100
 ---
 
-# Type Hints
+# The Blueprint: Type Hints
 
-Python is **dynamically typed** — you don't *have* to declare types. But professional Python code uses **type hints** anyway.
+Python is flexible. It allows variables to change types (`x` can be `5` then `"hello"`).
+This is convenient for scripts, but **dangerous** for banks.
 
-## Why Bother?
+We want to tell the future engineers (and the code editor) what we **expect**.
 
-Type hints provide three benefits:
+## Type Hints
 
-1. **Documentation**: Anyone reading your code knows what type `balance` should be
-2. **IDE Support**: VS Code can autocomplete methods and catch errors
-3. **Early Errors**: Tools like `mypy` find bugs before you run the code
-
-## The Syntax
+We add a "Hint" after the variable name.
 
 ```python
-# Without type hints (works, but unclear)
-transaction_id = "TXN-001"
-balance = 5000.00
+# Unclear
+balance = 5000 
 
-# With type hints (professional)
-transaction_id: str = "TXN-001"
-balance: float = 5000.00
+# Crystal Clear
+balance: int = 5000
 ```
 
-The `: str` after the variable name is the **type hint**. It says "this variable should hold a string."
-
-## The "Pro" Tip
-
-> **Type hints don't enforce anything at runtime. They're for humans and tools.**
-
-```python
-# This won't crash — Python ignores type hints at runtime
-balance: int = "not a number"  # Works, but wrong!
-```
-
-That's why we use tools like `mypy` to check types before deployment.
-
-## Using Decimal with Type Hints
-
-```python
-from decimal import Decimal
-
-account_balance: Decimal = Decimal("10000.00")
-```
+This tells VS Code: "If I try to put a string in `balance`, warn me!"
 
 ## The Analogy: The Blueprint
 
-An architect's blueprint shows "this wall is load-bearing." The construction worker could ignore it... but the building might collapse.
+An architect draws a blueprint saying "Load Bearing Wall".
+A builder *could* knock it down (nothing physically stops them), but the blueprint acts as a giant warning sign not to.
 
-Type hints are blueprints. Ignore them at your own risk.
+Type Hints are your blueprint.
 
 ## Task
 
-Add type hints to all four transaction variables:
-1. `sender_account: str`
-2. `receiver_account: str`  
-3. `amount: Decimal`
-4. `is_verified: bool`
+Annotate the transaction variables. Explicitly state what they are.
+We will use `Decimal` for the money now.
 
 <!-- SEPARATOR -->
 
@@ -71,22 +45,19 @@ from decimal import Decimal
 
 # Add type hints to each variable
 
-# Sender's account number (string)
-sender_account = "ACC-1001"
+# Sender's account number (Text)
+sender_account: str = "ACC-1001"
 
-# Receiver's account number (string)
-receiver_account = "ACC-2002"
+# Receiver's account number (Text)
+receiver_account: str = "ACC-2002"
 
-# Transfer amount (Decimal for precision)
-amount = Decimal("7500.00")
+# Transfer amount (Decimal Object)
+amount: Decimal = Decimal("7500.00")
 
-# Has this transfer been verified? (boolean)
-is_verified = False
+# Has this transfer been verified? (Logic)
+is_verified: bool = False
 
-# Print the transfer summary
-print(f"Transfer: {sender_account} → {receiver_account}")
-print(f"Amount: ${amount}")
-print(f"Verified: {is_verified}")
+print(f"Transfer: {sender_account} -> {receiver_account}")
 
 <!-- SEPARATOR -->
 

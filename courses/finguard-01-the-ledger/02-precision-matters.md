@@ -1,80 +1,65 @@
 ---
 id: "finguard_01_02"
-title: "Precision Matters"
+title: "The Logic: Why Floats Lie"
 type: "coding"
 xp: 100
 ---
 
-# Precision Matters
+# The Logic of Precision
 
-When dealing with money, **precision isn't optional — it's mandatory**.
+In banking, **Rounding Error is Theft.**
 
-## The Problem with Floats
+If you calculate interest on a billion dollars and you are off by `0.0000001`, you have "lost" a hundred dollars.
 
-Try this in any programming language:
+## The Flaw of Binary Math
+
+Computers are binary (0s and 1s). Humans use decimals (0-9).
+Some numbers, like `0.1` (1/10), are easy in Decimal but **impossible** in Binary directly (like writing 1/3 in decimal: 0.33333...).
+
+When you use a normal Python number (`float`), the computer approximates.
 
 ```python
+# The computer tries its best...
 >>> 0.1 + 0.2
-0.30000000000000004  # NOT 0.3!
+0.30000000000000004
 ```
 
-This is because computers store decimals in **binary**, and some decimal numbers (like 0.1) can't be represented exactly.
+In video games, this is fine. In FinGuard, this is a bug.
 
-For a video game? No one cares about 0.00000000000000004.
+## The Solution: `Decimal`
 
-For a **bank transfer of $50 million**? That error multiplied across thousands of transactions adds up to **real money disappearing**.
+We use the `Decimal` library. It forces Python to do math like a human accountant, not like a binary machine.
 
-## The Solution: The Decimal Type
-
-Python's `Decimal` type uses **decimal arithmetic** (base 10) instead of binary (base 2). It's slower, but **exact**.
-
-```python
-from decimal import Decimal
-
-# ✅ Exact
-Decimal("0.1") + Decimal("0.2") == Decimal("0.3")  # True
-
-# ❌ Inexact
-0.1 + 0.2 == 0.3  # False!
-```
-
-## The "Pro" Tip
-
-> **Always use `Decimal` for money. Always pass strings, not floats.**
-
-```python
-# ✅ Correct
-balance = Decimal("1000.50")
-
-# ❌ Wrong — the float is already imprecise!
-balance = Decimal(1000.50)  # Inherits float's errors
-```
-
-## The Analogy: The Accountant's Calculator
-
-A bank accountant doesn't use a regular calculator. They use one that shows **exact cents**, not approximations. `Decimal` is that calculator.
+> **Rule:** Never use `float` for money. Use `Decimal`.
 
 ## Task
 
-Create a variable `account_balance` using `Decimal` with a value of `"15000.75"`.
-
-This is the starting balance for account ACC-1001.
+Prove the difference.
+We will try to safeguard a balance of $15,000.75.
 
 <!-- SEPARATOR -->
 
 # seed_code
 from decimal import Decimal
 
-# Create the account balance using Decimal
-# Remember: pass a STRING, not a float
+# The Amateur Way: Using Floats
+# Note: Python interprets 15000.75 as a float automatically.
+bad_balance = 15000.75
 
+# The Engineering Way: Using Decimal
+# Note: We pass a STRING "15000.75" so Python doesn't convert it to a float first.
+account_balance = Decimal("15000.75")
 
-# Print it to verify
-print(f"Account ACC-1001 balance: ${account_balance}")
+print(f"Float Balance: {bad_balance}")
+print(f"Decimal Balance: {account_balance}")
+
+# If we were to add 0.1 and 0.2...
+print(f"Float Math:   0.1 + 0.2 = {0.1 + 0.2}")
+print(f"Decimal Math: 0.1 + 0.2 = {Decimal('0.1') + Decimal('0.2')}")
 
 <!-- SEPARATOR -->
 
 # validation_code
 from decimal import Decimal
 assert account_balance == Decimal("15000.75"), "account_balance should be Decimal('15000.75')"
-assert isinstance(account_balance, Decimal), "account_balance must be a Decimal, not a float"
+assert isinstance(account_balance, Decimal), "account_balance must be a Decimal"

@@ -1,117 +1,55 @@
 ---
 id: "finguard_02_04"
-title: "Unique Customer IDs"
+title: "The Identify: Sets"
 type: "coding"
 xp: 100
 ---
 
-# Unique Customer IDs
+# The Identity: Sets
 
-When processing thousands of transactions, you often need to answer: "How many **unique** customers transacted today?"
+If Customer A visits the bank 5 times, how many customers visited?
+Answer: **1 Unique Customer**.
 
-A list might have duplicates. You need a collection that **automatically removes duplicates**.
+In Data Engineering, identifying "Uniques" is critical for reporting.
 
-## The Analogy: The Guest List
+## The Set
 
-At a bank's VIP event, each customer should be on the list **once**, no matter how many times they RSVP'd.
-
-## Sets: Unique Collections
-
-A **set** is an unordered collection of unique elements:
+A **Set** (`set`) is a collection where duplicates are impossible.
+If you try to add "Customer A" twice, Python just ignores you.
 
 ```python
-# Creating a set
-customer_ids: set[str] = {"CUST-001", "CUST-002", "CUST-003"}
+# A list of visitors (with duplicates)
+visitors = ["Alice", "Bob", "Alice"]
+print(len(visitors)) # 3
 
-# Duplicates are automatically ignored
-customer_ids.add("CUST-001")  # No effect — already exists
-customer_ids.add("CUST-004")  # Added
-
-# Check membership (very fast!)
-if "CUST-001" in customer_ids:
-    print("Customer found")
-
-# Get count of unique items
-unique_count: int = len(customer_ids)  # 4
-```
-
-## Sets from Lists
-
-Convert a list with duplicates to a set to get unique values:
-
-```python
-# Transaction list with repeated customer IDs
-all_transactions: list[str] = ["CUST-001", "CUST-002", "CUST-001", "CUST-003", "CUST-002"]
-
-# Convert to set — duplicates removed
-unique_customers: set[str] = set(all_transactions)
-# {"CUST-001", "CUST-002", "CUST-003"}
-```
-
-## Set Operations
-
-Sets support mathematical operations:
-
-```python
-vip_customers: set[str] = {"CUST-001", "CUST-002"}
-active_today: set[str] = {"CUST-002", "CUST-003"}
-
-# Union — customers who are VIP OR active today
-vip_customers | active_today  # {"CUST-001", "CUST-002", "CUST-003"}
-
-# Intersection — customers who are VIP AND active today
-vip_customers & active_today  # {"CUST-002"}
-
-# Difference — VIP customers who were NOT active today
-vip_customers - active_today  # {"CUST-001"}
-```
-
-## The "Pro" Tip
-
-> **Use sets when you need uniqueness or fast membership checking.**
-
-```python
-# ❌ Slow — checking list membership is O(n)
-if customer_id in customer_list:  # Checks every item
-
-# ✅ Fast — checking set membership is O(1)
-if customer_id in customer_set:   # Instant lookup
+# A set of identities (Unique only)
+identities = set(visitors)
+print(len(identities)) # 2 (Alice is counted once)
 ```
 
 ## Task
 
-Given a list of transaction customer IDs (with duplicates), find the unique customers.
-
-Then find which customers are both VIP AND made a transaction today.
+De-duplicate the transaction log to find the distinct customers.
 
 <!-- SEPARATOR -->
 
 # seed_code
-# Today's transactions (with duplicates)
+# A raw list of transaction initiator IDs (with duplicates)
 transaction_customers: list[str] = [
     "CUST-1001", "CUST-1002", "CUST-1001", "CUST-1003",
     "CUST-1002", "CUST-1004", "CUST-1001", "CUST-1005"
 ]
 
-# VIP customer list
-vip_customers: set[str] = {"CUST-1001", "CUST-1003", "CUST-1006", "CUST-1007"}
+# Convert to a list of unique identities using set()
+unique_customers = set(transaction_customers)
 
-# Get unique customers from today's transactions
-
-
-# Find VIP customers who transacted today (intersection)
-
-
-# Print results
-print(f"Total transactions: {len(transaction_customers)}")
-print(f"Unique customers: {len(unique_customers)}")
-print(f"Unique customer IDs: {unique_customers}")
-print(f"VIP customers active today: {vip_active_today}")
+print(f"Total Transactions: {len(transaction_customers)}")
+print(f"Unique Customers: {len(unique_customers)}")
+print(f"Customer Registry: {unique_customers}")
 
 <!-- SEPARATOR -->
 
 # validation_code
-assert unique_customers == {"CUST-1001", "CUST-1002", "CUST-1003", "CUST-1004", "CUST-1005"}, "unique_customers should have 5 unique IDs"
-assert vip_active_today == {"CUST-1001", "CUST-1003"}, "vip_active_today should be CUST-1001 and CUST-1003"
-assert isinstance(unique_customers, set), "unique_customers must be a set"
-assert isinstance(vip_active_today, set), "vip_active_today must be a set"
+assert len(unique_customers) == 5, "Should be 5 unique users"
+assert "CUST-1001" in unique_customers, "User CUST-1001 should be in the set"
+assert isinstance(unique_customers, set), "Must use a set"

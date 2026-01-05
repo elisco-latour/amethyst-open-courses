@@ -1,87 +1,62 @@
 ---
 id: "finguard_01_03"
-title: "The Type System"
+title: "The Contract: Types"
 type: "coding"
 xp: 100
 ---
 
-# The Type System
+# The Contract: Types
 
-Every piece of data in Python has a **type**. The type tells Python (and you) what operations are allowed.
+When you fill out a bank form, the "Phone Number" Box expects numbers. If you write your name there, the teller rejects it.
 
-## The Four Primitive Types
+In Python, **Types** are those rules. They are the **Contract** between different parts of the code.
 
-| Type | Description | FinGuard Example |
-|------|-------------|------------------|
-| `str` | Text (characters) | `"TXN-001"`, `"Alice Smith"` |
-| `int` | Whole numbers | `42`, `1000000`, `-5` |
-| `float` | Decimal numbers (approximate) | `3.14`, `99.99` |
-| `bool` | True or False | `True`, `False` |
+## The Four Primitives
 
-## Why Types Matter
+These are the atoms of our universe:
 
-Types prevent nonsense:
+| Type | Name | Purpose | Example |
+|------|------|---------|---------|
+| `str` | String | Text, IDs, Names | `"ACC-101"` |
+| `int` | Integer | Counting (Whole numbers) | `500` |
+| `float` | Float | Measuring (Approximate decimals) | `1.57` |
+| `bool` | Boolean | Logic (Yes/No) | `True` |
 
-```python
-# This makes sense
-"TXN-" + "001"  # → "TXN-001" (concatenation)
+## Safety Checks
 
-# This is nonsense
-"TXN-" + 5  # → TypeError! Can't add string and int
-```
-
-Python catches these mistakes **before your code runs in production**.
-
-## The Analogy: Form Fields
-
-A bank form has different field types:
-- **Name**: Text only (no numbers)
-- **Amount**: Numbers only (no letters)
-- **Approved**: Checkbox (yes/no)
-
-If someone writes "fifty dollars" in the Amount field, the form is rejected. Types are those rules.
-
-## Type Checking with `type()`
-
-You can ask Python what type a value is:
+Python protects you. It won't let you add a Name to a Number.
 
 ```python
-type("hello")  # → <class 'str'>
-type(42)       # → <class 'int'>
-type(3.14)     # → <class 'float'>
-type(True)     # → <class 'bool'>
+"Alice" + 500  # ERROR: Can only concatenate str (not "int") to str
 ```
+
+This error is good. It means the system caught a bug before it corrupted the database.
 
 ## Task
 
-Create four variables representing parts of a transaction:
-1. `transaction_id` — a string: `"TXN-5001"`
-2. `amount_cents` — an integer: `250000` (representing $2,500.00 in cents)
-3. `exchange_rate` — a float: `1.0856` (EUR to USD)
-4. `is_international` — a boolean: `True`
+Define the primitives for a standard transfer.
+Observe how we use `int` for cents to avoid decimals entirely! (Another pro trick).
 
 <!-- SEPARATOR -->
 
 # seed_code
-# Create the four transaction fields
+# Define the contract for a transfer
 
-# 1. Transaction ID (string)
+# 1. Who is sending? (Text)
 transaction_id = "TXN-5001"
 
-# 2. Amount in cents (integer) — $2,500.00 = 250000 cents
+# 2. How much? (Integer Cents - $2,500.00)
+amount_cents = 250000
 
+# 3. What is the rate using? (Float - approximate is okay for rates, not balances)
+exchange_rate = 1.0856
 
-# 3. Exchange rate EUR→USD (float)
+# 4. Is it international? (Logic)
+is_international = True
 
-
-# 4. Is this an international transfer? (boolean)
-
-
-# Verify the types
-print(f"transaction_id: {transaction_id} ({type(transaction_id).__name__})")
-print(f"amount_cents: {amount_cents} ({type(amount_cents).__name__})")
-print(f"exchange_rate: {exchange_rate} ({type(exchange_rate).__name__})")
-print(f"is_international: {is_international} ({type(is_international).__name__})")
+# Inspect the types
+print(f"ID Type: {type(transaction_id)}")
+print(f"Amount Type: {type(amount_cents)}")
 
 <!-- SEPARATOR -->
 

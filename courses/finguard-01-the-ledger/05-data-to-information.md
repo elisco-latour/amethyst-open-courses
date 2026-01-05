@@ -1,71 +1,45 @@
 ---
 id: "finguard_01_05"
-title: "Data to Information"
+title: "The Receipt: Formatting"
 type: "coding"
 xp: 100
 ---
 
-# Data to Information
+# The Receipt: Formatting
 
-You've learned to store data in variables. But raw data isn't useful — **information** is.
+A database stores raw data (`12500`).
+Customers want **Information** (`$12,500.00`).
 
-The difference:
-- **Data**: `"ACC-1001"`, `"ACC-2002"`, `Decimal("7500.00")`
-- **Information**: `"Transfer of $7,500.00 from ACC-1001 to ACC-2002"`
+As a Data Engineer, you control how data is presented.
 
-## f-strings: Python's String Formatting
+## f-strings
 
-Python's **f-strings** (formatted string literals) turn data into readable information.
-
-```python
-name: str = "Alice"
-balance: Decimal = Decimal("5000.00")
-
-# f-string — note the f before the quote
-message: str = f"Hello, {name}. Your balance is ${balance}."
-# → "Hello, Alice. Your balance is $5000.00."
-```
-
-The `f` prefix enables **interpolation** — putting variables inside `{}` brackets.
-
-## Formatting Numbers
-
-f-strings support formatting codes:
+The `f-string` is your tool for crafting reports. It allows you to inject variables into text.
 
 ```python
-amount: float = 1234567.891
-
-f"{amount:,.2f}"     # → "1,234,567.89" (commas, 2 decimal places)
-f"{amount:.0f}"      # → "1234568" (no decimals, rounded)
-f"{amount:>15,.2f}"  # → "   1,234,567.89" (right-aligned, 15 chars wide)
+amount = 500
+print(f"I have {amount} dollars.") 
 ```
 
-## The Analogy: The Bank Statement
+## Number Formatting Code
 
-A bank statement doesn't show raw database records. It shows formatted, human-readable information:
+FinGuard has strict rules for money display.
+*   Must show 2 decimal places.
+*   Must use commas for thousands.
 
+We use the format specifier `{:,.2f}` inside the f-string.
+
+*   `,`: Add commas.
+*   `.2f`: Show 2 decimal places fixed.
+
+```python
+amount = 12500
+print(f"${amount:,.2f}") # -> $12,500.00
 ```
-Date       | Description          | Amount
------------+----------------------+-----------
-2025-01-06 | Wire Transfer        | -$7,500.00
-2025-01-05 | Deposit              | +$2,000.00
-```
-
-f-strings help you build statements like this.
 
 ## Task
 
-Create a formatted transaction summary using f-strings.
-
-Given the transaction data, produce this exact output:
-```
-=== FINGUARD TRANSACTION RECEIPT ===
-Transaction ID: TXN-2025-00042
-From: ACC-1001 → To: ACC-2002
-Amount: $12,500.00
-Status: PENDING
-=====================================
-```
+Generate the Customer Receipt. Match the format exactly.
 
 <!-- SEPARATOR -->
 
@@ -75,14 +49,14 @@ from decimal import Decimal
 # Transaction data
 transaction_id: str = "TXN-2025-00042"
 sender: str = "ACC-1001"
-receiver: str = "ACC-2002"
+recipient: str = "ACC-2002" # Renamed from receiver for clarity
 amount: Decimal = Decimal("12500.00")
 status: str = "PENDING"
 
 # Build the receipt using f-strings
 receipt: str = f"""=== FINGUARD TRANSACTION RECEIPT ===
 Transaction ID: {transaction_id}
-From: {sender} → To: {receiver}
+From: {sender} -> To: {recipient}
 Amount: ${amount:,.2f}
 Status: {status}
 ====================================="""
@@ -95,9 +69,8 @@ print(receipt)
 from decimal import Decimal
 
 assert transaction_id == "TXN-2025-00042", "transaction_id should be 'TXN-2025-00042'"
-assert sender == "ACC-1001", "sender should be 'ACC-1001'"
-assert receiver == "ACC-2002", "receiver should be 'ACC-2002'"
-assert amount == Decimal("12500.00"), "amount should be Decimal('12500.00')"
+assert "ACC-1001" in receipt, "Receipt must contain sender"
+assert "12,500.00" in receipt, "Receipt must format amount with commas"
 assert status == "PENDING", "status should be 'PENDING'"
 
 # Verify the receipt contains key elements

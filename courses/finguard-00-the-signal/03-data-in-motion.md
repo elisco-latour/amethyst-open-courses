@@ -1,91 +1,91 @@
 ---
 id: "finguard_00_03"
-title: "Data in Motion"
+title: "Data in Motion: Flows & Streams"
 type: "coding"
 xp: 100
 ---
 
 # Data in Motion
 
-Data at rest is like money in a vault — safe, but not doing anything. The real action happens when data **moves**.
+Data at rest is safe, but it generates no value. To settle a trade or detect fraud, data must move. We call this **Data in Motion**.
 
-## The Analogy: The Wire Transfer
+## The Transport Mechanisms
 
-When you send money from New York to London:
+In banking, we move data using three primary patterns. Think of them like physical logistics:
 
-1. **Your bank** creates a message: "Send $10,000 from Account A to Account B"
-2. **The SWIFT network** carries that message across the ocean
-3. **The London bank** receives, validates, and processes it
-4. **Confirmation** travels back: "Transfer complete"
+### 1. Request/Response (The Bank Teller)
+*   **What it is:** You ask for data, and you **wait** until you get it.
+*   **Engineering Term:** Synchronous.
+*   **Use Case:** "What is my current balance?"
+*   **Risk:** If the system is slow, the user is frozen.
 
-This is **Data in Motion** — information traveling between systems.
+### 2. Batch Processing (The Armored Truck)
+*   **What it is:** We collect transactions all day, pile them up, and move them all at once at midnight.
+*   **Engineering Term:** High Latency, High Throughput.
+*   **Use Case:** "Generate monthly account statements."
+*   **Risk:** Data is always slightly old (stale).
 
-## Three Ways Data Moves
+### 3. Stream Processing (The Ticker Tape)
+*   **What it is:** Every single event travels instantly, one by one.
+*   **Engineering Term:** Low Latency, Real-Time.
+*   **Use Case:** "Block this credit card transaction NOW."
+*   **Risk:** Highly complex to build and maintain.
 
-| Pattern | Description | FinGuard Example |
-|---------|-------------|------------------|
-| **Request/Response** | Ask a question, get an answer | "What's my balance?" → "$5,000" |
-| **Batch** | Collect data, process later | Nightly regulatory report |
-| **Stream** | Continuous flow of events | Real-time fraud detection |
+## The FinGuard Strategy
 
-### Request/Response (Synchronous)
-You wait for the answer. Like a phone call.
-- ✅ Simple to understand
-- ❌ Blocks everything until response arrives
-
-### Batch (Scheduled)
-Collect all day, process at night. Like mail delivery.
-- ✅ Efficient for large volumes
-- ❌ Delays — fraud detected 12 hours later is useless
-
-### Stream (Real-time)
-Every event processed immediately. Like a security camera.
-- ✅ Instant reaction to fraud
-- ❌ Complex to build and operate
-
-## Why FinGuard Needs Both
-
-FinGuard uses **Streaming** for fraud detection (milliseconds matter) and **Batch** for regulatory reports (accuracy matters).
+Startups try to stream everything. Banks use the right tool for the job.
+*   We use **Streams** for security (Speed is safety).
+*   We use **Batch** for reporting (Accuracy is safety).
 
 ## Task
 
-This code simulates the three patterns. Notice how the timing differs.
-
-In a real system, streaming would detect the fraud BEFORE the batch report even starts.
+Run this simulation. Observe the "Time to Insight" for each pattern.
+*   **Stream:** Insight is instant.
+*   **Batch:** Insight waits for the "End of Day" signal.
 
 <!-- SEPARATOR -->
 
 # seed_code
-# Simulating three data movement patterns
+# SIMULATION: Detecting a High-Value Transaction
 
-# PATTERN 1: Request/Response
-print("=== REQUEST/RESPONSE ===")
-account_id = "ACC-1001"
-balance_request = f"Requesting balance for {account_id}..."
-balance_response = 5000.00
-print(balance_request)
-print(f"Response: ${balance_response}\n")
+# 1. Request/Response: We have to ask for the data manually.
+print("--- [1] Request/Response ---")
+def check_balance_sync(account_id):
+    print(f"   > Connecting to database for {account_id}...")
+    return 5000.00 # Returns immediately (blocking)
 
-# PATTERN 2: Batch (collected transactions)
-print("=== BATCH PROCESSING ===")
-daily_transactions = [
-    {"id": "TXN-001", "amount": 150.00},
-    {"id": "TXN-002", "amount": 75000.00},  # Suspicious!
-    {"id": "TXN-003", "amount": 200.00},
-]
-print(f"Processing {len(daily_transactions)} transactions from today...")
-print("Batch report generated at midnight.\n")
+balance = check_balance_sync("ACC-101")
+print(f"   > Balance received: ${balance}\n")
 
-# PATTERN 3: Stream (real-time)
-print("=== STREAM PROCESSING ===")
-incoming_event = {"id": "TXN-002", "amount": 75000.00}
-print(f"Event received: {incoming_event}")
-if incoming_event["amount"] > 10000:
-    print("⚠️  ALERT: Large transaction detected IMMEDIATELY!")
+
+# 2. Batch Processing: We wait until the 'truck' is full.
+print("--- [2] Batch Processing ---")
+batch_queue = []
+# Accumulate data
+batch_queue.append({"id": "TXN-01", "amount": 100})
+batch_queue.append({"id": "TXN-02", "amount": 90000}) # suspicious!
+print(f"   > Accumulating {len(batch_queue)} transactions...")
+print("   > Waiting for midnight...")
+# Process all at once
+for txn in batch_queue:
+    if txn['amount'] > 10000:
+        print(f"   > ALERT (Found in nightly batch): Transaction {txn['id']} is suspicious.")
+print("")
+
+
+# 3. Stream Processing: We react the moment it happens.
+print("--- [3] Stream Processing ---")
+def on_transaction_event(txn):
+    print(f"   > Event Received: {txn['id']} for ${txn['amount']}")
+    if txn['amount'] > 10000:
+        print(f"   > 🚨 BLOCKING SCRIPT: High Value Alert on {txn['id']}!")
+
+# The event happens...
+on_transaction_event({"id": "TXN-02", "amount": 90000})
 
 <!-- SEPARATOR -->
 
 # validation_code
-assert account_id == "ACC-1001", "account_id should be ACC-1001"
-assert len(daily_transactions) == 3, "daily_transactions should have 3 items"
-assert incoming_event["amount"] == 75000.00, "incoming_event amount should be 75000.00"
+assert balance == 5000.00, "Balance check failed"
+assert len(batch_queue) == 2, "Batch queue check failed"
+

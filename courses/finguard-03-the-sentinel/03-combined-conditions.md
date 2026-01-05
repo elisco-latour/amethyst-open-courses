@@ -1,77 +1,54 @@
 ---
 id: "finguard_03_03"
-title: "Combined Conditions"
+title: "Composite Risk"
 type: "coding"
 xp: 100
 ---
 
-# Combined Conditions
+# Composite Risk
 
-Real fraud rules are complex. A transaction might be suspicious only if:
-- Amount is over $10,000 **AND** it's international
-- Account is new **OR** has previous fraud flags
+In the real world, rarely is a single factor enough to stop a transaction.
+Is a $15,000 transfer suspicious?
+*   If it's to `amazon.com`, probably not.
+*   If it's to an unknown account overseas at 3 AM... **yes**.
 
-## Logical Operators
+To model this, we combine conditions using **Logical Operators**.
 
-| Operator | Meaning | True when... |
-|----------|---------|--------------|
-| `and` | Both must be true | `True and True` → `True` |
-| `or` | At least one must be true | `True or False` → `True` |
-| `not` | Inverts the boolean | `not False` → `True` |
+## The Logic Gates
 
-## Examples
+We use three primary operators to forge complex rules:
 
-```python
-amount: float = 15000.00
-is_international: bool = True
+1.  **`and` (The Strict Gate):** Both conditions must be true.
+    *   *Usage:* "High Value **AND** International".
+2.  **`or` (The Permissive Gate):** At least one condition must be true.
+    *   *Usage:* "User is an Admin **OR** User is a Manager".
+3.  **`not` (The Inverter):** Flipped logic.
+    *   *Usage:* "Account is **NOT** verified".
 
-# AND — both conditions must be true
-if amount > 10000 and is_international:
-    print("High-value international transfer — extra review")
+## Engineering Clarity: Grouping
 
-# OR — at least one must be true
-is_new_account: bool = True
-has_fraud_history: bool = False
-
-if is_new_account or has_fraud_history:
-    print("Elevated scrutiny required")
-
-# NOT — inverting a condition
-is_verified: bool = False
-
-if not is_verified:
-    print("Transaction not yet verified")
-```
-
-## The Analogy: The Security Protocol
-
-To enter the vault, you need:
-- Valid badge **AND** correct PIN **AND** fingerprint match
-
-Any single failure = access denied. All three must pass.
-
-## The "Pro" Tip
-
-> **Use parentheses for complex conditions to make intent clear.**
+When mixing `and` and `or`, code can become ambiguous.
 
 ```python
-# ❌ Ambiguous — what runs first?
-if amount > 10000 and is_international or is_new_account:
-    ...
+# ❌ Ambiguous: Does 'and' or 'or' happen first?
+if amount > 10000 and is_international or has_fraud_history:
 
-# ✅ Clear — explicit grouping
-if (amount > 10000 and is_international) or is_new_account:
-    ...
+# ✅ Explicit: Parentheses clarify intent
+if (amount > 10000 and is_international) or has_fraud_history:
 ```
+
+This second version says: "Flag it if it's a big international transfer, OR if this person is a known fraudster (regardless of amount)."
 
 ## Task
 
-Build a fraud detection rule that flags a transaction if:
-- Amount is over $10,000 **AND** the transfer is international
+Implement the **Compound Flagging Policy**.
 
-**OR**
+Set `is_flagged` to `True` if:
+1.  (Condition A) The `amount` is over 10,000 **AND** `is_international` is True.
+    **OR**
+2.  (Condition B) The `has_fraud_history` flag is True.
 
-- The account has previous fraud history (regardless of amount)
+Otherwise set `is_flagged` to `False`.
 
 <!-- SEPARATOR -->
 
@@ -83,11 +60,14 @@ amount: Decimal = Decimal("5000.00")
 is_international: bool = False
 has_fraud_history: bool = True
 
-# Apply the combined fraud detection rule
+# Initialize
+is_flagged: bool = False
+
+# Apply Compound Policy
 
 
 
-# Print result
+# Audit Log
 print(f"Amount: ${amount:,.2f}")
 print(f"International: {is_international}")
 print(f"Fraud History: {has_fraud_history}")
@@ -98,6 +78,7 @@ print(f"🚨 FLAGGED: {is_flagged}")
 
 # validation_code
 from decimal import Decimal
+assert is_flagged is True, "Should be flagged because has_fraud_history is True"
 assert amount == Decimal("5000.00"), "amount should be Decimal('5000.00')"
 assert is_international == False, "is_international should be False"
 assert has_fraud_history == True, "has_fraud_history should be True"

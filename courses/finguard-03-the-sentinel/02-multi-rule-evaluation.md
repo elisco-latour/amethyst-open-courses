@@ -1,70 +1,57 @@
 ---
 id: "finguard_03_02"
-title: "Multi-Rule Evaluation"
+title: "The Hierarchy of Rules"
 type: "coding"
 xp: 100
 ---
 
-# Multi-Rule Evaluation
+# The Hierarchy of Rules
 
-Fraud detection isn't black and white. A transaction might be:
-- **Normal** (under $1,000)
-- **Elevated** (between $1,000 and $10,000) → Requires manager review
-- **High-risk** (over $10,000) → Requires compliance review
+In banking, not all alerts are equal. A $1,001 transaction is a "minor blip." A $1,000,000 transaction is a "Code Red."
+
+Simple `if/else` isn't enough. We need a **ladder of escalation**:
+1.  **Critical?** Panic immediately.
+2.  **High?** Alert a manager.
+3.  **Standard?** Log it properly.
+4.  **Low?** Just process it.
 
 ## The `elif` Chain
 
-`elif` (else if) lets you check **multiple conditions in order**:
+`elif` stands for "else if". It allows us to check conditions strictly **in order**.
 
 ```python
-amount: float = 5000.00
+risk_score: int = 85
 
-if amount > 10000:
-    risk_level = "HIGH"
-elif amount > 1000:
-    risk_level = "ELEVATED"
+if risk_score > 90:
+    action = "FREEZE_ACCOUNT"  # Stopped here if True
+elif risk_score > 50:
+    action = "MANUAL_REVIEW"   # Checked only if score <= 90
 else:
-    risk_level = "NORMAL"
+    action = "AUTO_APPROVE"    # Checked only if score <= 50
 ```
 
-Python checks each condition **from top to bottom** and stops at the first `True`.
+## The Principle of Precedence
 
-## The Analogy: The Triage System
+Imagine a "Triage Nurse" at a hospital or a "Compliance Officer" at FinGuard. They look for the **worst-case scenario first**.
 
-In a hospital emergency room:
-1. **Critical** → Immediate attention (if heart attack)
-2. **Urgent** → See within 1 hour (elif broken bone)
-3. **Standard** → See when available (else minor issue)
+Logic Order Matters:
+*   **Correct:** Check `> 90` first.
+*   **Incorrect:** Checking `> 50` first would catch the 95s too, preventing them from ever hitting the "Freeze" logic!
 
-FinGuard triages transactions the same way.
-
-## Order Matters!
-
-```python
-# ❌ Wrong order — everything over 1000 triggers first!
-if amount > 1000:
-    risk_level = "ELEVATED"
-elif amount > 10000:  # Never reached!
-    risk_level = "HIGH"
-
-# ✅ Correct — check the stricter condition first
-if amount > 10000:
-    risk_level = "HIGH"
-elif amount > 1000:
-    risk_level = "ELEVATED"
-```
-
-## The "Pro" Tip
-
-> **Check the most specific/restrictive condition first.**
+> **Engineering Rule:** Always order your checks from **Most Specific (or Severe)** to **Least Specific (or Safe)**.
 
 ## Task
 
-Build a transaction risk classifier:
-- Over $50,000 → `"CRITICAL"` (requires board approval)
-- Over $10,000 → `"HIGH"` (requires compliance review)
-- Over $1,000 → `"ELEVATED"` (requires manager approval)
-- Otherwise → `"NORMAL"` (auto-approved)
+Implement the **Transaction Severity Ladder** for FinGuard.
+
+Classify the `transaction_amount` into a `risk_level` string:
+
+1.  Over **$50,000**: Set risk to `"CRITICAL"`
+2.  Over **$10,000**: Set risk to `"HIGH"`
+3.  Over **$1,000**: Set risk to `"ELEVATED"`
+4.  Otherwise: Set risk to `"NORMAL"`
+
+*Hint: Remember the precedence!*
 
 <!-- SEPARATOR -->
 
@@ -74,11 +61,14 @@ from decimal import Decimal
 # Test transaction
 transaction_amount: Decimal = Decimal("25000.00")
 
-# Classify the risk level
+# Initialize
+risk_level: str = "UNKNOWN"
+
+# Classify the risk level (Severity Ladder)
 
 
 
-# Print the classification
+# Audit Trail
 print(f"Transaction: ${transaction_amount:,.2f}")
 print(f"Risk Level: {risk_level}")
 
@@ -87,4 +77,4 @@ print(f"Risk Level: {risk_level}")
 # validation_code
 from decimal import Decimal
 assert transaction_amount == Decimal("25000.00"), "transaction_amount should be Decimal('25000.00')"
-assert risk_level == "HIGH", "risk_level should be 'HIGH' for $25,000"
+assert risk_level == "HIGH", "risk_level should be 'HIGH' for $25,000 (It is > 10,000 but not > 50,000)"

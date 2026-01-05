@@ -1,68 +1,51 @@
 ---
 id: "finguard_04_05"
-title: "Alert Threshold"
+title: "The Circuit Breaker"
 type: "coding"
 xp: 100
 ---
 
-# Alert Threshold
+# The Circuit Breaker
 
-Sometimes you need to **stop processing** when a condition is met, or **skip** certain items.
+Processing millions of transactions takes time. We need ways to optimize the flow.
+*   **Filtering:** Ignoring garbage data (cancelled transactions).
+*   **Emergency Stop:** Halting the system if we find a security breach.
 
-## The Analogy: The Production Line Halt
+## Control Flow Tools
 
-If a critical defect is found on an assembly line, you **stop everything** immediately (don't keep building broken cars).
+### 1. `continue` (The Filter)
+"Skip the rest of this iteration and move to the next item."
+*   *Use Case:* Skipping invalid or cancelled records without nesting huge `if` blocks.
 
-If a minor issue is found, you **skip that item** and continue with the rest.
+### 2. `break` (The Eject Button)
+"Stop the entire loop immediately."
+*   *Use Case:* We found the record we were searching for, OR we found a critical error.
 
-## `break` — Stop the Loop Entirely
-
-```python
-transactions: list[int] = [100, 200, 50000, 300]
-
-for amount in transactions:
-    if amount > 10000:
-        print(f"⚠️ HALT! Critical amount: ${amount}")
-        break  # Exit the loop immediately
-    print(f"Processing: ${amount}")
-
-# Output:
-# Processing: $100
-# Processing: $200
-# ⚠️ HALT! Critical amount: $50000
-# (300 is never processed)
-```
-
-## `continue` — Skip This Item, Continue to Next
+## The Pattern
 
 ```python
-transactions: list[dict] = [
-    {"id": "TXN-001", "status": "completed"},
-    {"id": "TXN-002", "status": "cancelled"},
-    {"id": "TXN-003", "status": "completed"},
-]
-
 for txn in transactions:
-    if txn["status"] == "cancelled":
-        continue  # Skip this one, move to next
-    print(f"Processing: {txn['id']}")
-
-# Output:
-# Processing: TXN-001
-# Processing: TXN-003
-# (TXN-002 is skipped)
+    # 1. Filter: Skip testing transactions
+    if txn['is_test']:
+        continue 
+    
+    # 2. Circuit Breaker: Stop if we hit a known malicious ID
+    if txn['id'] in blacklisted_ids:
+        print("🚨 SECURITY THREAT FOUND. HALTING.")
+        break
+        
+    # 3. Process normal transaction
+    process(txn)
 ```
-
-## The "Pro" Tip
-
-> **Use `break` when you've found what you're looking for. Use `continue` to filter out items you don't want to process.**
 
 ## Task
 
-Process a batch of transactions with these rules:
-1. **Skip** any transaction with status `"cancelled"`
-2. **Stop immediately** if you encounter an amount over $100,000 (critical fraud alert)
-3. Track how many transactions were **processed** and if a **critical alert** was triggered
+Process the batch with Safety Controls:
+
+1.  Loop through transactions.
+2.  If `status` is `"cancelled"`, **continue** (skip counting).
+3.  If `amount` > `100,000.00`, set `critical_alert` to `True`, capture the ID in `critical_transaction`, and **break** (stop everything).
+4.  Otherwise, increment `processed_count`.
 
 <!-- SEPARATOR -->
 
@@ -82,11 +65,11 @@ processed_count: int = 0
 critical_alert: bool = False
 critical_transaction: str = ""
 
-# Process transactions with break/continue logic
+# Batch Processing
 
 
 
-# Print results
+# Report
 print(f"=== Batch Processing Results ===")
 print(f"Processed: {processed_count} transactions")
 print(f"Critical Alert: {critical_alert}")

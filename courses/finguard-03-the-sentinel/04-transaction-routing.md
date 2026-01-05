@@ -1,83 +1,57 @@
 ---
 id: "finguard_03_04"
-title: "Transaction Routing"
+title: "The Dispatcher"
 type: "coding"
 xp: 100
 ---
 
-# Transaction Routing
+# The Dispatcher
 
-FinGuard handles multiple transaction types:
-- **SWIFT** — International wire transfers
-- **SEPA** — European transfers
-- **ACH** — US domestic transfers
-- **INTERNAL** — Same-bank transfers
+So far, we've used `if` statements to handle **Scales** (Low, High, Critical) or **Policies** (Allowed/Blocked). 
 
-Each type has different processing rules. Python 3.10+ introduced `match-case` for clean multi-way branching.
+However, sometimes we just need to route data to the correct department based on a category. This is **Pattern Matching**.
+
+FinGuard processes four distinct payment rails:
+*   **SWIFT:** International wires. Slow, expensive.
+*   **SEPA:** Euro-zone transfers. Fast, cheap.
+*   **ACH:** US Domestic. Slow, very cheap.
+*   **INTERNAL:** Instant, free.
 
 ## The `match-case` Statement
 
-```python
-transaction_type: str = "SWIFT"
+Instead of a messy chain of `if rail == "SWIFT" ... elif rail == "SEPA" ...`, Python 3.10+ gives us a specialized tool:
 
-match transaction_type:
+```python
+payment_rail: str = "SWIFT"
+
+match payment_rail:
     case "SWIFT":
-        processing_fee = 25.00
-        processing_time = "2-3 business days"
+        processor = "IntlTeam"
     case "SEPA":
-        processing_fee = 5.00
-        processing_time = "1 business day"
+        processor = "EuroTeam"
     case "ACH":
-        processing_fee = 0.50
-        processing_time = "1-2 business days"
-    case _:  # Default case (underscore matches anything)
-        processing_fee = 0.00
-        processing_time = "Instant"
+        processor = "USTeam"
+    case _:
+        processor = "ManualReview" # The 'catch-all' case
 ```
 
-## The Analogy: The Mail Sorting Room
+This acts like a physical **Switchboard**, plugging the connection into the right socket instantly.
 
-Post office workers sort mail by destination:
-- **International** → Customs queue
-- **Express** → Priority handling
-- **Standard** → Regular processing
+## Why use `match`?
 
-`match-case` is the sorting machine.
-
-## Why `match` Instead of `if-elif`?
-
-```python
-# ❌ Verbose and repetitive
-if transaction_type == "SWIFT":
-    fee = 25.00
-elif transaction_type == "SEPA":
-    fee = 5.00
-elif transaction_type == "ACH":
-    fee = 0.50
-else:
-    fee = 0.00
-
-# ✅ Cleaner with match-case
-match transaction_type:
-    case "SWIFT": fee = 25.00
-    case "SEPA": fee = 5.00
-    case "ACH": fee = 0.50
-    case _: fee = 0.00
-```
-
-## The "Pro" Tip
-
-> **Use `match-case` when comparing one value against multiple possible matches. Use `if-elif` when conditions are complex expressions.**
+It signals intent. When another engineer sees `match`, they know: *"Ah, we are selecting one option from a fixed menu."* When they see `if/elif`, they think: *"We are evaluating complex logic."*
 
 ## Task
 
-Build a transaction router that sets the `processing_rules` dictionary based on `transaction_type`:
+Build the **Routing Logic** for the fee calculator.
+Depending on the `transaction_type`, set the `processing_rules` dictionary:
 
-- `"SWIFT"` → `{"fee": 25.00, "days": 3, "compliance_check": True}`
-- `"SEPA"` → `{"fee": 5.00, "days": 1, "compliance_check": False}`
-- `"ACH"` → `{"fee": 0.50, "days": 2, "compliance_check": False}`
-- `"INTERNAL"` → `{"fee": 0.00, "days": 0, "compliance_check": False}`
-- Any other → `{"fee": 10.00, "days": 5, "compliance_check": True}` (unknown type, be cautious)
+*   `"SWIFT"` -> `{"fee": 25.00, "speed": "Slow"}`
+*   `"SEPA"` -> `{"fee": 5.00, "speed": "Fast"}`
+*   `"ACH"` -> `{"fee": 0.50, "speed": "Medium"}`
+*   `"INTERNAL"` -> `{"fee": 0.00, "speed": "Instant"}`
+*   `"WIRE"` -> `{"fee": 15.00, "speed": "Fast"}`
+*   Anything else (`case _`) -> `{"fee": 0.00, "speed": "Unknown"}`
 
 <!-- SEPARATOR -->
 
@@ -85,19 +59,21 @@ Build a transaction router that sets the `processing_rules` dictionary based on 
 # Incoming transaction type
 transaction_type: str = "SWIFT"
 
-# Route the transaction
+# Route the transaction using match-case
 
 
 
-# Print the routing decision
-print(f"Transaction Type: {transaction_type}")
-print(f"Processing Fee: ${processing_rules['fee']:.2f}")
-print(f"Processing Days: {processing_rules['days']}")
-print(f"Compliance Check Required: {processing_rules['compliance_check']}")
+# Audit Log
+print(f"Type: {transaction_type}")
+print(f"Fee: ${processing_rules['fee']:.2f}")
+print(f"Speed: {processing_rules['speed']}")
 
 <!-- SEPARATOR -->
 
 # validation_code
+assert processing_rules['fee'] == 25.00
+assert processing_rules['speed'] == "Slow"
+assert transaction_type == "SWIFT"
 assert transaction_type == "SWIFT", "transaction_type should be 'SWIFT'"
 assert processing_rules["fee"] == 25.00, "SWIFT fee should be 25.00"
 assert processing_rules["days"] == 3, "SWIFT processing days should be 3"

@@ -1,71 +1,76 @@
 ---
 id: "finguard_03_01"
-title: "Suspicious Amount Check"
+title: "The Gatekeeper"
 type: "coding"
 xp: 100
 ---
 
-# Suspicious Amount Check
+# The Gatekeeper
 
-FinGuard's core mission is **fraud detection**. At its heart, fraud detection is about **asking questions** about data.
+In **The Vault**, you built secure storage. But a vault with an open door is useless. You need a **Sentinel**—a guard that decides who gets in and who stays out.
 
-## The Bridge
+In programming, this is **Control Flow**. It acts as the brain of your application, making decisions based on data.
 
-In **The Vault**, you learned to store transaction data. Now you'll learn to **evaluate** that data against rules. Is this transaction suspicious? Should we flag it?
+## The Business Rule
 
-## The Analogy: The Security Checkpoint
+At FinGuard, we don't just "run code." We enforce **policies**.
+One of our strictest policies involves **High Value Transactions**.
 
-At an airport, security asks questions:
-- "Is this bag overweight?" → If yes, extra fee
-- "Is this item prohibited?" → If yes, confiscate
+> **Policy #101:** "Any transaction exceeding $10,000 must be flagged for manual review."
 
-FinGuard asks similar questions:
-- "Is this amount over $10,000?" → If yes, flag for review
-- "Is this an international transfer?" → If yes, apply extra checks
+Software enforces this policy using the `if` statement.
 
 ## The `if` Statement
 
 ```python
-amount: float = 15000.00
+from decimal import Decimal
 
-if amount > 10000:
-    print("Large transaction — flagging for review")
+amount: Decimal = Decimal("15000.00")
+policy_limit: Decimal = Decimal("10000.00")
+
+if amount > policy_limit:
+    # This block usually sends an alert to a compliance officer
+    print("⚠️ ALERT: High Value Transaction Detected")
 ```
 
-The code inside the `if` block **only runs if the condition is true**.
+The code specific to the alert **only runs** if the condition (`amount > policy_limit`) is `True`. If it's `False`, the program skips it entirely, like a guard waving a trusted employee through.
 
 ## The `else` Clause
 
-```python
-amount: float = 5000.00
+What happens if the transaction is normal? We often need a default path.
 
-if amount > 10000:
-    print("⚠️ Large transaction — flagging for review")
+```python
+if amount > policy_limit:
+    status = "FLAGGED"
 else:
-    print("✓ Normal transaction — approved")
+    status = "APPROVED"
 ```
 
-`else` handles the case when the condition is **false**.
+This is a binary decision: **A or B**. There is no middle ground.
 
-## The "Pro" Tip
+## The Engineering Standard: Indentation
 
-> **Always indent with 4 spaces. Never mix tabs and spaces.**
+Python is unique because **whitespace matters**. It's not just for style; it's syntax.
+
+> **The Rule:** We use **4 spaces** for indentation. Not 2. Not tabs.
 
 ```python
-# ✅ Correct — 4 spaces
+# ✅ Engineering Standard
 if amount > 10000:
-    print("Flagged")
+    print("Flagged")  # This belongs to the policy
 
-# ❌ Wrong — inconsistent indentation causes errors
+# ❌ Syntax Error / Logic Error
 if amount > 10000:
-  print("Flagged")  # 2 spaces — will crash!
+print("Flagged")      # Python won't know this belongs to the `if`!
 ```
 
 ## Task
 
-Build the first fraud detection rule:
-- If `transaction_amount` is greater than 10,000, set `is_flagged` to `True` and `flag_reason` to `"Large transaction"`
-- Otherwise, set `is_flagged` to `False` and `flag_reason` to `"None"`
+Implement **Policy #101** in the system.
+
+1.  Check if `transaction_amount` is strictly greater than `10,000.00`.
+2.  If it is, set `is_flagged` to `True` and `flag_reason` to `"Policy #101: High Value"`.
+3.  Otherwise, set `is_flagged` to `False` and `flag_reason` to `"None"`.
 
 <!-- SEPARATOR -->
 
@@ -74,12 +79,17 @@ from decimal import Decimal
 
 # Incoming transaction
 transaction_amount: Decimal = Decimal("15000.00")
+policy_limit: Decimal = Decimal("10000.00")
 
-# Apply fraud detection rule
+# Initialize variables (Good practice!)
+is_flagged: bool = False
+flag_reason: str = "Unknown"
+
+# Apply Policy #101
 
 
 
-# Print the result
+# Audit Log
 print(f"Amount: ${transaction_amount}")
 print(f"Flagged: {is_flagged}")
 print(f"Reason: {flag_reason}")
@@ -89,5 +99,5 @@ print(f"Reason: {flag_reason}")
 # validation_code
 from decimal import Decimal
 assert transaction_amount == Decimal("15000.00"), "transaction_amount should be Decimal('15000.00')"
-assert is_flagged == True, "is_flagged should be True for amounts > 10000"
-assert flag_reason == "Large transaction", "flag_reason should be 'Large transaction'"
+assert is_flagged is True, "is_flagged must be a boolean True"
+assert flag_reason == "Policy #101: High Value", "flag_reason text must match exact policy text"
