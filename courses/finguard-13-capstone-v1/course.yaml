@@ -1,0 +1,7 @@
+# Course: Capstone v1 (Batch Fraud Processor)
+id: finguard-13-capstone-v1
+path_id: finguard-foundation
+title: "Capstone v1: Batch Fraud Processor"
+description: "Build FinGuard's first working module — a batch processor that reads transactions, detects fraud patterns, and generates compliance reports."
+xp: 500
+sort_order: 13

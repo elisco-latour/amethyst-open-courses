@@ -1,0 +1,7 @@
+# Course: The Archive (File I/O & Data Formats)
+id: finguard-07-the-archive
+path_id: finguard-foundation
+title: "The Archive: File I/O & Data Formats"
+description: "DEEP DIVE: Understand how data persists. Master reading and writing CSV, JSON, and text files — the formats that power batch processing and data exchange."
+xp: 500
+sort_order: 7

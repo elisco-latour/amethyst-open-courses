@@ -1,0 +1,7 @@
+# Course: The Blueprint (OOP Introduction)
+id: finguard-08-the-blueprint
+path_id: finguard-foundation
+title: "The Blueprint: Classes & Objects"
+description: "Model the banking domain. Learn to design classes for Account, Transaction, and Customer — transforming data into living entities."
+xp: 500
+sort_order: 8

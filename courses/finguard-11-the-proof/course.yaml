@@ -1,0 +1,7 @@
+# Course: The Proof (Testing with pytest)
+id: finguard-11-the-proof
+path_id: finguard-foundation
+title: "The Proof: Testing with pytest"
+description: "Prove your code works. Learn to write tests that catch bugs before they reach production — essential for any data pipeline."
+xp: 500
+sort_order: 11
