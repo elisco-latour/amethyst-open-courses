@@ -1,0 +1,1 @@
+# amethyst-open-courses
