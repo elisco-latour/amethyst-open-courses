@@ -11,3 +11,15 @@
   title: "Data Analysis with Python Repo"
   description: "Learn to analyze data, create visualizations, and derive insights."
   project_summary: null
+
+# FinGuard: Zero to Architect Curriculum
+# A 6-month residency building a Real-Time Fraud Detection & Regulatory Reporting System
+- id: finguard-foundation
+  title: "FinGuard: The Foundation"
+  description: "Build a fraud detection system from scratch. Master Software Craftsmanship through Python: variables, functions, OOP, testing, and design patterns."
+  project_summary: "Semester 1 (Weeks 0-12): You will build FinGuard v1.0 — a complete fraud detection application with CLI interface, test suite, and documentation. Every line of code serves the mission: detect suspicious transactions and generate regulatory reports."
+
+- id: finguard-elevation
+  title: "FinGuard: The Elevation"
+  description: "Transform FinGuard into a high-performance framework. Master Platform Engineering: Polars, PostgreSQL, Kafka, Airflow, and production deployment."
+  project_summary: "Semester 2 (Weeks 13-24): You will refactor FinGuard into FinGuard Core v2.0 — a scalable framework processing millions of transactions in real-time. This is what powers modern banking infrastructure and AI systems."
