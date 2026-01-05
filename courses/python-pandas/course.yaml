@@ -1,0 +1,7 @@
+# Course: Pandas for Everyone
+id: python-pandas
+path_id: python-data-analysis
+title: "Pandas for Everyone"
+description: "Data manipulation with Pandas DataFrames and Series."
+xp: 1000
+sort_order: 3

@@ -1,0 +1,13 @@
+# Learning Paths Configuration
+# This file defines all available learning paths in the application.
+# Courses reference paths via path_id in their course.yaml files.
+
+- id: python-data-engineering
+  title: "Data Engineering with Python"
+  description: "Master Python by building a complete offline Data Engineering pipeline with PostgreSQL, DuckDB, and AI Agents."
+  project_summary: "In this learning path, you will build an end-to-end data analytics pipeline leveraging local AI/ML capabilities."
+
+- id: python-data-analysis
+  title: "Data Analysis with Python"
+  description: "Learn to analyze data, create visualizations, and derive insights."
+  project_summary: null
