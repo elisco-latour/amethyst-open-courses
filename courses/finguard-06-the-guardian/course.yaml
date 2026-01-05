@@ -1,0 +1,7 @@
+# Course: The Guardian (Error Handling)
+id: finguard-06-the-guardian
+path_id: finguard-foundation
+title: "The Guardian: Error Handling & Validation"
+description: "Build resilient systems. Learn to handle failures gracefully with try/except, custom validation, and defensive programming — essential for financial data integrity."
+xp: 500
+sort_order: 6
