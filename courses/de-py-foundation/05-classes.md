@@ -1,6 +1,6 @@
 ---
-id: "de_py_foundation_05"
-title: "The Model"
+id: "de_py_foundation_05_repo"
+title: "The Model repo"
 type: "coding"
 xp: 100
 ---

@@ -1,6 +1,6 @@
 ---
-id: "de_py_foundation_02"
-title: "The Data Packet"
+id: "de_py_foundation_02_repo"
+title: "The Data Packet repo"
 type: "coding"
 xp: 100
 ---

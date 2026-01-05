@@ -1,6 +1,6 @@
 ---
-id: "py_ds_02"
-title: "Dictionaries"
+id: "py_ds_02_repo"
+title: "Dictionaries repo"
 type: "coding"
 xp: 400
 ---

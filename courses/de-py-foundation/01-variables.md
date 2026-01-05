@@ -1,6 +1,6 @@
 ---
-id: "de_py_foundation_01"
-title: "The Blueprint"
+id: "de_py_foundation_01_repo"
+title: "The Blueprint repo"
 type: "coding"
 xp: 100
 ---

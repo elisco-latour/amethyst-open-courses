@@ -1,6 +1,6 @@
 ---
-id: "py_pandas_01"
-title: "Pandas Series"
+id: "py_pandas_01_repo"
+title: "Pandas Series repo"
 type: "coding"
 xp: 500
 ---

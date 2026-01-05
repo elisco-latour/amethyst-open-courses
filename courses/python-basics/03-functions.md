@@ -1,6 +1,6 @@
 ---
-id: "py_basics_03"
-title: "Functions"
+id: "py_basics_03_repo"
+title: "Functions repo"
 type: "coding"
 xp: 200
 ---
