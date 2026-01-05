@@ -1,0 +1,7 @@
+# Course: The Ledger (Variables & Data Types)
+id: finguard-01-the-ledger
+path_id: finguard-foundation
+title: "The Ledger: Variables & Data Types"
+description: "Where every transaction begins. Learn to encode financial data in Python using variables, type hints, and the Decimal type for precise monetary calculations."
+xp: 500
+sort_order: 1

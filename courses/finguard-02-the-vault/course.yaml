@@ -1,0 +1,7 @@
+# Course: The Vault (Collections & Data Structures)
+id: finguard-02-the-vault
+path_id: finguard-foundation
+title: "The Vault: Collections & Data Structures"
+description: "Where accounts and history are stored. Learn to organize related data using lists, dictionaries, tuples, and sets — the building blocks of any data system."
+xp: 500
+sort_order: 2

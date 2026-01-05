@@ -1,0 +1,7 @@
+# Course: The Sentinel (Control Flow & Logic)
+id: finguard-03-the-sentinel
+path_id: finguard-foundation
+title: "The Sentinel: Control Flow & Logic"
+description: "The fraud detection brain. Learn to evaluate data against rules using if/else, match-case, and logical operators to flag suspicious transactions."
+xp: 500
+sort_order: 3
