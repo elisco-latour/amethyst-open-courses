@@ -78,7 +78,6 @@ transactions: list[dict] = [
 ]
 
 # Accumulators
-total_count: int = 0
 total_amount: Decimal = Decimal("0.00")
 flagged_count: int = 0
 

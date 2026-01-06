@@ -17,9 +17,15 @@ We don't type lists of numbers manually (`[1, 2, 3...]`). We generate them.
 
 ```python
 # range(start, stop)
-# Note: 'stop' is EXCLUSIVE!
-numbers = range(1, 6) # Generates: 1, 2, 3, 4, 5
+# Note: 'stop' is EXCLUSIVE (it stops BEFORE that number)
+numbers = range(1, 6)  # Generates: 1, 2, 3, 4, 5 (five numbers)
 ```
+
+| Expression | Produces | Count |
+|---|---|---|
+| `range(1, 6)` | 1, 2, 3, 4, 5 | 5 items |
+| `range(0, 3)` | 0, 1, 2 | 3 items |
+| `range(5)` | 0, 1, 2, 3, 4 | 5 items (start defaults to 0) |
 
 ## ID Formatting
 

@@ -30,10 +30,10 @@ It is **Pythonic**. It reduces visual noise and prevents "Off-By-One" errors com
 ## Task
 
 Create a numbered Audit Trail string for each transaction.
-Format: `[Line #] ID: $Amount`
+Format: `[Line/Total] ID: $Amount`
 
-1.  Use `enumerate` on the `transactions` list, executing it `start=1`.
-2.  For each item, format a string: `[Condition] TXN-ID: $Amount`.
+1.  Use `enumerate` on the `transactions` list with `start=1`.
+2.  For each item, format a string: `[line_number/total_count] TXN-ID: $Amount`.
     *   Example: `[1/4] TXN-001: $500.00`
 3.  Append this string to `audit_trail`.
 
