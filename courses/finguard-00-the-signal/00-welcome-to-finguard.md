@@ -57,6 +57,51 @@ Even in your first week, you'll use proper naming conventions, write docstrings,
 ### 3. Domain-Driven Learning
 Every example uses banking terminology: transactions, accounts, balances, alerts. By the end, you'll speak both Python and Finance fluently.
 
+## About Programming
+
+A computer is powerful but fundamentally dumb. It can perform billions of calculations per second, but it has no idea *what* to calculate unless you tell it — step by step, in excruciating detail.
+
+**Programming** is writing those instructions. A program is simply a list of commands that the computer follows in order:
+
+1. Read this file
+2. Find transactions over $10,000
+3. Flag them as suspicious
+4. Save the results
+
+That's FinGuard in four lines. Of course, the actual code will be more detailed, but this is the essence.
+
+## Why Programming Languages?
+
+Computers only understand binary — patterns of 1s and 0s. Writing instructions in binary would be painful:
+
+```
+10110000 01100001  # This means "move value 97 to register AL"
+```
+
+So engineers created **programming languages** — human-readable instructions that get translated into binary automatically.
+
+There are hundreds of languages, each designed for different purposes:
+
+| Language | Typical Use |
+|----------|-------------|
+| C | Operating systems, hardware |
+| JavaScript | Websites, browsers |
+| Java | Enterprise applications |
+| SQL | Database queries |
+| **Python** | Data, AI, automation, scripting |
+
+## Why Python for Data & AI?
+
+Python dominates data engineering and artificial intelligence for three reasons:
+
+1. **Readable syntax**: Code looks almost like English. `if amount > 10000:` is self-explanatory.
+
+2. **Rich ecosystem**: Libraries like Pandas, NumPy, and TensorFlow handle complex math so you don't have to reinvent the wheel.
+
+3. **Community**: When you're stuck, millions of developers have likely solved the same problem.
+
+For FinGuard, Python is the natural choice. It's what banks, hedge funds, and AI labs actually use.
+
 ## What You Need
 
 - **No prior programming experience required** — we start from zero

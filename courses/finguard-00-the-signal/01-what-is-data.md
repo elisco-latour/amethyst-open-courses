@@ -36,6 +36,32 @@ bin(1500)  # Returns '0b10111011100'
 
 The `0b` prefix means "this is binary." The rest is the actual switch pattern.
 
+## Creating Variables: Your Program's Memory
+
+Every program needs memory — a place to store information while it runs. When FinGuard processes a transaction, it needs to remember the amount, the account, and the timestamp long enough to analyze them.
+
+**Variables are your program's memory.** Each variable is a labeled container that holds one piece of data. Without variables, your program would forget everything instantly — like trying to do math without being able to write anything down.
+
+To create a variable in Python, you use the **assignment operator** (`=`):
+
+```python
+transaction_amount = 1500
+```
+
+This line does three things:
+1. Reserves a space in the computer's memory
+2. Labels that space `transaction_amount`
+3. Stores the value `1500` there
+
+The label (variable name) goes on the **left**, the value goes on the **right**. You can then use the label to retrieve the value:
+
+```python
+transaction_amount = 1500
+print(transaction_amount)  # Outputs: 1500
+```
+
+Think of it this way: you're telling Python, *"Remember this number as 'transaction_amount' — I'll need it later."*
+
 ## Task
 
 A customer has deposited $2,750 into their account. Your task:
