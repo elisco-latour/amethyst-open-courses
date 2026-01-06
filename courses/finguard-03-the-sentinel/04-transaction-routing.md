@@ -1,83 +1,90 @@
 ---
 id: "finguard_03_04"
-title: "Transaction Routing"
+title: "The Dispatcher: Pattern Matching"
 type: "coding"
 xp: 100
 ---
 
-# Transaction Routing
+# The Dispatcher
 
-FinGuard handles multiple transaction types:
-- **SWIFT** — International wire transfers
-- **SEPA** — European transfers
-- **ACH** — US domestic transfers
-- **INTERNAL** — Same-bank transfers
+So far, we've used `if` statements to handle **scales** (Low → High → Critical) and **policies** (Allowed/Blocked).
 
-Each type has different processing rules. Python 3.10+ introduced `match-case` for clean multi-way branching.
+But sometimes we just need to route data to the correct handler based on a category. This is **pattern matching**.
+
+## Payment Rails at FinGuard
+
+FinGuard processes transactions through different payment systems:
+
+| Rail | Description | Speed | Typical Fee |
+|------|-------------|-------|-------------|
+| **SWIFT** | International wires | Slow (1-3 days) | $25+ |
+| **SEPA** | Euro-zone transfers | Fast (same day) | €5 |
+| **ACH** | US domestic | Slow (2-3 days) | $0.50 |
+| **INTERNAL** | Same-bank transfer | Instant | Free |
+
+Each rail has different processing rules. We need to route incoming transactions to the right handler.
 
 ## The `match-case` Statement
 
-```python
-transaction_type: str = "SWIFT"
-
-match transaction_type:
-    case "SWIFT":
-        processing_fee = 25.00
-        processing_time = "2-3 business days"
-    case "SEPA":
-        processing_fee = 5.00
-        processing_time = "1 business day"
-    case "ACH":
-        processing_fee = 0.50
-        processing_time = "1-2 business days"
-    case _:  # Default case (underscore matches anything)
-        processing_fee = 0.00
-        processing_time = "Instant"
-```
-
-## The Analogy: The Mail Sorting Room
-
-Post office workers sort mail by destination:
-- **International** → Customs queue
-- **Express** → Priority handling
-- **Standard** → Regular processing
-
-`match-case` is the sorting machine.
-
-## Why `match` Instead of `if-elif`?
+Instead of writing a long `if/elif/elif/elif/else` chain:
 
 ```python
-# ❌ Verbose and repetitive
-if transaction_type == "SWIFT":
-    fee = 25.00
-elif transaction_type == "SEPA":
-    fee = 5.00
-elif transaction_type == "ACH":
-    fee = 0.50
+# Messy approach
+if rail == "SWIFT":
+    handler = "international"
+elif rail == "SEPA":
+    handler = "euro"
+elif rail == "ACH":
+    handler = "domestic"
 else:
-    fee = 0.00
-
-# ✅ Cleaner with match-case
-match transaction_type:
-    case "SWIFT": fee = 25.00
-    case "SEPA": fee = 5.00
-    case "ACH": fee = 0.50
-    case _: fee = 0.00
+    handler = "unknown"
 ```
 
-## The "Pro" Tip
+Python 3.10+ offers `match-case`:
 
-> **Use `match-case` when comparing one value against multiple possible matches. Use `if-elif` when conditions are complex expressions.**
+```python
+# Clean approach
+match rail:
+    case "SWIFT":
+        handler = "international"
+    case "SEPA":
+        handler = "euro"
+    case "ACH":
+        handler = "domestic"
+    case _:
+        handler = "unknown"  # The _ is a catch-all (like "else")
+```
+
+## When to Use `match-case`
+
+Use `match-case` when:
+- You're selecting from a **fixed set of options** (like a menu)
+- Each option maps to different behavior
+- You want to signal "this is a routing decision" to other developers
+
+Use `if/elif` when:
+- You're evaluating **numeric ranges** or **complex conditions**
+- Conditions overlap or have precedence
+
+<div class="key-concept">
+<h4>🔑 Key Concept: The Catch-All Pattern</h4>
+
+The `case _:` pattern matches **anything** that didn't match previous cases. Always include it to handle unexpected values safely.
+</div>
 
 ## Task
 
-Build a transaction router that sets the `processing_rules` dictionary based on `transaction_type`:
+Build the routing logic for FinGuard's fee calculator using `match-case`.
 
-- `"SWIFT"` → `{"fee": 25.00, "days": 3, "compliance_check": True}`
-- `"SEPA"` → `{"fee": 5.00, "days": 1, "compliance_check": False}`
-- `"ACH"` → `{"fee": 0.50, "days": 2, "compliance_check": False}`
-- `"INTERNAL"` → `{"fee": 0.00, "days": 0, "compliance_check": False}`
-- Any other → `{"fee": 10.00, "days": 5, "compliance_check": True}` (unknown type, be cautious)
+Based on `transaction_type`, set `processing_rules` to a dictionary:
+
+| Type | `fee` | `speed` |
+|------|-------|---------|
+| `"SWIFT"` | 25.00 | `"Slow"` |
+| `"SEPA"` | 5.00 | `"Fast"` |
+| `"ACH"` | 0.50 | `"Medium"` |
+| `"INTERNAL"` | 0.00 | `"Instant"` |
+| Anything else | 0.00 | `"Unknown"` |
 
 <!-- SEPARATOR -->
 
@@ -85,20 +92,23 @@ Build a transaction router that sets the `processing_rules` dictionary based on 
 # Incoming transaction type
 transaction_type: str = "SWIFT"
 
-# Route the transaction
+# Initialize
+processing_rules: dict = {}
 
+# Route using match-case
+match transaction_type:
+    # Add your cases here
+    pass
 
-
-# Print the routing decision
-print(f"Transaction Type: {transaction_type}")
-print(f"Processing Fee: ${processing_rules['fee']:.2f}")
-print(f"Processing Days: {processing_rules['days']}")
-print(f"Compliance Check Required: {processing_rules['compliance_check']}")
+# Audit Log
+print(f"Type: {transaction_type}")
+print(f"Fee: ${processing_rules['fee']:.2f}")
+print(f"Speed: {processing_rules['speed']}")
 
 <!-- SEPARATOR -->
 
 # validation_code
-assert transaction_type == "SWIFT", "transaction_type should be 'SWIFT'"
+assert transaction_type == "SWIFT", "Don't modify transaction_type"
+assert isinstance(processing_rules, dict), "processing_rules should be a dictionary"
 assert processing_rules["fee"] == 25.00, "SWIFT fee should be 25.00"
-assert processing_rules["days"] == 3, "SWIFT processing days should be 3"
-assert processing_rules["compliance_check"] == True, "SWIFT should require compliance check"
+assert processing_rules["speed"] == "Slow", "SWIFT speed should be 'Slow'"

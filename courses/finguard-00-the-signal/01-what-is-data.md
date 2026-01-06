@@ -1,69 +1,58 @@
 ---
 id: "finguard_00_01"
-title: "What is Data?"
+title: "The Raw Material: Signal vs. Noise"
 type: "coding"
 xp: 100
 ---
 
-# What is Data?
+# The Raw Material
 
-Welcome to FinGuard. Before you write a single line of code, you need to understand the raw material you'll be working with: **Data**.
+Welcome to the FinGuard Residency.
 
-## The Analogy: The Bank Vault
+Imagine you are standing in the vault of a bank. Around you are rows of safety deposit boxes. Each box has a **label** (a name) and **contents** (a value). This is how computers store information — and it is how you will think about data from now on.
 
-Imagine you're standing in a bank vault. Around you are thousands of safety deposit boxes. Each box contains something valuable: contracts, certificates, deeds, photographs.
+## What is Data, Really?
 
-But here's the thing — the **paper** isn't valuable. The **information ON the paper** is valuable.
+When a customer transfers $1,500, something real happens. A physical obligation is created — money must move from one account to another. Your job is to create a digital record of that obligation.
 
-**Data is information encoded in a format that machines can process.**
+But here's the challenge: **computers don't understand money**. They only understand two states:
+- **High Voltage** = 1 (the switch is ON)
+- **Low Voltage** = 0 (the switch is OFF)
 
-That wedding certificate? To a computer, it's just:
-- Characters: `"Marriage Certificate"`
-- A date: `1995-06-15`
-- Two names: `"Alice Smith"`, `"Bob Jones"`
+Everything — every dollar amount, every customer name, every transaction — must be translated into patterns of 1s and 0s.
 
-The computer doesn't understand "love" or "commitment." It only sees **symbols** that follow **rules**.
+## Your First Encoding
 
-## The Building Blocks
+Python makes this translation easy. When you write `1500`, Python converts it into binary (a pattern of switches) behind the scenes.
 
-Everything in a computer comes down to **electricity**: ON or OFF, 1 or 0.
-
-```
-1 bit    = 0 or 1                     (one switch)
-8 bits   = 1 byte                     (one character, like "A")
-1,000 bytes = 1 kilobyte (KB)         (a short email)
-1,000,000 bytes = 1 megabyte (MB)     (a photo)
-1,000,000,000 bytes = 1 gigabyte (GB) (a movie)
+You can peek at this hidden representation using `bin()`:
+```python
+bin(1500)  # Returns '0b10111011100'
 ```
 
-When FinGuard processes a transaction, it's really just manipulating billions of tiny switches.
-
-## Your First Data
-
-Let's see this in action. The code below represents a single transaction as a **number**.
-
-The transaction amount `1500.00` is stored as bits. Python hides this complexity, but it's happening.
+The `0b` prefix means "this is binary." The rest is the actual switch pattern.
 
 ## Task
 
-Run the code to see how Python represents the number `1500` in binary (1s and 0s).
-
-This is what the computer actually "sees."
+A customer has deposited $2,750 into their account. Your task:
+1. Create a variable called `deposit_amount` and assign it the value `2750`
+2. Create a variable called `binary_representation` that stores the binary form of the deposit amount (use the `bin()` function)
 
 <!-- SEPARATOR -->
 
 # seed_code
-# A transaction amount in dollars
-transaction_amount = 1500
+# Record the deposit amount (in whole dollars)
+deposit_amount = 
 
-# Let's see what the computer actually sees
-binary_representation = bin(transaction_amount)
+# Inspect how the computer actually stores this number
+binary_representation = 
 
-print(f"Human sees: ${transaction_amount}")
-print(f"Computer sees: {binary_representation}")
+# Verify your work
+print(f"Deposit Amount: ${deposit_amount}")
+print(f"Stored As: {binary_representation}")
 
 <!-- SEPARATOR -->
 
 # validation_code
-assert transaction_amount == 1500, "Keep the transaction amount as 1500"
-assert "0b" in binary_representation, "binary_representation should contain binary format"
+assert deposit_amount == 2750, "The deposit amount should be 2750"
+assert binary_representation == bin(2750), "Use bin() to get the binary representation of deposit_amount"

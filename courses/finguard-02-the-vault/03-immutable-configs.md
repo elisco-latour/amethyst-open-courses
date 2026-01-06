@@ -1,102 +1,102 @@
 ---
 id: "finguard_02_03"
-title: "Immutable Configs"
+title: "The Seal: Tuples & Immutability"
 type: "coding"
 xp: 100
 ---
 
-# Immutable Configs
+# The Seal: Immutability
 
-Some data should **never change** after it's created. A transaction, once recorded, cannot be modified — that would be fraud.
+In banking, some data can change and some data **must never change**.
 
-## The Analogy: The Audit Trail
+- **Can change:** Your current balance, your address, your phone number
+- **Cannot change:** The fact that a transaction occurred, the date it happened, your date of birth
 
-In banking, every transaction is written in **permanent ink**. You can't erase a wire transfer. If there's an error, you create a **new** reversal transaction.
+Data that cannot be modified is called **immutable**.
 
-## Tuples: Immutable Sequences
+## Lists vs Tuples
 
-A **tuple** is like a list, but **frozen** — you can't modify it after creation.
-
-```python
-# Creating a tuple (use parentheses, not brackets)
-transaction_record: tuple[str, str, float] = ("TXN-001", "2025-01-06", 1500.00)
-
-# Access by index (same as list)
-txn_id: str = transaction_record[0]  # "TXN-001"
-
-# ❌ Cannot modify!
-transaction_record[0] = "TXN-002"  # TypeError: 'tuple' does not support item assignment
-```
-
-## When to Use Tuples
-
-| Use Case | Why Tuple? |
-|----------|------------|
-| Transaction records | Cannot be altered after creation |
-| Database rows | Data came from storage, shouldn't change |
-| Function return values | Return multiple values safely |
-| Configuration constants | Prevent accidental modification |
-
-## The "Pro" Tip
-
-> **Use tuples for data that should never change. Use lists for data that grows or changes.**
+Python has two similar-looking collections:
 
 ```python
-# ✅ Tuple — this exchange rate was fixed at this moment
-exchange_rate_snapshot: tuple[str, str, float] = ("EUR", "USD", 1.0856)
+# List: Uses square brackets, CAN be changed
+rates_list = [1.2, 1.3, 1.4]
+rates_list[0] = 9.9  # ✓ This works
 
-# ✅ List — we keep adding transactions
-pending_transactions: list[str] = ["TXN-001"]
-pending_transactions.append("TXN-002")  # OK
+# Tuple: Uses parentheses, CANNOT be changed
+rates_tuple = (1.2, 1.3, 1.4)
+rates_tuple[0] = 9.9  # ✗ TypeError! Python protects you.
 ```
+
+## Why Immutability Matters
+
+When a customer sends $500 to another account, that **fact** happened. Even if we reverse the transaction later, the original event is a historical fact that cannot be altered.
+
+We use tuples to represent facts that should never be edited:
+
+```python
+# A transaction fact: (sender, receiver, date, amount)
+transaction_fact = ("ACC-101", "ACC-202", "2025-01-15", 500.00)
+```
+
+If anyone tries to modify this record, Python raises an error. This is a **safety feature**.
 
 ## Tuple Unpacking
 
-Python lets you "unpack" tuples into separate variables:
+You can extract values from a tuple into separate variables:
 
 ```python
-transaction: tuple[str, str, float] = ("TXN-001", "2025-01-06", 1500.00)
+transaction = ("ACC-101", "ACC-202", "2025-01-15", 500.00)
 
-# Unpack into separate variables
-txn_id, date, amount = transaction
+# Unpack into named variables
+sender, receiver, date, amount = transaction
 
-print(txn_id)   # "TXN-001"
-print(date)     # "2025-01-06"
-print(amount)   # 1500.00
+print(sender)   # "ACC-101"
+print(amount)   # 500.00
 ```
+
+<div class="key-concept">
+<h4>🔑 Key Concept: Use Tuples for Facts</h4>
+
+In FinGuard, we use tuples for data that represents historical facts — things that happened and cannot be changed. Use lists for data that needs to grow or change over time.
+</div>
 
 ## Task
 
-Create an immutable transaction record as a tuple with:
-- Transaction ID: `"TXN-9001"`
-- Timestamp: `"2025-01-06T14:30:00Z"`
-- Amount: `8750.00`
-- Currency: `"USD"`
+Create an immutable transaction record as a tuple with these values (in order):
+1. Sender account: `"ACC-101"`
+2. Receiver account: `"ACC-202"`
+3. Transaction date: `"2025-01-15"`
+4. Amount: `750.00`
+5. Currency: `"USD"`
 
-Then unpack it into separate variables.
+Then unpack the tuple into individual variables.
 
 <!-- SEPARATOR -->
 
 # seed_code
-# Create the immutable transaction record (tuple)
+# Create an immutable transaction record (tuple)
+# Order: (sender, receiver, date, amount, currency)
+transaction_record: tuple = 
 
+# Unpack the tuple into named variables
+sender, receiver, date, amount, currency = transaction_record
 
-# Unpack the tuple into separate variables
-
-
-# Print the record
-print(f"=== Immutable Transaction Record ===")
-print(f"ID: {txn_id}")
-print(f"Time: {timestamp}")
-print(f"Amount: {currency} {amount:,.2f}")
-print(f"Type: {type(transaction_record).__name__} (cannot be modified)")
+# Display the verified record
+print("=== Immutable Transaction Record ===")
+print(f"From: {sender}")
+print(f"To: {receiver}")
+print(f"Date: {date}")
+print(f"Amount: {currency} {amount}")
+print(f"Record Type: {type(transaction_record).__name__}")
 
 <!-- SEPARATOR -->
 
 # validation_code
-assert transaction_record == ("TXN-9001", "2025-01-06T14:30:00Z", 8750.00, "USD"), "transaction_record should match the expected tuple"
-assert txn_id == "TXN-9001", "txn_id should be 'TXN-9001'"
-assert timestamp == "2025-01-06T14:30:00Z", "timestamp should be '2025-01-06T14:30:00Z'"
-assert amount == 8750.00, "amount should be 8750.00"
-assert currency == "USD", "currency should be 'USD'"
-assert isinstance(transaction_record, tuple), "transaction_record must be a tuple"
+assert isinstance(transaction_record, tuple), "transaction_record must be a tuple (use parentheses)"
+assert len(transaction_record) == 5, "transaction_record should have 5 elements"
+assert sender == "ACC-101", "First element (sender) should be 'ACC-101'"
+assert receiver == "ACC-202", "Second element (receiver) should be 'ACC-202'"
+assert date == "2025-01-15", "Third element (date) should be '2025-01-15'"
+assert amount == 750.00, "Fourth element (amount) should be 750.00"
+assert currency == "USD", "Fifth element (currency) should be 'USD'"

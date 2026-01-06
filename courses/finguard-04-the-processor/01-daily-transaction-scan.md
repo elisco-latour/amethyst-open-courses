@@ -1,86 +1,74 @@
 ---
 id: "finguard_04_01"
-title: "Daily Transaction Scan"
+title: "The Nightly Batch"
 type: "coding"
 xp: 100
 ---
 
-# Daily Transaction Scan
+# The Nightly Batch
 
-FinGuard doesn't process one transaction at a time. Every night, it must scan **all** transactions from the day, apply fraud rules, and generate a report.
+In FinTech, "Real-Time" is expensive. Most heavy lifting happens at night when the markets are closed. This is called **Batch Processing**.
 
-## The Bridge
+We don't process one transaction manually. We write scripts that wake up at 02:00 AM, read a list of millions of records, and process them one by one.
 
-In **The Sentinel**, you learned to evaluate a single transaction. Now you'll learn to process **collections** of transactions automatically.
+## The Iteration Pattern
 
-## The Analogy: The Assembly Line
-
-A car factory doesn't build one car from start to finish, then move to the next. It has an **assembly line** where each station performs one operation on **every car** that passes through.
-
-A `for` loop is your assembly line.
+The primary tool for batch processing is the **Loop**. It allows you to define logic *once* and apply it to *many* items.
 
 ## The `for` Loop
 
-```python
-transactions: list[str] = ["TXN-001", "TXN-002", "TXN-003"]
+The `for` loop is designed to iterate over **Collections** (like Lists).
 
-for txn_id in transactions:
-    print(f"Processing: {txn_id}")
+```python
+# The Day's Manifest
+transaction_ids: list[str] = ["TXN-A1", "TXN-B2", "TXN-C3"]
+
+# The Batch Processor
+for txn_id in transaction_ids:
+    print(f"Verifying: {txn_id}...")
+    # Logic applied to every single item
 ```
 
-Each iteration:
-1. Python takes the **next item** from the list
-2. Assigns it to `txn_id`
-3. Runs the code block
-4. Repeats until the list is exhausted
+## Accumulation
 
-## Processing Transaction Amounts
+A common pattern is **Accumulation**: Running totals.
 
 ```python
 from decimal import Decimal
 
-amounts: list[Decimal] = [
-    Decimal("500.00"),
-    Decimal("15000.00"),
-    Decimal("250.00")
-]
-
-total: Decimal = Decimal("0.00")
+amounts: list[Decimal] = [Decimal("10.00"), Decimal("20.00"), Decimal("30.00")]
+daily_revenue: Decimal = Decimal("0.00")  # The Accumulator
 
 for amount in amounts:
-    total = total + amount
+    daily_revenue = daily_revenue + amount
 
-print(f"Total: ${total}")  # $15,750.00
+print(f"Revenue: ${daily_revenue}")
 ```
 
-## The "Pro" Tip
+## Engineering Standard: Naming
 
-> **Use descriptive loop variable names. `txn` is better than `t` or `x`.**
+> **The Loop Variable Name Matters.** 
+> It should be the *singular* version of the list name.
 
-```python
-# ✅ Clear
-for transaction in daily_transactions:
-    process(transaction)
-
-# ❌ Cryptic
-for t in dt:
-    p(t)
-```
+*   `for transaction in transactions:` (Perfect)
+*   `for user in user_list:` (Good)
+*   `for x in data:` (Unacceptable — Mystery Code)
 
 ## Task
 
-Process the daily transaction batch:
-1. Loop through each transaction
-2. Count total transactions
-3. Sum total amount
-4. Count how many are flagged (amount > 10,000)
+You are writing the **End-of-Day Reconciliation** script.
+Given a list of transaction dictionaries:
+
+1.  Loop through `transactions`.
+2.  Add every `amount` to `total_amount`.
+3.  If a transaction's amount is greater than `10,000.00`, increment `flagged_count`.
 
 <!-- SEPARATOR -->
 
 # seed_code
 from decimal import Decimal
 
-# Today's transaction batch
+# The Day's Ledger
 transactions: list[dict] = [
     {"id": "TXN-001", "amount": Decimal("500.00")},
     {"id": "TXN-002", "amount": Decimal("15000.00")},
@@ -89,25 +77,22 @@ transactions: list[dict] = [
     {"id": "TXN-005", "amount": Decimal("800.00")},
 ]
 
-# Initialize counters
-total_count: int = 0
+# Accumulators
 total_amount: Decimal = Decimal("0.00")
 flagged_count: int = 0
 
-# Process each transaction
+# Run the Batch
 
 
 
-# Print the daily summary
-print(f"=== Daily Transaction Summary ===")
-print(f"Total Transactions: {total_count}")
-print(f"Total Amount: ${total_amount:,.2f}")
-print(f"Flagged (>$10,000): {flagged_count}")
+# Reconciliation Report
+print(f"Total Volume: ${total_amount}")
+print(f"Flagged Transactions: {flagged_count}")
+print(f"Batch Size: {len(transactions)}")
 
 <!-- SEPARATOR -->
 
 # validation_code
 from decimal import Decimal
-assert total_count == 5, "total_count should be 5"
-assert total_amount == Decimal("93800.00"), "total_amount should be Decimal('93800.00')"
-assert flagged_count == 2, "flagged_count should be 2 (TXN-002 and TXN-004)"
+assert total_amount == Decimal("93800.00"), "Total amount should be sum of all transactions"
+assert flagged_count == 2, "Should detect 2 transactions > 10,000"

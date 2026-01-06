@@ -1,80 +1,100 @@
 ---
 id: "finguard_01_02"
-title: "Precision Matters"
+title: "Precision Matters: Why Floats Lie"
 type: "coding"
 xp: 100
 ---
 
 # Precision Matters
 
-When dealing with money, **precision isn't optional — it's mandatory**.
+In banking, **rounding error is theft**.
 
-## The Problem with Floats
+If you calculate interest on a billion dollars and you're off by `0.0000001`, you've "lost" a hundred dollars. Multiply that across millions of transactions, and you've got a serious problem.
 
-Try this in any programming language:
+## The Flaw of Binary Math
+
+Computers think in binary (0s and 1s). Humans think in decimal (0-9).
+
+Some decimal numbers, like `0.1` (one-tenth), are **impossible** to represent exactly in binary. It's like trying to write ⅓ in decimal — you get `0.33333...` forever.
+
+When you use a regular Python number for decimals (called a `float`), the computer *approximates*:
 
 ```python
 >>> 0.1 + 0.2
-0.30000000000000004  # NOT 0.3!
+0.30000000000000004
 ```
 
-This is because computers store decimals in **binary**, and some decimal numbers (like 0.1) can't be represented exactly.
+That tiny error at the end? In a video game, nobody cares. In FinGuard, it's a bug that could corrupt the entire ledger.
 
-For a video game? No one cares about 0.00000000000000004.
+## The Solution: Decimal
 
-For a **bank transfer of $50 million**? That error multiplied across thousands of transactions adds up to **real money disappearing**.
+Python has a special tool called `Decimal` that does math like a human accountant — no binary approximations.
 
-## The Solution: The Decimal Type
-
-Python's `Decimal` type uses **decimal arithmetic** (base 10) instead of binary (base 2). It's slower, but **exact**.
+To use it, we need to **import** it first:
 
 ```python
 from decimal import Decimal
-
-# ✅ Exact
-Decimal("0.1") + Decimal("0.2") == Decimal("0.3")  # True
-
-# ❌ Inexact
-0.1 + 0.2 == 0.3  # False!
 ```
 
-## The "Pro" Tip
+This line tells Python: *"I need the Decimal tool from the decimal toolbox."*
 
-> **Always use `Decimal` for money. Always pass strings, not floats.**
+Then we create precise numbers by passing **strings** (not floats):
 
 ```python
-# ✅ Correct
-balance = Decimal("1000.50")
+# WRONG: This converts 15000.75 to a float first, then to Decimal
+bad = Decimal(15000.75)
 
-# ❌ Wrong — the float is already imprecise!
-balance = Decimal(1000.50)  # Inherits float's errors
+# RIGHT: This keeps full precision
+good = Decimal("15000.75")
 ```
 
-## The Analogy: The Accountant's Calculator
+<div class="key-concept">
+<h4>🔑 Key Concept: The FinGuard Rule</h4>
 
-A bank accountant doesn't use a regular calculator. They use one that shows **exact cents**, not approximations. `Decimal` is that calculator.
+**Never use `float` for money. Always use `Decimal` with string input.**
+
+This is non-negotiable in financial systems.
+</div>
 
 ## Task
 
-Create a variable `account_balance` using `Decimal` with a value of `"15000.75"`.
+A customer's account shows a balance of `$8,750.50`. Your job:
 
-This is the starting balance for account ACC-1001.
+1. The import statement is provided for you
+2. Create a variable `account_balance` using `Decimal` with the value `"8750.50"`
+3. Create a variable `deposit_amount` using `Decimal` with the value `"1249.50"`
+4. Create a variable `new_balance` that adds them together
 
 <!-- SEPARATOR -->
 
 # seed_code
 from decimal import Decimal
 
-# Create the account balance using Decimal
-# Remember: pass a STRING, not a float
+# Create the account balance using Decimal (value: "8750.50")
+account_balance = 
 
+# Create the deposit amount using Decimal (value: "1249.50")
+deposit_amount = 
 
-# Print it to verify
-print(f"Account ACC-1001 balance: ${account_balance}")
+# Calculate the new balance
+new_balance = 
+
+# Verify precision
+print(f"Starting Balance: ${account_balance}")
+print(f"Deposit: ${deposit_amount}")
+print(f"New Balance: ${new_balance}")
+
+# Compare with float math (see the danger!)
+float_result = 8750.50 + 1249.50
+print(f"\nFloat would give: ${float_result}")
+print(f"Decimal gives:    ${new_balance}")
 
 <!-- SEPARATOR -->
 
 # validation_code
 from decimal import Decimal
-assert account_balance == Decimal("15000.75"), "account_balance should be Decimal('15000.75')"
+assert account_balance == Decimal("8750.50"), "account_balance should be Decimal('8750.50')"
+assert deposit_amount == Decimal("1249.50"), "deposit_amount should be Decimal('1249.50')"
+assert new_balance == Decimal("10000.00"), "new_balance should equal account_balance + deposit_amount"
 assert isinstance(account_balance, Decimal), "account_balance must be a Decimal, not a float"
+assert isinstance(new_balance, Decimal), "new_balance must be a Decimal"

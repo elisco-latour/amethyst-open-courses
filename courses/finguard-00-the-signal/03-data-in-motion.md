@@ -1,91 +1,85 @@
 ---
 id: "finguard_00_03"
-title: "Data in Motion"
-type: "coding"
-xp: 100
+title: "Data in Motion: How Information Travels"
+type: "reading"
+xp: 75
 ---
 
 # Data in Motion
 
-Data at rest is like money in a vault — safe, but not doing anything. The real action happens when data **moves**.
+In the last chapter, you learned about **data at rest** — information saved to files. But saved data, by itself, doesn't *do* anything.
 
-## The Analogy: The Wire Transfer
+To check your balance, detect fraud, or send money, data must **move**. We call this **data in motion**.
 
-When you send money from New York to London:
+## Three Ways Data Travels
 
-1. **Your bank** creates a message: "Send $10,000 from Account A to Account B"
-2. **The SWIFT network** carries that message across the ocean
-3. **The London bank** receives, validates, and processes it
-4. **Confirmation** travels back: "Transfer complete"
+Think about how physical mail works. You have different options depending on urgency:
 
-This is **Data in Motion** — information traveling between systems.
+### 1. The Bank Teller (Ask and Wait)
 
-## Three Ways Data Moves
+You walk up to a bank teller and ask: *"What's my balance?"*
 
-| Pattern | Description | FinGuard Example |
-|---------|-------------|------------------|
-| **Request/Response** | Ask a question, get an answer | "What's my balance?" → "$5,000" |
-| **Batch** | Collect data, process later | Nightly regulatory report |
-| **Stream** | Continuous flow of events | Real-time fraud detection |
+The teller looks it up, and you **wait** until they give you an answer. You can't do anything else until they respond.
 
-### Request/Response (Synchronous)
-You wait for the answer. Like a phone call.
-- ✅ Simple to understand
-- ❌ Blocks everything until response arrives
+<div class="key-concept">
+<h4>🔑 Key Concept: Synchronous Communication</h4>
 
-### Batch (Scheduled)
-Collect all day, process at night. Like mail delivery.
-- ✅ Efficient for large volumes
-- ❌ Delays — fraud detected 12 hours later is useless
+When you ask for data and must **wait for the response** before continuing, this is called **synchronous** (or request/response) communication.
 
-### Stream (Real-time)
-Every event processed immediately. Like a security camera.
-- ✅ Instant reaction to fraud
-- ❌ Complex to build and operate
+**Banking Example:** Checking your balance in a mobile app. The app asks the server and waits for the answer.
 
-## Why FinGuard Needs Both
+**Trade-off:** Simple and predictable, but if the server is slow, you're stuck waiting.
+</div>
 
-FinGuard uses **Streaming** for fraud detection (milliseconds matter) and **Batch** for regulatory reports (accuracy matters).
+### 2. The Armored Truck (Collect and Deliver)
 
-## Task
+Imagine a bank that collects all the day's deposit slips in a box. At midnight, an armored truck picks up the entire box and delivers it to the central vault.
 
-This code simulates the three patterns. Notice how the timing differs.
+This is **batch processing**. We gather many pieces of data together and move them all at once.
 
-In a real system, streaming would detect the fraud BEFORE the batch report even starts.
+<div class="key-concept">
+<h4>🔑 Key Concept: Batch Processing</h4>
 
-<!-- SEPARATOR -->
+When we collect data over time and process it **all at once** on a schedule, this is called **batch** processing.
 
-# seed_code
-# Simulating three data movement patterns
+**Banking Example:** Monthly account statements. The bank doesn't generate your statement every second — it waits until month-end and creates it from all your transactions.
 
-# PATTERN 1: Request/Response
-print("=== REQUEST/RESPONSE ===")
-account_id = "ACC-1001"
-balance_request = f"Requesting balance for {account_id}..."
-balance_response = 5000.00
-print(balance_request)
-print(f"Response: ${balance_response}\n")
+**Trade-off:** Very efficient for large amounts of data, but the information is always slightly "old" (we call this **latency**).
+</div>
 
-# PATTERN 2: Batch (collected transactions)
-print("=== BATCH PROCESSING ===")
-daily_transactions = [
-    {"id": "TXN-001", "amount": 150.00},
-    {"id": "TXN-002", "amount": 75000.00},  # Suspicious!
-    {"id": "TXN-003", "amount": 200.00},
-]
-print(f"Processing {len(daily_transactions)} transactions from today...")
-print("Batch report generated at midnight.\n")
+### 3. The Ticker Tape (Instant Alerts)
 
-# PATTERN 3: Stream (real-time)
-print("=== STREAM PROCESSING ===")
-incoming_event = {"id": "TXN-002", "amount": 75000.00}
-print(f"Event received: {incoming_event}")
-if incoming_event["amount"] > 10000:
-    print("⚠️  ALERT: Large transaction detected IMMEDIATELY!")
+In old stock exchanges, prices were printed on a continuous paper tape the moment they changed. Traders could react instantly.
 
-<!-- SEPARATOR -->
+This is **stream processing**. Each piece of data is processed the moment it arrives.
 
-# validation_code
-assert account_id == "ACC-1001", "account_id should be ACC-1001"
-assert len(daily_transactions) == 3, "daily_transactions should have 3 items"
-assert incoming_event["amount"] == 75000.00, "incoming_event amount should be 75000.00"
+<div class="key-concept">
+<h4>🔑 Key Concept: Stream Processing</h4>
+
+When we process data **immediately as it arrives**, one piece at a time, this is called **stream** (or real-time) processing.
+
+**Banking Example:** Fraud detection. If someone steals your card and tries to buy a $5,000 TV, the bank needs to block it *now* — not at midnight when the batch runs.
+
+**Trade-off:** Very fast, but complex and expensive to build.
+</div>
+
+## Why This Matters for FinGuard
+
+In this residency, you'll learn to use **both** approaches:
+
+| Task | Approach | Why |
+|------|----------|-----|
+| Fraud Detection | Stream | Speed is safety. We must react in milliseconds. |
+| Regulatory Reports | Batch | Accuracy is safety. We need complete, verified data. |
+
+The mark of a professional is knowing **which tool fits which problem**.
+
+## Looking Ahead
+
+Don't worry if these concepts feel abstract right now. Over the coming courses, you'll write actual code that implements each pattern. For now, just remember:
+
+- **Data at rest** = Information saved to storage
+- **Data in motion** = Information traveling between systems
+- **Batch** = Move lots of data on a schedule
+- **Stream** = Move data instantly, piece by piece
+

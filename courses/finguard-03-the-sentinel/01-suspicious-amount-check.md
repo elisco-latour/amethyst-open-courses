@@ -1,71 +1,90 @@
 ---
 id: "finguard_03_01"
-title: "Suspicious Amount Check"
+title: "The Gatekeeper: If/Else"
 type: "coding"
 xp: 100
 ---
 
-# Suspicious Amount Check
+# The Gatekeeper
 
-FinGuard's core mission is **fraud detection**. At its heart, fraud detection is about **asking questions** about data.
+In **The Vault**, you built secure storage. But a vault with an open door is useless. You need a **sentinel** — a guard that decides what gets through and what gets blocked.
 
-## The Bridge
+In programming, this decision-making is called **control flow**.
 
-In **The Vault**, you learned to store transaction data. Now you'll learn to **evaluate** that data against rules. Is this transaction suspicious? Should we flag it?
+## The Business Rule
 
-## The Analogy: The Security Checkpoint
+At FinGuard, we don't just "run code." We enforce **policies**.
 
-At an airport, security asks questions:
-- "Is this bag overweight?" → If yes, extra fee
-- "Is this item prohibited?" → If yes, confiscate
+> **Policy #101:** "Any transaction exceeding $10,000 must be flagged for manual review."
 
-FinGuard asks similar questions:
-- "Is this amount over $10,000?" → If yes, flag for review
-- "Is this an international transfer?" → If yes, apply extra checks
+This isn't optional — it's a regulatory requirement. Software must enforce it automatically.
 
 ## The `if` Statement
 
+The `if` statement checks a condition. If it's `True`, the indented code runs. If it's `False`, Python skips it:
+
 ```python
-amount: float = 15000.00
+amount = 15000
 
 if amount > 10000:
-    print("Large transaction — flagging for review")
+    print("⚠️ ALERT: High Value Transaction")
+    # This only prints if amount > 10000
 ```
-
-The code inside the `if` block **only runs if the condition is true**.
 
 ## The `else` Clause
 
-```python
-amount: float = 5000.00
+What if the transaction is normal? We need a default path:
 
+```python
 if amount > 10000:
-    print("⚠️ Large transaction — flagging for review")
+    status = "FLAGGED"
 else:
-    print("✓ Normal transaction — approved")
+    status = "APPROVED"
 ```
 
-`else` handles the case when the condition is **false**.
+This is a binary decision: one path or the other, never both.
 
-## The "Pro" Tip
+## Comparison Operators
 
-> **Always indent with 4 spaces. Never mix tabs and spaces.**
+Here are the operators you can use in conditions:
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `>` | Greater than | `amount > 10000` |
+| `<` | Less than | `amount < 100` |
+| `>=` | Greater than or equal | `age >= 18` |
+| `<=` | Less than or equal | `balance <= 0` |
+| `==` | Equal to | `status == "ACTIVE"` |
+| `!=` | Not equal to | `country != "US"` |
+
+## Indentation Matters
+
+Python uses **indentation** (spaces at the start of a line) to know what code belongs to the `if`:
 
 ```python
-# ✅ Correct — 4 spaces
+# ✓ Correct: 4 spaces of indentation
 if amount > 10000:
-    print("Flagged")
+    status = "FLAGGED"
+    print("Alert sent")
 
-# ❌ Wrong — inconsistent indentation causes errors
+# ✗ Wrong: no indentation
 if amount > 10000:
-  print("Flagged")  # 2 spaces — will crash!
+status = "FLAGGED"  # Error! Python doesn't know this belongs to the if
 ```
+
+<div class="key-concept">
+<h4>🔑 Key Concept: The 4-Space Rule</h4>
+
+In Python, use **4 spaces** for each level of indentation. This is the universal standard. Most editors do this automatically when you press Tab.
+</div>
 
 ## Task
 
-Build the first fraud detection rule:
-- If `transaction_amount` is greater than 10,000, set `is_flagged` to `True` and `flag_reason` to `"Large transaction"`
-- Otherwise, set `is_flagged` to `False` and `flag_reason` to `"None"`
+Implement **Policy #101** for FinGuard:
+
+1. Check if `transaction_amount` is **greater than** `policy_limit`
+2. If yes: set `is_flagged` to `True` and `flag_reason` to `"Policy #101: High Value"`
+3. If no: set `is_flagged` to `False` and `flag_reason` to `"None"`
 
 <!-- SEPARATOR -->
 
@@ -74,12 +93,19 @@ from decimal import Decimal
 
 # Incoming transaction
 transaction_amount: Decimal = Decimal("15000.00")
+policy_limit: Decimal = Decimal("10000.00")
 
-# Apply fraud detection rule
+# Initialize variables before the if statement
+# (This ensures they always have a value, even if our logic has a bug)
+is_flagged: bool = False
+flag_reason: str = "Unknown"
+
+# Apply Policy #101 here
+# Use if/else to check transaction_amount against policy_limit
 
 
 
-# Print the result
+# Audit Log
 print(f"Amount: ${transaction_amount}")
 print(f"Flagged: {is_flagged}")
 print(f"Reason: {flag_reason}")
@@ -88,6 +114,6 @@ print(f"Reason: {flag_reason}")
 
 # validation_code
 from decimal import Decimal
-assert transaction_amount == Decimal("15000.00"), "transaction_amount should be Decimal('15000.00')"
-assert is_flagged == True, "is_flagged should be True for amounts > 10000"
-assert flag_reason == "Large transaction", "flag_reason should be 'Large transaction'"
+assert transaction_amount == Decimal("15000.00"), "Don't modify transaction_amount"
+assert is_flagged == True, "is_flagged should be True (15000 > 10000)"
+assert flag_reason == "Policy #101: High Value", "flag_reason must be exactly 'Policy #101: High Value'"

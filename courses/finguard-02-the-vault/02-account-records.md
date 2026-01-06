@@ -1,98 +1,99 @@
 ---
 id: "finguard_02_02"
-title: "Account Records"
+title: "The Record: Dictionaries"
 type: "coding"
 xp: 100
 ---
 
-# Account Records
+# The Record: Dictionaries
 
-Lists are great for ordered sequences. But what if you want to look something up by **name**, not by position?
+A list is great for sequences, but terrible for **details**.
 
-## The Analogy: The Account Database
+Look at this list: `["Alice Chen", "ACC-101", 5000, True]`
 
-When a teller looks up your account, they don't say "show me the 47,382nd account." They say "show me account **ACC-1001**."
+What does `5000` mean? A balance? A credit limit? An account number? You have to guess.
 
-This is a **key-value lookup** — the foundation of every database.
+## Self-Describing Data
 
-## Dictionaries: Key-Value Storage
-
-A **dictionary** (`dict`) stores data as key-value pairs:
+In FinGuard, we want data that **explains itself**. We use **dictionaries** — collections of labeled values:
 
 ```python
-# Creating a dictionary
-account: dict[str, any] = {
-    "account_id": "ACC-1001",
-    "holder_name": "Alice Smith",
-    "balance": 5000.00,
+account = {
+    "holder_name": "Alice Chen",
+    "account_id": "ACC-101",
+    "balance": 5000,
     "is_active": True
 }
-
-# Access by key
-name: str = account["holder_name"]  # "Alice Smith"
-
-# Add or update a key
-account["email"] = "alice@bank.com"
-
-# Check if key exists
-if "balance" in account:
-    print("Balance found")
 ```
 
-## The "Pro" Tip
+Now there's no guessing. `account["balance"]` is obviously the balance.
 
-> **Use `.get()` for safe access — avoids crashes on missing keys.**
+## Key-Value Pairs
+
+A dictionary stores **key-value pairs**:
+- **Key:** The label (like `"balance"`)
+- **Value:** The data (like `5000`)
 
 ```python
-# ❌ Dangerous — crashes if key doesn't exist
-email = account["email"]  # KeyError if no email!
-
-# ✅ Safe — returns None (or a default) if missing
-email = account.get("email")  # None if no email
-email = account.get("email", "no-email@bank.com")  # Default value
+account["balance"]      # Get the value for key "balance" → 5000
+account["holder_name"]  # Get the value for key "holder_name" → "Alice Chen"
 ```
 
-## Why Not Just Use Lists?
+## Safe Access with `.get()`
+
+What happens if you ask for a key that doesn't exist?
 
 ```python
-# With a list — what does index 2 mean?
-account_list = ["ACC-1001", "Alice Smith", 5000.00, True]
-balance = account_list[2]  # Unclear!
-
-# With a dict — crystal clear
-account_dict = {"account_id": "ACC-1001", "holder_name": "Alice Smith", "balance": 5000.00}
-balance = account_dict["balance"]  # Obvious!
+account["email"]  # KeyError! Program crashes.
 ```
 
-Dictionaries are **self-documenting**.
+In real banking systems, data is sometimes incomplete. We use `.get()` for safe access:
+
+```python
+account.get("email")               # Returns None (no crash)
+account.get("email", "N/A")        # Returns "N/A" as default
+```
+
+<div class="key-concept">
+<h4>🔑 Key Concept: Defaults Over Crashes</h4>
+
+Professional systems handle missing data gracefully. Use `.get()` with a default value rather than risking crashes from missing keys.
+</div>
 
 ## Task
 
-Create an account record dictionary for a new customer with these fields:
-- `account_id`: `"ACC-2002"`
-- `holder_name`: `"Bob Johnson"`
-- `balance`: `12500.50` (use a float for now)
-- `account_type`: `"checking"`
-- `is_active`: `True`
+Create a complete account record dictionary with these details:
+- Account ID: `"ACC-2002"`
+- Holder name: `"Bob Johnson"`
+- Balance: `12500.50`
+- Account type: `"checking"`
+- Is active: `True`
 
-Then retrieve the balance using `.get()`.
+Then safely retrieve the balance and attempt to get a missing "email" field.
 
 <!-- SEPARATOR -->
 
 # seed_code
 # Create the account record dictionary
+account: dict = {
+    # Add the 5 key-value pairs here:
+    # account_id, holder_name, balance, account_type, is_active
+    
+}
 
+# Safely retrieve the balance using .get()
+retrieved_balance = 
 
-# Retrieve the balance safely using .get()
+# Try to get the email (doesn't exist) - use a default value of "Not Provided"
+email = 
 
-
-# Print the account summary
-print(f"=== Account Record ===")
-print(f"ID: {account['account_id']}")
+# Display the record
+print(f"Account: {account['account_id']}")
 print(f"Holder: {account['holder_name']}")
 print(f"Balance: ${retrieved_balance:,.2f}")
 print(f"Type: {account['account_type']}")
 print(f"Active: {account['is_active']}")
+print(f"Email: {email}")
 
 <!-- SEPARATOR -->
 
@@ -102,5 +103,6 @@ assert account["holder_name"] == "Bob Johnson", "holder_name should be 'Bob John
 assert account["balance"] == 12500.50, "balance should be 12500.50"
 assert account["account_type"] == "checking", "account_type should be 'checking'"
 assert account["is_active"] == True, "is_active should be True"
-assert retrieved_balance == 12500.50, "retrieved_balance should be 12500.50"
+assert retrieved_balance == 12500.50, "Use .get('balance') to retrieve the balance"
+assert email == "Not Provided", "Use .get('email', 'Not Provided') for missing keys"
 assert isinstance(account, dict), "account must be a dictionary"

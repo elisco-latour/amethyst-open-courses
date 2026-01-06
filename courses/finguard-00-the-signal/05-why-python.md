@@ -1,94 +1,115 @@
 ---
 id: "finguard_00_05"
-title: "Why Python? Why FinGuard?"
+title: "Why Python: Your First Tool"
 type: "coding"
 xp: 100
 ---
 
-# Why Python? Why FinGuard?
+# Why Python?
 
-You now understand what data is, where it lives, how it moves, and its lifecycle. But why Python? And what does any of this have to do with AI?
+You're training to build financial systems. Why are we using Python instead of another language?
 
-## The Analogy: Choosing Your Tool
+## The Modern Bank is a City
 
-A carpenter doesn't use a hammer for everything. They choose the right tool:
-- **Hammer** for nails
-- **Screwdriver** for screws
-- **Saw** for cutting
+A real bank isn't one program — it's many systems working together:
 
-In software, languages are tools:
-- **C/Rust** — When you need raw speed (operating systems, games)
-- **JavaScript** — When you need to run in browsers (websites)
-- **Java** — When you need enterprise stability (banks, legacy systems)
-- **Python** — When you need to **work with data**
+- **Trading systems** use C++ (they need extreme speed)
+- **Mobile apps** use JavaScript (they run in browsers)
+- **Data analysis and automation** use Python
 
-## Why Python Dominates Data
+Python is the **connector**. It can talk to databases, read files, send alerts, run calculations, and glue all the other systems together.
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║  Python is the #1 language for:                               ║
-║                                                               ║
-║  📊 Data Analysis    (Pandas, Polars)                         ║
-║  🤖 Machine Learning (TensorFlow, PyTorch, scikit-learn)      ║
-║  🔄 Data Pipelines   (Airflow, Prefect, Dagster)              ║
-║  📈 Visualization    (Matplotlib, Plotly)                     ║
-║  🗄️ Databases        (SQLAlchemy, psycopg)                    ║
-║                                                               ║
-║  If you work with data, you work with Python.                 ║
-╚═══════════════════════════════════════════════════════════════╝
+This is why Python dominates data engineering: **not because it's the fastest, but because it works with everything.**
+
+## Your First Tool: The Variable
+
+A **variable** is a labeled container for storing data. Think of it as a safety deposit box:
+- The **name** is the label on the box
+- The **value** is what's inside
+
+```python
+daily_limit = 5000
 ```
 
-Python isn't the fastest language. But it's the most **productive** for data work.
+Here, `daily_limit` is the name, and `5000` is the value stored inside.
 
-## The AI Connection
+## Why Naming Matters
 
-Here's why this matters:
+Look at these two lines of code:
 
-> **AI is pattern recognition on data. No data quality = No AI.**
+```python
+# Amateur code
+x = 5000
 
-Every AI system — ChatGPT, fraud detection, recommendation engines — depends on:
-1. **Clean data** (what you'll learn in FinGuard)
-2. **Data pipelines** (what you'll build in FinGuard)
-3. **Data storage** (what you'll master in FinGuard)
+# Professional code
+daily_transfer_limit_usd = 5000
+```
 
-The engineers who build AI aren't just "AI engineers." They're **Data Engineers** first.
+Both store the same number. But six months from now, when you (or a teammate) read this code:
+- `x` tells you **nothing**. What is x? Why 5000?
+- `daily_transfer_limit_usd` tells you **everything**. It's a limit, for transfers, per day, in US dollars.
 
-FinGuard teaches you to be that engineer.
+<div class="key-concept">
+<h4>🔑 Key Concept: Code is Communication</h4>
 
-## What's Next
+You write code once, but it gets read dozens of times — by you, by teammates, by future maintainers. A good variable name **documents your intent** without needing comments.
 
-In the next course, **The Ledger**, you'll write your first Python code.
-
-You'll create a **variable** — a named container that holds data. Remember:
-- Data is encoded information
-- Variables are labels for that information
-- Python is your tool to manipulate it
+In FinGuard, we reject "magic numbers" like `x = 5000`. Every value gets a meaningful name.
+</div>
 
 ## Task
 
-Let's write your first piece of FinGuard code. You'll create a variable that holds a transaction ID.
+You're setting up the configuration for a new FinGuard account. Define the following variables with **clear, professional names**:
 
-This is the beginning. By Week 24, you'll have a complete fraud detection platform.
+1. A variable storing the maximum amount (in USD) a customer can withdraw per day: `10000`
+2. A variable storing the minimum balance required to avoid fees: `500`  
+3. A variable storing the customer's account number: `"ACC-78234"`
+
+Use descriptive names that explain what each value represents. Follow Python naming conventions (lowercase with underscores, like `my_variable_name`).
 
 <!-- SEPARATOR -->
 
 # seed_code
-# Welcome to FinGuard.
-# Your first variable: a transaction ID.
+# FinGuard Account Configuration
+# Define variables with clear, professional names
 
-# In Python, a variable is created by: name = value
-# We'll learn about type hints in the next course.
+# Maximum daily withdrawal (in USD): 10000
 
-transaction_id = "TXN-00001"
 
-# Print it to confirm
-print(f"FinGuard initialized.")
-print(f"First transaction recorded: {transaction_id}")
-print(f"")
-print(f"You are now a Data Engineer. Let's build.")
+# Minimum balance to avoid fees (in USD): 500
+
+
+# Customer account number: "ACC-78234"
+
+
+# Display the configuration
+print("=== Account Configuration ===")
+# Uncomment and update these lines after defining your variables:
+# print(f"Max Daily Withdrawal: ${your_variable_name}")
+# print(f"Minimum Balance: ${your_variable_name}")
+# print(f"Account Number: {your_variable_name}")
 
 <!-- SEPARATOR -->
 
 # validation_code
-assert transaction_id == "TXN-00001", "transaction_id should be 'TXN-00001'"
-assert transaction_id.startswith("TXN-"), "transaction_id should start with TXN-"
+# Check that variables exist and have correct values
+import re
+
+# Get all variable names in the local scope that match our expected values
+user_vars = {k: v for k, v in locals().items() if not k.startswith('_')}
+
+# Check for the withdrawal limit variable
+withdrawal_vars = [k for k, v in user_vars.items() if v == 10000]
+assert len(withdrawal_vars) > 0, "Create a variable with value 10000 for the daily withdrawal limit"
+assert any('withdraw' in k.lower() or 'limit' in k.lower() or 'max' in k.lower() for k in withdrawal_vars), "Name your withdrawal limit variable descriptively (include words like 'withdraw', 'limit', or 'max')"
+
+# Check for the minimum balance variable  
+balance_vars = [k for k, v in user_vars.items() if v == 500]
+assert len(balance_vars) > 0, "Create a variable with value 500 for the minimum balance"
+assert any('balance' in k.lower() or 'min' in k.lower() or 'fee' in k.lower() for k in balance_vars), "Name your minimum balance variable descriptively (include words like 'balance', 'min', or 'fee')"
+
+# Check for the account number variable
+account_vars = [k for k, v in user_vars.items() if v == "ACC-78234"]
+assert len(account_vars) > 0, "Create a variable with value 'ACC-78234' for the account number"
+assert any('account' in k.lower() or 'acc' in k.lower() or 'number' in k.lower() for k in account_vars), "Name your account number variable descriptively (include 'account' or similar)"
+

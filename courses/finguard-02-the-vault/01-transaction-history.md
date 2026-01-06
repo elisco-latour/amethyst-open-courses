@@ -1,87 +1,102 @@
 ---
 id: "finguard_02_01"
-title: "Transaction History"
+title: "The Ledger: Lists"
 type: "coding"
 xp: 100
 ---
 
-# Transaction History
+# The Ledger: Lists
 
-In **The Ledger**, you stored single pieces of data. But FinGuard doesn't process one transaction — it processes **millions**.
+A single transaction tells you almost nothing. What matters is the **history** — the sequence of deposits and withdrawals that tells the story of an account.
 
-## The Bridge
+## Why Order Matters
 
-Data rarely exists alone. A bank account has dozens of transactions. A customer has multiple accounts. We need ways to **group related data together**.
+In banking, the order of transactions is critical. Consider this:
 
-## The Analogy: The Filing Cabinet Drawer
-
-A filing cabinet drawer holds many folders in order. You can:
-- Add a new folder at the end
-- Remove a folder
-- Find the 5th folder by counting
-- Go through each folder one by one
-
-This is exactly what a **List** does in Python.
-
-## Lists: Ordered Collections
-
-A list is an **ordered, mutable** (changeable) collection:
-
-```python
-# Creating a list
-transactions: list[str] = ["TXN-001", "TXN-002", "TXN-003"]
-
-# Access by index (position) — starts at 0!
-first: str = transactions[0]   # "TXN-001"
-last: str = transactions[-1]   # "TXN-003" (negative = from end)
-
-# Add to the end
-transactions.append("TXN-004")
-
-# Get the length
-count: int = len(transactions)  # 4
+```
+Day 1: Balance $100
+Day 2: Withdraw $80 (Balance: $20)
+Day 3: Deposit $500 (Balance: $520)
 ```
 
-## The "Pro" Tip
+Now swap Days 2 and 3:
 
-> **Use type hints with lists: `list[str]` not just `list`.**
+```
+Day 1: Balance $100
+Day 2: Deposit $500 (Balance: $600)
+Day 3: Withdraw $80 (Balance: $520)
+```
+
+Same final balance, but in the first scenario, the customer was dangerously close to zero. Order tells the real story.
+
+## The Python List
+
+A **list** is a collection that preserves order. Items stay in the sequence you put them:
 
 ```python
-# ✅ Professional — tells us what's inside
-transaction_ids: list[str] = ["TXN-001", "TXN-002"]
-
-# ❌ Unclear — what does this list contain?
-transaction_ids = ["TXN-001", "TXN-002"]
+transactions = ["Deposit $500", "Withdraw $20", "Deposit $100"]
+# Index:              0                1               2
 ```
+
+You can access items by position (starting from 0):
+- `transactions[0]` → `"Deposit $500"` (first item)
+- `transactions[-1]` → `"Deposit $100"` (last item)
+
+## The Append-Only Rule
+
+In FinGuard, we **never delete** from a transaction history. If something was a mistake, we add a *new* transaction to reverse it. This creates an **audit trail**.
+
+```python
+# WRONG: Deleting history
+del transactions[1]  # Never do this!
+
+# RIGHT: Append a reversal
+transactions.append("Reversal: Credit $20")
+```
+
+<div class="key-concept">
+<h4>🔑 Key Concept: Append-Only Ledgers</h4>
+
+Professional financial systems are append-only. Nothing is ever deleted — only corrected with new entries. This ensures every action can be audited.
+</div>
 
 ## Task
 
-Create a transaction history for account ACC-1001.
-
-1. Create a list named `transaction_history` with three transaction IDs: `"TXN-001"`, `"TXN-002"`, `"TXN-003"`
-2. Add a fourth transaction `"TXN-004"` using `.append()`
-3. Store the total count in `total_transactions`
+Build a transaction ledger:
+1. Create the initial `transaction_history` list with the three transactions shown
+2. A new transaction `new_txn` has occurred — use `.append()` to add it to the end
+3. Store the total count in `entry_count`
 
 <!-- SEPARATOR -->
 
 # seed_code
-# Create the transaction history list
+# Transaction Ledger for Account ACC-1001
+# Format: list of transaction strings, oldest first
+
+# 1. Create the initial history with these 3 transactions:
+#    "TXN-001: Credit $500.00"
+#    "TXN-002: Debit $12.50"
+#    "TXN-003: Debit $5.00"
+transaction_history: list[str] = 
+
+# 2. A new transaction has occurred - append it to the history
+new_txn: str = "TXN-004: Credit $100.00"
+# Add new_txn to the end of transaction_history here
 
 
-# Add a new transaction
+# 3. Count total entries
+entry_count: int = 
 
-
-# Count total transactions
-
-
-# Print the history
-print(f"Account ACC-1001 Transaction History:")
-print(f"Transactions: {transaction_history}")
-print(f"Total: {total_transactions}")
+# Verify
+print(f"Ledger: {transaction_history}")
+print(f"Total Entries: {entry_count}")
+print(f"Latest Entry: {transaction_history[-1]}")
 
 <!-- SEPARATOR -->
 
 # validation_code
-assert transaction_history == ["TXN-001", "TXN-002", "TXN-003", "TXN-004"], "transaction_history should have 4 transactions"
-assert total_transactions == 4, "total_transactions should be 4"
+assert len(transaction_history) == 4, "History should have 4 items after appending"
+assert transaction_history[0] == "TXN-001: Credit $500.00", "First entry should be TXN-001"
+assert transaction_history[-1] == new_txn, "The new transaction should be last (use .append())"
+assert entry_count == 4, "entry_count should equal len(transaction_history)"
 assert isinstance(transaction_history, list), "transaction_history must be a list"

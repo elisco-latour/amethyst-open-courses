@@ -13,13 +13,13 @@
   project_summary: null
 
 # FinGuard: Zero to Architect Curriculum
-# A 6-month residency building a Real-Time Fraud Detection & Regulatory Reporting System
+# A residency building a Real-Time Fraud Detection & Regulatory Reporting System
 - id: finguard-foundation
-  title: "FinGuard: The Foundation"
-  description: "Build a fraud detection system from scratch. Master Software Craftsmanship through Python: variables, functions, OOP, testing, and design patterns."
-  project_summary: "Semester 1 (Weeks 0-12): You will build FinGuard v1.0 — a complete fraud detection application with CLI interface, test suite, and documentation. Every line of code serves the mission: detect suspicious transactions and generate regulatory reports."
+  title: "Software Engineering with Python"
+  description: "Master Software Engineering by building FinGuard — a fraud detection system for banking. Learn Python fundamentals, OOP, SOLID principles, testing with pytest, and design patterns through real financial use cases."
+  project_summary: "You will build FinGuard v1.0 — a batch fraud processor that reads transactions, applies detection rules, and generates compliance reports. Every concept you learn is immediately applied to detect suspicious activity and protect financial systems."
 
 - id: finguard-elevation
-  title: "FinGuard: The Elevation"
-  description: "Transform FinGuard into a high-performance framework. Master Platform Engineering: Polars, PostgreSQL, Kafka, Airflow, and production deployment."
-  project_summary: "Semester 2 (Weeks 13-24): You will refactor FinGuard into FinGuard Core v2.0 — a scalable framework processing millions of transactions in real-time. This is what powers modern banking infrastructure and AI systems."
+  title: "Platform Engineering with Python"
+  description: "Transform FinGuard into a production-grade platform. Master high-performance data processing with Polars, database design with PostgreSQL, event streaming with Kafka, and workflow orchestration with Airflow."
+  project_summary: "You will evolve FinGuard into a scalable framework processing millions of transactions in real-time. This is the infrastructure that powers modern banking systems and AI-driven fraud detection."

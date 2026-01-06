@@ -1,87 +1,67 @@
 ---
 id: "finguard_04_03"
-title: "Generating Report IDs"
+title: "Sequence Generation"
 type: "coding"
 xp: 100
 ---
 
-# Generating Report IDs
+# Sequence Generation
 
-FinGuard generates daily reports with sequential IDs: `RPT-001`, `RPT-002`, etc. You need to generate a sequence of numbers.
+Audit trails require **Order**. A report needs a unique, sequential Identifier (ID) so auditors can check if a document is missing.
 
-## The `range()` Function
+If we have Report #1 and Report #3, we know Report #2 is missing. This is crucial for **Data Integrity**.
 
-`range()` generates a sequence of numbers:
+## The `range()` Generator
 
-```python
-# Generate 0, 1, 2, 3, 4
-for i in range(5):
-    print(i)
-
-# Generate 1, 2, 3, 4, 5 (start, stop)
-for i in range(1, 6):  # stop is exclusive!
-    print(i)
-
-# Generate 0, 2, 4, 6, 8 (start, stop, step)
-for i in range(0, 10, 2):
-    print(i)
-```
-
-## The Analogy: The Ticket Dispenser
-
-At a bank, you take a number and wait. The dispenser doesn't have all numbers stored — it generates them on demand: 001, 002, 003...
-
-`range()` works the same way. It doesn't create a list of millions of numbers. It generates them one at a time as needed.
-
-## String Formatting for IDs
+We don't type lists of numbers manually (`[1, 2, 3...]`). We generate them.
 
 ```python
-# Zero-padded numbers
-for i in range(1, 4):
-    report_id = f"RPT-{i:03d}"  # :03d means 3 digits, zero-padded
-    print(report_id)
-# RPT-001
-# RPT-002
-# RPT-003
+# range(start, stop)
+# Note: 'stop' is EXCLUSIVE (it stops BEFORE that number)
+numbers = range(1, 6)  # Generates: 1, 2, 3, 4, 5 (five numbers)
 ```
 
-## The "Pro" Tip
+| Expression | Produces | Count |
+|---|---|---|
+| `range(1, 6)` | 1, 2, 3, 4, 5 | 5 items |
+| `range(0, 3)` | 0, 1, 2 | 3 items |
+| `range(5)` | 0, 1, 2, 3, 4 | 5 items (start defaults to 0) |
 
-> **`range(stop)` starts at 0, not 1. `range(1, n+1)` gives you 1 through n.**
+## ID Formatting
+
+Raw numbers aren't professional. We use **Zero-Padding** to maintain alignment.
+*   `1` -> `001`
+*   `99` -> `099`
+*   `100` -> `100`
 
 ```python
-# ❌ Common mistake — starts at 0
-for i in range(5):  # 0, 1, 2, 3, 4
-    ...
-
-# ✅ Start at 1 for human-friendly numbering
-for i in range(1, 6):  # 1, 2, 3, 4, 5
-    ...
+seq_num = 5
+print(f"INV-{seq_num:03d}") # Output: INV-005
 ```
+
+`03d` means: "Format as a Decimal (Integer), pad with Zeros to 3 digits."
 
 ## Task
 
-Generate 5 report IDs for the daily compliance reports:
-- `RPT-2025-001`
-- `RPT-2025-002`
-- `RPT-2025-003`
-- `RPT-2025-004`
-- `RPT-2025-005`
+Generate a batch of **5 Report IDs** for the year 2025.
+The format must be: `RPT-2025-001`, `RPT-2025-002`, etc.
 
-Store them in the `report_ids` list.
+1.  Use a `for` loop with `range()` to generate numbers 1 through 5.
+2.  Format each ID string using the `year` and the loop variable.
+3.  Append each ID to the `report_ids` list.
 
 <!-- SEPARATOR -->
 
 # seed_code
-# Generate daily report IDs
+# Context
 year: int = 2025
 report_ids: list[str] = []
 
-# Generate 5 report IDs
+# ID Generation Loop
 
 
 
-# Print the generated IDs
+# Manifest
 print("=== Generated Report IDs ===")
 for report_id in report_ids:
     print(report_id)

@@ -7,85 +7,60 @@ xp: 100
 
 # The Cleanup Protocol
 
-Some code must run **regardless** of success or failure — closing files, releasing locks, logging completion.
+In banking, resources are scarce. Database connections, file handles, and network sockets must be closed.
 
-## The `finally` Block
+If your code crashes halfway through, you might leave a file "locked," preventing other systems from using it. This is a **Resource Leak**.
+
+## The Guarantee: `finally`
+
+The `finally` block runs **no matter what**.
+- If `try` succeeds: It runs.
+- If `except` catches an error: It runs.
+- If an unhandled crash happens: It runs (before the crash).
+- If you `return` early: It runs.
 
 ```python
-def process_file(filename: str) -> None:
-    file = None
+def write_audit_log(filename: str, data: str) -> None:
+    # 1. Acquire Resource
+    file = open(filename, "w")
+    print("Resource Acquired")
+    
     try:
-        file = open(filename, "r")
-        data = file.read()
-        process(data)
-    except FileNotFoundError:
-        print("File not found")
+        # 2. Risky Operation
+        if "simulated_error" in data:
+            raise ValueError("Something went wrong!")
+        file.write(data)
+        
     finally:
-        # This ALWAYS runs — success or failure
-        if file:
-            file.close()
-        print("Cleanup complete")
+        # 3. Release Resource (Guaranteed)
+        file.close()
+        print("Resource Released")
 ```
 
-## When Does `finally` Run?
-
-| Scenario | Does `finally` run? |
-|----------|---------------------|
-| No exception | ✅ Yes |
-| Exception caught | ✅ Yes |
-| Exception not caught | ✅ Yes (before crash) |
-| `return` in try block | ✅ Yes |
-
-## The `else` Block
-
-`else` runs only if **no exception** was raised:
+## The Logic Flow
 
 ```python
 try:
-    result = risky_operation()
-except SomeError:
-    handle_error()
+    # 1. Main logic
+except Error:
+    # 2. Error handling
 else:
-    # Only runs if no exception
-    save_result(result)
+    # 3. Runs ONLY if logic succeeded (rarely used)
 finally:
-    # Always runs
-    cleanup()
-```
-
-## The Analogy: The Lab Experiment
-
-Every experiment has three phases:
-1. **Try**: Run the experiment
-2. **Except**: Handle accidents (spills, fires)
-3. **Finally**: Clean up the lab (ALWAYS, whether experiment succeeded or failed)
-
-## The "Pro" Tip
-
-> **Use `finally` for cleanup that must happen no matter what. Don't put cleanup in `except` — it won't run on success.**
-
-```python
-# ❌ Wrong: cleanup only on error
-try:
-    process()
-except Exception:
-    cleanup()  # Doesn't run on success!
-
-# ✅ Correct: cleanup always
-try:
-    process()
-except Exception:
-    handle_error()
-finally:
-    cleanup()  # Always runs
+    # 4. Cleanup (Always runs)
 ```
 
 ## Task
 
-Simulate a batch transaction processor that:
-1. Starts processing (set `processing = True`)
-2. May encounter errors (handle them)
-3. Always logs completion and resets `processing = False`
+Simulate a **Batch Transaction Processor** with proper cleanup.
+1. Set `processing = True` and log "Batch started".
+2. Loop through each transaction:
+   - Try to convert the `amount` string to `Decimal`.
+   - If successful, add the `id` to `processed`.
+   - If `InvalidOperation` occurs, add the `id` to `failed`.
+3. In `finally`, set `processing = False` and log "Batch complete".
+
+The `processing` flag must be `False` after completion — even if errors occurred.
 
 <!-- SEPARATOR -->
 
@@ -104,16 +79,10 @@ processed: list[str] = []
 failed: list[str] = []
 log_messages: list[str] = []
 
-def process_batch() -> None:
-    """Process all transactions with proper cleanup."""
-    global processing
-    
-    pass  # Replace with your implementation
+# Batch Processor Implementation
 
 
-# Run the processor
-process_batch()
-
+# Report
 print("=== Batch Processing Log ===")
 for msg in log_messages:
     print(msg)
@@ -125,10 +94,19 @@ print(f"Processing flag: {processing}")
 <!-- SEPARATOR -->
 
 # validation_code
+from decimal import Decimal
+
+# Cleanup must happen
 assert processing == False, "processing should be False after completion (cleanup)"
+
+# Successful transactions
 assert "TXN-001" in processed, "TXN-001 should be processed"
 assert "TXN-003" in processed, "TXN-003 should be processed"
+
+# Failed transaction
 assert "TXN-002" in failed, "TXN-002 should be in failed list"
+
+# Logging
 assert len(log_messages) >= 2, "Should have start and end log messages"
 assert any("start" in msg.lower() for msg in log_messages), "Should log start"
 assert any("complete" in msg.lower() or "end" in msg.lower() or "finish" in msg.lower() for msg in log_messages), "Should log completion"

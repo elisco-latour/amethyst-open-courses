@@ -1,59 +1,90 @@
 ---
 id: "finguard_01_01"
-title: "From Bits to Variables"
+title: "The Variable: Labeling Reality"
 type: "coding"
 xp: 100
 ---
 
-# From Bits to Variables
+# The Variable: Labeling Reality
 
-In **The Signal**, you learned that data is information encoded as bits. Now it's time to work with that data in Python.
+In **The Signal**, you learned that data is just patterns of 1s and 0s. But you can't write software by typing `0b10111011100` everywhere.
 
-## The Bridge
+You need to give those bits a **name**.
 
-Remember: a computer sees `1500` as `0b10111011100` (binary). But you don't want to think in binary. You want to think in **meaning**.
+## The Safety Deposit Box
 
-A **variable** is a named container that holds data. Instead of remembering memory address `0x7fff5fbff8b0`, you just say `transaction_id`.
+Imagine the FinGuard vault. It has millions of boxes. If you put $5,000 in a box but don't label it, that money is effectively lost — no one can find it.
 
-## The Analogy: The Labeled Box
+In Python, a **variable** is that label:
 
-In a bank vault, every safety deposit box has a **number** on it. When a customer asks for box 1247, the clerk knows exactly where to look.
-
-Variables work the same way:
-- The **name** is the label (`transaction_id`)
-- The **value** is what's inside (`"TXN-00001"`)
-- Python remembers where in memory that value lives
-
-## The "Pro" Tip
-
-> **Always use `snake_case` for variable names.**
+- **The Box:** A specific location in your computer's memory
+- **The Content:** The data stored there (e.g., `1500`)
+- **The Label:** The variable name (e.g., `deposit_amount`)
 
 ```python
-# ✅ Professional Python
-transaction_id = "TXN-001"
-account_balance = 5000.00
+deposit_amount = 1500
+```
 
-# ❌ Amateur Python (don't do this)
-transactionId = "TXN-001"    # This is JavaScript style
-TransactionID = "TXN-001"    # This is C# style
-TRANSACTION_ID = "TXN-001"   # This is for constants only
+This line does three things:
+1. Creates a "box" in memory
+2. Puts the value `1500` inside
+3. Labels that box `deposit_amount`
+
+## The First Rule: Reveal Your Intent
+
+Amateurs name variables `x`, `y`, or `temp`.
+
+Engineers name variables to reveal **intent**.
+
+Consider these two lines — they do the same thing, but one communicates:
+
+```python
+# What does 't' mean? A temperature? A timestamp? A total?
+t = "TXN-2025-00001"
+
+# Crystal clear: this is a transaction identifier
+transaction_id = "TXN-2025-00001"
+```
+
+> **"Code is read 10 times more often than it is written."**
+> 
+> When you name a variable `t`, your teammates have to guess. When you name it `transaction_id`, you've told the truth.
+
+## Python Naming Convention
+
+In Python, we use **snake_case** for variable names:
+- All lowercase letters
+- Words separated by underscores
+
+```python
+# Good snake_case names
+account_balance = 5000
+customer_name = "Alice Chen"
+is_verified = True
+
+# Bad (not snake_case)
+AccountBalance = 5000   # This style is for class names
+customerName = "Alice"  # This is JavaScript style
 ```
 
 ## Task
 
-Create your first ledger entry. Define a variable named `transaction_id` with the value `"TXN-2025-00001"`.
+A new wire transfer has come in. Create a variable to store its **Transaction ID**.
 
-This ID uniquely identifies a wire transfer in FinGuard.
+Requirements:
+- Variable name: `transaction_id`
+- Value: `"TXN-2025-00001"` (a string)
+- Follow snake_case convention
 
 <!-- SEPARATOR -->
 
 # seed_code
 # Your first ledger entry
-# Create a variable to store the transaction ID
+# Create the transaction_id variable below
 
 
-# Print it to verify
-print(f"Transaction recorded: {transaction_id}")
+# Verify the label works
+print(f"Transaction Recorded: {transaction_id}")
 
 <!-- SEPARATOR -->
 

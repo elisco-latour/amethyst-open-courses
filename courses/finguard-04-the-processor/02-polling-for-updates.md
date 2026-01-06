@@ -1,93 +1,64 @@
 ---
 id: "finguard_04_02"
-title: "Polling for Updates"
+title: "The Watchdog"
 type: "coding"
 xp: 100
 ---
 
-# Polling for Updates
+# The Watchdog
 
-Sometimes you don't know **how many** iterations you need. You keep checking until a condition is met.
+In distributed systems, we often wait for other systems to finish. We wait for a bank transfer to clear, a report to generate, or a server to boot up.
 
-## The Analogy: Waiting for Approval
-
-When you submit a large transfer, you wait for compliance to approve it. You keep checking:
-- "Is it approved yet?" → No → Wait → Check again
-- "Is it approved yet?" → No → Wait → Check again
-- "Is it approved yet?" → **Yes!** → Stop waiting
+We don't know *how long* it will take. We just know we must wait **while** the task is incomplete.
 
 ## The `while` Loop
 
-A `while` loop repeats **as long as a condition is true**:
+The `while` loop is a **State Checker**. It keeps running generally until a condition becomes `False`.
 
 ```python
-approval_status: str = "PENDING"
+status: str = "PENDING"
 checks: int = 0
 
-while approval_status == "PENDING":
-    checks += 1  # Same as: checks = checks + 1
-    print(f"Check #{checks}: Still pending...")
-    
-    # Simulate eventual approval
-    if checks >= 3:
-        approval_status = "APPROVED"
-
-print(f"✓ Status: {approval_status}")
-```
-
-## Danger: Infinite Loops!
-
-```python
-# ❌ NEVER DO THIS — runs forever!
-while True:
-    print("This never stops")
-
-# ✅ Always have an exit condition
-attempts: int = 0
-while attempts < 10:
-    attempts += 1
-    if found_result:
-        break  # Exit the loop early
-```
-
-## The "Pro" Tip
-
-> **Use `for` when you know how many iterations. Use `while` when you don't know, but have a stop condition.**
-
-```python
-# ✅ for — we know there are 5 transactions
-for txn in transactions:
-    process(txn)
-
-# ✅ while — we don't know when approval comes
+# The Watchdog Pattern
 while status == "PENDING":
-    check_status()
+    print("Checking external API...")
+    # ... logic to check API ...
+    checks = checks + 1
+    
+    if checks > 5:
+        print("Timeout: Giving up.")
+        break
 ```
+
+## Danger: The Infinite Loop
+
+If the condition *never* becomes False, the program hangs forever. This is a CPU freeze.
+
+> **Engineering Rule:** Every `while` loop must have a guaranteed **exit strategy** (a timeout or a state change).
 
 ## Task
 
-Simulate polling for transaction approval:
-1. Start with `status = "PENDING"`
-2. Keep polling (incrementing `poll_count`)
-3. After 5 polls, change status to `"APPROVED"`
-4. Exit the loop
-5. Store the final poll count
+Simulate a **Transaction Polling Service**.
+1.  Running a loop **while** `status` is `"PENDING"`.
+2.  Inside the loop, increment `poll_count`.
+3.  Simulate a response: If `poll_count` reaches 5, change `status` to `"APPROVED"`.
+4.  Once the loop finishes, log the final result.
 
 <!-- SEPARATOR -->
 
 # seed_code
-# Transaction awaiting approval
+# Context
 transaction_id: str = "TXN-HIGH-001"
 status: str = "PENDING"
 poll_count: int = 0
 
-# Poll until approved
-print(f"Polling for approval of {transaction_id}...")
+# Watchdog Loop
+print(f"Monitoring {transaction_id}...")
 
 
 
-print(f"")
-print(f"✓ Transaction {status} after {poll_count} polls")
+# Final State
+print(f"Transaction {status} after {poll_count} polls")
 
 <!-- SEPARATOR -->
 

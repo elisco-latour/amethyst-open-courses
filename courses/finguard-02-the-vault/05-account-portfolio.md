@@ -1,141 +1,128 @@
 ---
 id: "finguard_02_05"
-title: "Account Portfolio"
+title: "The Portfolio: Nested Data"
 type: "coding"
 xp: 100
 ---
 
-# Account Portfolio
+# The Portfolio: Nested Data
 
-Real data is **nested**. A customer has multiple accounts. Each account has multiple transactions. Each transaction has multiple fields.
+Real banking data is hierarchical. A **Customer** has multiple **Accounts**. Each **Account** has a balance, type, and ID.
 
-## The Analogy: The Bank's Complete Records
+How do we represent this structure? By **nesting** collections inside each other.
 
-A bank's customer record contains:
-- Customer info (name, address, ID)
-- List of accounts (checking, savings, investment)
-- Each account has a list of transactions
-- Each transaction has details (amount, date, type)
+## Lists Inside Dictionaries
 
-This is **hierarchical data** — data within data within data.
-
-## Nesting Collections
-
-Python collections can contain other collections:
+We can put a list inside a dictionary:
 
 ```python
-# A customer with multiple accounts
-customer: dict[str, any] = {
-    "customer_id": "CUST-1001",
-    "name": "Alice Smith",
+customer = {
+    "name": "Alice Chen",
+    "account_ids": ["ACC-101", "ACC-102", "ACC-103"]
+}
+```
+
+To get Alice's second account:
+```python
+customer["account_ids"][1]  # "ACC-102"
+```
+
+## Dictionaries Inside Lists
+
+We can also have a list of dictionaries:
+
+```python
+accounts = [
+    {"id": "ACC-101", "balance": 1000},
+    {"id": "ACC-102", "balance": 5000}
+]
+```
+
+To get the balance of the first account:
+```python
+accounts[0]["balance"]  # 1000
+```
+
+## The Full Portfolio
+
+Combining both patterns, we can model a complete customer portfolio:
+
+```python
+portfolio = {
+    "customer_id": "CUST-001",
+    "name": "Alice Chen",
     "accounts": [
-        {
-            "account_id": "ACC-1001",
-            "type": "checking",
-            "balance": 5000.00
-        },
-        {
-            "account_id": "ACC-1002",
-            "type": "savings",
-            "balance": 25000.00
-        }
+        {"id": "ACC-101", "type": "checking", "balance": 1500.00},
+        {"id": "ACC-102", "type": "savings", "balance": 8000.00}
     ]
 }
-
-# Access nested data
-first_account = customer["accounts"][0]
-first_balance = customer["accounts"][0]["balance"]  # 5000.00
 ```
 
-## Navigating Nested Data
+To navigate this structure:
+- `portfolio["name"]` → `"Alice Chen"`
+- `portfolio["accounts"]` → the list of account dictionaries
+- `portfolio["accounts"][0]` → the first account dictionary
+- `portfolio["accounts"][0]["balance"]` → `1500.00`
 
-```python
-# Get all account balances
-for account in customer["accounts"]:
-    print(f"{account['type']}: ${account['balance']}")
+<div class="key-concept">
+<h4>🔑 Key Concept: Drilling Down</h4>
 
-# Total portfolio value
-total: float = sum(acc["balance"] for acc in customer["accounts"])
-```
-
-## The "Pro" Tip
-
-> **Deep nesting gets messy. If you're going 3+ levels deep, consider restructuring your data.**
-
-```python
-# ❌ Too deep — hard to read and error-prone
-value = data["customers"][0]["accounts"][1]["transactions"][3]["amount"]
-
-# ✅ Better — extract intermediate values
-customer = data["customers"][0]
-account = customer["accounts"][1]
-transaction = account["transactions"][3]
-value = transaction["amount"]
-```
+Reading nested data is like following a path: start at the outer container, then step into each inner layer using `["key"]` for dicts or `[index]` for lists.
+</div>
 
 ## Task
 
-Build a complete customer portfolio with two accounts. Each account should have a list of recent transactions.
+Given the portfolio structure below, extract specific values by drilling down through the nested data:
 
-Structure:
-- Customer: `"CUST-5001"`, `"Elena Rodriguez"`
-- Account 1: `"ACC-5001"`, `"checking"`, balance `3500.00`, transactions: two entries
-- Account 2: `"ACC-5002"`, `"savings"`, balance `15000.00`, transactions: one entry
-
-Then calculate the total portfolio balance.
+1. `customer_name` — the customer's name
+2. `checking_balance` — the balance of the checking account (first account)
+3. `savings_balance` — the balance of the savings account (second account)
+4. `total_balance` — the sum of both balances
 
 <!-- SEPARATOR -->
 
 # seed_code
-# Build the customer portfolio
-customer_portfolio: dict = {
+# A customer's complete portfolio
+portfolio: dict = {
     "customer_id": "CUST-5001",
     "name": "Elena Rodriguez",
     "accounts": [
         {
-            "account_id": "ACC-5001",
+            "id": "ACC-5001",
             "type": "checking",
-            "balance": 3500.00,
-            "transactions": [
-                {"txn_id": "TXN-001", "amount": -150.00, "description": "ATM Withdrawal"},
-                {"txn_id": "TXN-002", "amount": 2000.00, "description": "Salary Deposit"}
-            ]
+            "balance": 3500.00
         },
         {
-            "account_id": "ACC-5002",
+            "id": "ACC-5002",
             "type": "savings",
-            "balance": 15000.00,
-            "transactions": [
-                {"txn_id": "TXN-003", "amount": 500.00, "description": "Monthly Transfer"}
-            ]
+            "balance": 15000.00
         }
     ]
 }
 
-# Calculate total portfolio balance
+# Extract the customer's name
+customer_name = 
 
+# Extract the checking account balance (first account, index 0)
+checking_balance = 
 
-# Count total transactions across all accounts
+# Extract the savings account balance (second account, index 1)
+savings_balance = 
 
+# Calculate total balance
+total_balance = 
 
-# Print portfolio summary
-print(f"=== Customer Portfolio ===")
-print(f"Customer: {customer_portfolio['name']} ({customer_portfolio['customer_id']})")
-print(f"")
-for account in customer_portfolio["accounts"]:
-    print(f"  {account['type'].upper()} ({account['account_id']}): ${account['balance']:,.2f}")
-    print(f"    Recent transactions: {len(account['transactions'])}")
-print(f"")
-print(f"Total Portfolio Value: ${total_balance:,.2f}")
-print(f"Total Transactions: {total_transactions}")
+# Display the portfolio summary
+print(f"Customer: {customer_name}")
+print(f"Checking: ${checking_balance:,.2f}")
+print(f"Savings: ${savings_balance:,.2f}")
+print(f"Total Net Worth: ${total_balance:,.2f}")
 
 <!-- SEPARATOR -->
 
 # validation_code
-assert customer_portfolio["customer_id"] == "CUST-5001", "customer_id should be 'CUST-5001'"
-assert customer_portfolio["name"] == "Elena Rodriguez", "name should be 'Elena Rodriguez'"
-assert len(customer_portfolio["accounts"]) == 2, "Should have 2 accounts"
-assert customer_portfolio["accounts"][0]["balance"] == 3500.00, "Checking balance should be 3500.00"
-assert customer_portfolio["accounts"][1]["balance"] == 15000.00, "Savings balance should be 15000.00"
-assert total_balance == 18500.00, "total_balance should be 18500.00"
-assert total_transactions == 3, "total_transactions should be 3"
+assert customer_name == "Elena Rodriguez", "customer_name should be 'Elena Rodriguez' — use portfolio['name']"
+assert checking_balance == 3500.00, "checking_balance should be 3500.00 — use portfolio['accounts'][0]['balance']"
+assert savings_balance == 15000.00, "savings_balance should be 15000.00 — use portfolio['accounts'][1]['balance']"
+assert total_balance == 18500.00, "total_balance should be checking_balance + savings_balance"
+assert portfolio["customer_id"] == "CUST-5001", "Don't modify the portfolio structure"

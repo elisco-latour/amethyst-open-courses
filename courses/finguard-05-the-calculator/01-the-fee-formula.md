@@ -1,106 +1,105 @@
 ---
 id: "finguard_05_01"
-title: "The Fee Formula"
+title: "The Logic Engine"
 type: "coding"
 xp: 100
 ---
 
-# The Fee Formula
+# The Logic Engine
 
-Every bank charges transaction fees. Instead of copying the fee calculation everywhere, you write it **once** and reuse it.
+In FinGuard, we don't scatter math all over the codebase. If the fee calculation changes, we don't want to hunt down 50 different files.
 
-## The Problem Without Functions
+We encapsulate logic in **Functions**. Use them as "Logic Engines" — you pour raw data in the top, and processed results come out the bottom.
+
+## The Problem: "Spaghetti Math"
 
 ```python
-# ❌ Copy-pasted everywhere
-fee_1 = amount_1 * Decimal("0.01")
-fee_2 = amount_2 * Decimal("0.01")
-fee_3 = amount_3 * Decimal("0.01")
+# ❌ Bad: Logic scattered everywhere
+# File A
+total = amount * Decimal("1.05") 
 
-# What if the rate changes? You have to update EVERY line!
+# File B
+# Wait, did the tax rate prompt change? 
+final = price * Decimal("1.06") 
 ```
 
-## The Function Solution
+## The Solution: Single Source of Truth
 
 ```python
 from decimal import Decimal
 
-def calculate_fee(amount: Decimal) -> Decimal:
-    """Calculate transaction fee (1% of amount)."""
-    fee_rate: Decimal = Decimal("0.01")
-    return amount * fee_rate
-
-# Use it anywhere
-fee_1 = calculate_fee(Decimal("500.00"))
-fee_2 = calculate_fee(Decimal("1000.00"))
+# ✅ Good: Defined once, verified once.
+def calculate_tax(amount: Decimal) -> Decimal:
+    """Calculates standard 5% tax."""
+    tax_rate = Decimal("0.05")
+    return amount * tax_rate
 ```
 
 ## Anatomy of a Function
 
+A function is a **Contract**.
+
+1.  **Input (Parameters):** What the function *demands* to work.
+2.  **Logic (Body):** The proprietary "secret sauce."
+3.  **Output (Return):** The guaranteed deliverable.
+
 ```python
-def calculate_fee(amount: Decimal) -> Decimal:
-    """Calculate transaction fee (1% of amount)."""
-    fee_rate: Decimal = Decimal("0.01")
-    return amount * fee_rate
+def get_fee(amount: Decimal) -> Decimal:
+    # ... logic ...
+    return fee
 ```
 
-| Part | Meaning |
-|------|---------|
-| `def` | "Define a function" |
-| `calculate_fee` | The function name (verb describes action) |
-| `amount: Decimal` | Parameter with type hint |
-| `-> Decimal` | Return type (what comes out) |
-| `"""docstring"""` | Documentation for the function |
-| `return` | Send the result back |
+## Engineering Principle: Pure Functions
 
-## The Analogy: The Vending Machine
-
-A vending machine is a function:
-- **Input**: Money + Button selection
-- **Process**: Internal mechanism (you don't see it)
-- **Output**: Your snack
-
-You don't care **how** it works. You just use it.
-
-## The "Pro" Tip
-
-> **Functions should do ONE thing and do it well. If you can't describe what it does in one sentence, it's doing too much.**
+In banking, functions should ideally be **Pure**.
+*   **Deterministic:** Inputting `$100` must *always* return the *same* fee. No random numbers, no database reads inside the math.
+*   **No Side Effects:** Calculating a fee shouldn't print text or email a customer. It should just *calculate*.
 
 ## Task
 
-Write a `calculate_wire_fee` function that:
-- Takes an `amount: Decimal` parameter
-- Charges 0.5% fee for amounts up to $10,000
-- Charges 0.25% fee for amounts over $10,000
-- Returns the fee as `Decimal`
+Build a **Tiered Fee Calculator** engine.
+
+*   **Inputs:** `amount` (Decimal).
+*   **Logic:**
+    *   If amount <= 10,000: Fee is **0.5%**.
+    *   If amount > 10,000: Fee is **0.25%**.
+*   **Output:** The calculated fee (Decimal).
 
 <!-- SEPARATOR -->
 
 # seed_code
 from decimal import Decimal
 
-# Define the wire transfer fee function
+# The Engine
 def calculate_wire_fee(amount: Decimal) -> Decimal:
-    """Calculate wire transfer fee based on amount tier."""
-    pass  # Replace with your implementation
+    """
+    Calculates the wire transfer fee based on volume.
+    Tiers:
+    - Up to $10k: 0.5%
+    - Over $10k: 0.25%
+    """
+    # Implementation here
+    pass
 
-
-# Test the function
+# Integration Test
 test_amounts: list[Decimal] = [
     Decimal("5000.00"),
-    Decimal("10000.00"),
-    Decimal("50000.00"),
+    Decimal("20000.00"),
 ]
 
-print("=== Wire Transfer Fee Calculator ===")
+print("=== Fee Engine Test ===")
 for amount in test_amounts:
     fee = calculate_wire_fee(amount)
-    print(f"Amount: ${amount:,.2f} → Fee: ${fee:.2f}")
+    print(f"Amount: ${amount:,.2f} -> Fee: ${fee:.2f}")
 
 <!-- SEPARATOR -->
 
 # validation_code
 from decimal import Decimal
+# Edge case: exactly at threshold
+assert calculate_wire_fee(Decimal("10000.00")) == Decimal("50.00"), "10000 * 0.005 = 50.00 (at threshold, use 0.5%)"
+# Below threshold
 assert calculate_wire_fee(Decimal("5000.00")) == Decimal("25.00"), "5000 * 0.005 = 25.00"
-assert calculate_wire_fee(Decimal("10000.00")) == Decimal("50.00"), "10000 * 0.005 = 50.00"
+# Above threshold
+assert calculate_wire_fee(Decimal("20000.00")) == Decimal("50.00"), "20000 * 0.0025 = 50.00"
 assert calculate_wire_fee(Decimal("50000.00")) == Decimal("125.00"), "50000 * 0.0025 = 125.00"

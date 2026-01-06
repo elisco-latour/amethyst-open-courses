@@ -1,15 +1,19 @@
 ---
 id: "finguard_05_02"
-title: "The Interest Engine"
+title: "The Calculation Contract"
 type: "coding"
 xp: 100
 ---
 
-# The Interest Engine
+# The Calculation Contract
 
-Banks calculate interest daily, monthly, yearly. Each calculation needs **parameters** — the amount, rate, and time period.
+When you sign a mortgage, you sign a **Contract**. You agree to terms (Principal, Rate, Term), and the bank agrees to the outcome.
 
-## Multiple Parameters
+In Python, a function signature is that contract.
+
+## Explicit Signatures
+
+Engineers don't guess types. We declare them.
 
 ```python
 from decimal import Decimal
@@ -19,41 +23,24 @@ def calculate_simple_interest(
     rate: Decimal,
     years: int
 ) -> Decimal:
-    """Calculate simple interest: I = P × R × T"""
+    # Contract: 
+    # Give me 2 Decimals and an Int
+    # I promise to give you back a Decimal
     return principal * rate * Decimal(str(years))
 ```
 
-## The Analogy: The Recipe
+## Keyword Arguments (Explicitness)
 
-A recipe takes **ingredients** (parameters) and produces a **dish** (return value):
+When calling functions with many numbers, it's easy to mix them up. Did I pass the rate first or the term?
 
-```
-Recipe: Chocolate Cake
-Ingredients:
-  - flour: 2 cups
-  - sugar: 1 cup
-  - cocoa: 1/2 cup
-Produces: 1 cake
-```
-
-## Parameter Order Matters
+To prevent million-dollar mistakes, we use **Keyword Arguments**:
 
 ```python
-def calculate_interest(principal: Decimal, rate: Decimal, years: int) -> Decimal:
-    ...
+# ❌ Ambiguous: What are these numbers?
+calculate(1000, 0.05, 5)
 
-# ❌ Wrong order — gets wrong result
-interest = calculate_interest(Decimal("0.05"), Decimal("1000.00"), 5)
-
-# ✅ Correct order
-interest = calculate_interest(Decimal("1000.00"), Decimal("0.05"), 5)
-```
-
-## Named Arguments (Keyword Arguments)
-
-```python
-# ✅ Crystal clear — no confusion about order
-interest = calculate_interest(
+# ✅ Explicit: Impossible to misunderstand
+calculate(
     principal=Decimal("1000.00"),
     rate=Decimal("0.05"),
     years=5
@@ -62,27 +49,19 @@ interest = calculate_interest(
 
 ## The "Pro" Tip
 
-> **When a function has more than 2 parameters, use named arguments for clarity.**
-
-```python
-# ❌ What do these numbers mean?
-result = process_payment(Decimal("100"), "USD", True, 3)
-
-# ✅ Self-documenting
-result = process_payment(
-    amount=Decimal("100"),
-    currency="USD",
-    expedited=True,
-    retry_count=3
-)
-```
+> **In Financial Code, prefer Keyword Arguments.**
+> Ambiguity creates bugs. Explicitness creates trust.
 
 ## Task
 
-Write a `calculate_compound_interest` function that:
-- Takes `principal`, `annual_rate`, and `years` as parameters
-- Uses the compound interest formula: A = P × (1 + r)^t
-- Returns the **final amount** (principal + interest)
+Implement the `calculate_compound_interest` function.
+Formula: $A = P(1 + r)^t$
+
+In code, power is represented by `**`: `(1 + r) ** t`.
+
+1.  Accept `principal`, `rate`, and `years`.
+2.  Return the final amount (Principal + Interest).
+3.  Use the correct types.
 
 <!-- SEPARATOR -->
 
@@ -91,40 +70,29 @@ from decimal import Decimal
 
 def calculate_compound_interest(
     principal: Decimal,
-    annual_rate: Decimal,
+    rate: Decimal,
     years: int
 ) -> Decimal:
     """
-    Calculate compound interest.
-    Formula: A = P × (1 + r)^t
-    Returns the final amount.
+    Calculates compound interest.
+    Formula: A = P * (1 + r)^t
     """
-    pass  # Replace with your implementation
+    # Implementation
+    pass
 
-
-# Test with a $10,000 deposit at 5% for 3 years
-result = calculate_compound_interest(
-    principal=Decimal("10000.00"),
-    annual_rate=Decimal("0.05"),
-    years=3
+# Integration
+final_amt = calculate_compound_interest(
+    principal=Decimal("1000.00"), 
+    rate=Decimal("0.05"), 
+    years=10
 )
 
-print(f"=== Compound Interest Calculator ===")
-print(f"Principal: $10,000.00")
-print(f"Annual Rate: 5%")
-print(f"Years: 3")
-print(f"Final Amount: ${result:,.2f}")
+print(f"Final Amount: ${final_amt:,.2f}")
 
 <!-- SEPARATOR -->
 
 # validation_code
 from decimal import Decimal
-# 10000 * (1.05)^3 = 10000 * 1.157625 = 11576.25
-result = calculate_compound_interest(
-    principal=Decimal("10000.00"),
-    annual_rate=Decimal("0.05"),
-    years=3
-)
-# Allow small rounding difference
-expected = Decimal("11576.25")
-assert abs(result - expected) < Decimal("0.01"), f"Expected ~{expected}, got {result}"
+result = calculate_compound_interest(Decimal("1000"), Decimal("0.05"), 2)
+# 1000 * (1.05)^2 = 1000 * 1.1025 = 1102.50
+assert abs(result - Decimal("1102.50")) < Decimal("0.01"), "Result should match compound interest formula"

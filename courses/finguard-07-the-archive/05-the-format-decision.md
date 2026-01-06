@@ -1,137 +1,68 @@
 ---
 id: "finguard_07_05"
-title: "The Format Decision"
+title: "Format Strategy"
 type: "coding"
 xp: 100
 ---
 
-# The Format Decision
+# Format Strategy
 
-Real systems use multiple formats. Knowing **when** to use each is as important as knowing **how**.
+An architect doesn't use concrete for windows. An engineer doesn't use CSV for configs.
 
-## Format Selection Guide
+Choosing the format is the first step of **System Design**.
 
-| Scenario | Best Format | Why |
-|----------|-------------|-----|
-| Spreadsheet export | CSV | Excel-compatible |
-| API communication | JSON | Nested data, types |
-| Configuration files | JSON/YAML | Human-editable |
-| Log files | Plain text | Append-friendly |
-| Batch data exchange | CSV | Simple, universal |
-| Report for humans | Plain text | Readable |
+## The Decision Matrix
 
-## The Bridge: Data Lifecycle
+| Requirement | Format | Why? |
+|-------------|--------|------|
+| **bulk_data_ingest** | `CSV` | Compact, streamable, readable by Excel. |
+| **api_response** | `JSON` | Structured, nested, web-standard. |
+| **human_report** | `TXT` | Formatting freedom, no strict syntax. |
+| **config_file** | `YAML/JSON` | Easy to edit, hierarchical. |
 
-```
-Data Entry → [JSON API] → Processing → [CSV Export] → Archive → [Text Logs]
-```
+## The Data Pipeline
 
-Different stages of the data lifecycle need different formats.
+FinGuard data flows through transformations:
 
-## Converting Between Formats
-
-```python
-import csv
-import json
-from io import StringIO
-
-# JSON → CSV (flattening nested data)
-def json_to_csv(json_data: list[dict]) -> str:
-    if not json_data:
-        return ""
-    
-    output = StringIO()
-    writer = csv.DictWriter(output, fieldnames=json_data[0].keys())
-    writer.writeheader()
-    writer.writerows(json_data)
-    return output.getvalue()
-
-# CSV → JSON
-def csv_to_json(csv_content: str) -> list[dict]:
-    reader = csv.DictReader(StringIO(csv_content))
-    return list(reader)
-```
-
-## The "Pro" Tip
-
-> **Let the consumer choose the format. APIs often support `?format=json` or `?format=csv`.**
+1.  **Ingest**: Read millions of rows from `CSV`.
+2.  **Process**: Convert to Python Objects (`dicts/classes`).
+3.  **Persist**: Save state to `Database` (or JSON for now).
+4.  **Report**: Generate `TXT` summary for humans.
 
 ## Task
 
-Build a multi-format exporter that can output transaction data in CSV, JSON, or plain text report format.
+Complete the `get_format_extension` strategy function.
+1.  Input: `use_case` (string).
+2.  Logic:
+    - "bulk" -> ".csv"
+    - "api" -> ".json"
+    - "report" -> ".txt"
+    - Anything else -> ".dat"
+3.  Return the extension string.
 
 <!-- SEPARATOR -->
 
 # seed_code
-import csv
-import json
-from decimal import Decimal
-from io import StringIO
-
-# Transaction data to export
-transactions: list[dict] = [
-    {"id": "TXN-001", "amount": "500.00", "type": "DEPOSIT"},
-    {"id": "TXN-002", "amount": "200.00", "type": "WITHDRAWAL"},
-    {"id": "TXN-003", "amount": "1500.00", "type": "TRANSFER"},
-]
-
-def export_csv(data: list[dict]) -> str:
-    """Export transactions to CSV format."""
-    pass  # Replace with your implementation
-
-
-def export_json(data: list[dict]) -> str:
-    """Export transactions to JSON format."""
-    pass  # Replace with your implementation
-
-
-def export_report(data: list[dict]) -> str:
-    """Export transactions to human-readable report."""
-    pass  # Replace with your implementation
-
-
-def export_transactions(data: list[dict], format: str) -> str:
-    """Export transactions in the requested format.
-    
-    Args:
-        data: List of transaction dicts
-        format: One of 'csv', 'json', 'report'
-    
-    Returns:
-        Formatted string
+def get_format_extension(use_case: str) -> str:
     """
-    pass  # Replace with your implementation
+    Returns the file extension for a given use case.
+    Strategies: bulk, api, report.
+    """
+    # Use match/case or if/elif
+    pass
 
-
-# Test all formats
-print("=== CSV Format ===")
-print(export_transactions(transactions, "csv"))
-
-print("\n=== JSON Format ===")
-print(export_transactions(transactions, "json"))
-
-print("\n=== Report Format ===")
-print(export_transactions(transactions, "report"))
+# Integration
+print(get_format_extension("bulk"))   # .csv
+print(get_format_extension("api"))    # .json
 
 <!-- SEPARATOR -->
 
 # validation_code
-import json
+# Test known use cases
+assert get_format_extension("bulk") == ".csv", "bulk data should use .csv"
+assert get_format_extension("api") == ".json", "API should use .json"
+assert get_format_extension("report") == ".txt", "reports should use .txt"
 
-# Test CSV export
-csv_output = export_transactions(transactions, "csv")
-assert "id,amount,type" in csv_output or "id" in csv_output.split("\n")[0], "CSV should have header row"
-assert "TXN-001" in csv_output, "CSV should contain transaction ID"
-assert "500.00" in csv_output, "CSV should contain amount"
-
-# Test JSON export  
-json_output = export_transactions(transactions, "json")
-parsed = json.loads(json_output)
-assert isinstance(parsed, list), "JSON should be a list"
-assert len(parsed) == 3, "JSON should have 3 transactions"
-assert parsed[0]["id"] == "TXN-001", "JSON should preserve transaction ID"
-
-# Test report export
-report_output = export_transactions(transactions, "report")
-assert "TXN-001" in report_output or "3" in report_output, "Report should contain data"
-assert len(report_output) > 50, "Report should be human-readable (not just raw data)"
+# Test fallback
+assert get_format_extension("unknown") == ".dat", "unknown should default to .dat"
+assert get_format_extension("random") == ".dat", "any unknown should default to .dat"

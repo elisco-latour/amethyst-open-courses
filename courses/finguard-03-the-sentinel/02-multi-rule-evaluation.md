@@ -1,70 +1,78 @@
 ---
 id: "finguard_03_02"
-title: "Multi-Rule Evaluation"
+title: "The Hierarchy: elif Chains"
 type: "coding"
 xp: 100
 ---
 
-# Multi-Rule Evaluation
+# The Hierarchy of Rules
 
-Fraud detection isn't black and white. A transaction might be:
-- **Normal** (under $1,000)
-- **Elevated** (between $1,000 and $10,000) → Requires manager review
-- **High-risk** (over $10,000) → Requires compliance review
+In banking, not all alerts are equal. A $1,001 transaction is a minor blip. A $1,000,000 transaction is a Code Red.
+
+Simple `if/else` gives us two paths. But what if we need **four** paths?
 
 ## The `elif` Chain
 
-`elif` (else if) lets you check **multiple conditions in order**:
+`elif` stands for "else if". It lets us check multiple conditions in sequence:
 
 ```python
-amount: float = 5000.00
+amount = 25000
 
-if amount > 10000:
-    risk_level = "HIGH"
+if amount > 50000:
+    risk = "CRITICAL"
+elif amount > 10000:
+    risk = "HIGH"
 elif amount > 1000:
-    risk_level = "ELEVATED"
+    risk = "ELEVATED"
 else:
-    risk_level = "NORMAL"
+    risk = "NORMAL"
 ```
 
-Python checks each condition **from top to bottom** and stops at the first `True`.
+Python checks each condition **in order**:
+1. Is amount > 50000? No → move on
+2. Is amount > 10000? Yes → set risk to "HIGH", **stop checking**
 
-## The Analogy: The Triage System
+Once a condition matches, Python skips all remaining `elif` and `else` blocks.
 
-In a hospital emergency room:
-1. **Critical** → Immediate attention (if heart attack)
-2. **Urgent** → See within 1 hour (elif broken bone)
-3. **Standard** → See when available (else minor issue)
+## The Precedence Principle
 
-FinGuard triages transactions the same way.
+Think of a hospital triage nurse. They check for the **most severe** condition first:
 
-## Order Matters!
+1. Is the patient dying? → Emergency room
+2. Is the patient bleeding? → Urgent care
+3. Is the patient in pain? → Standard care
+4. Otherwise → Waiting room
+
+The order matters! Watch what happens if we check in the wrong order:
 
 ```python
-# ❌ Wrong order — everything over 1000 triggers first!
+# ✗ WRONG ORDER
 if amount > 1000:
-    risk_level = "ELEVATED"
-elif amount > 10000:  # Never reached!
-    risk_level = "HIGH"
-
-# ✅ Correct — check the stricter condition first
-if amount > 10000:
-    risk_level = "HIGH"
-elif amount > 1000:
-    risk_level = "ELEVATED"
+    risk = "ELEVATED"    # $50,001 would match here and stop!
+elif amount > 10000:
+    risk = "HIGH"        # Never reached for amounts > 1000
+elif amount > 50000:
+    risk = "CRITICAL"    # Never reached!
 ```
 
-## The "Pro" Tip
+<div class="key-concept">
+<h4>🔑 Key Concept: Check Severe First</h4>
 
-> **Check the most specific/restrictive condition first.**
+When using `elif` chains, always order your conditions from **most specific/severe** to **least specific/safe**. Check for Critical before High before Normal.
+</div>
 
 ## Task
 
-Build a transaction risk classifier:
-- Over $50,000 → `"CRITICAL"` (requires board approval)
-- Over $10,000 → `"HIGH"` (requires compliance review)
-- Over $1,000 → `"ELEVATED"` (requires manager approval)
-- Otherwise → `"NORMAL"` (auto-approved)
+Implement the **Transaction Severity Ladder**:
+
+| Amount | Risk Level |
+|--------|------------|
+| Over $50,000 | `"CRITICAL"` |
+| Over $10,000 | `"HIGH"` |
+| Over $1,000 | `"ELEVATED"` |
+| Otherwise | `"NORMAL"` |
+
+The test transaction is $25,000 — what risk level should it get?
 
 <!-- SEPARATOR -->
 
@@ -74,11 +82,13 @@ from decimal import Decimal
 # Test transaction
 transaction_amount: Decimal = Decimal("25000.00")
 
-# Classify the risk level
+# Classify the risk level using if/elif/else
+# Remember: check the most severe condition first!
+risk_level: str = ""
 
 
 
-# Print the classification
+# Audit Trail
 print(f"Transaction: ${transaction_amount:,.2f}")
 print(f"Risk Level: {risk_level}")
 
@@ -86,5 +96,5 @@ print(f"Risk Level: {risk_level}")
 
 # validation_code
 from decimal import Decimal
-assert transaction_amount == Decimal("25000.00"), "transaction_amount should be Decimal('25000.00')"
-assert risk_level == "HIGH", "risk_level should be 'HIGH' for $25,000"
+assert transaction_amount == Decimal("25000.00"), "Don't modify transaction_amount"
+assert risk_level == "HIGH", "risk_level should be 'HIGH' for $25,000 (over 10k but not over 50k)"
