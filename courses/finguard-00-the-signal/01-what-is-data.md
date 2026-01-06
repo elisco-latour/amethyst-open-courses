@@ -7,13 +7,17 @@ xp: 100
 
 # The Raw Material
 
-Welcome to the FinGuard Residency.
+You now know the mission: build FinGuard, a fraud detection system that protects real money. But before you can detect fraud, you need to understand the raw material you'll be working with — **data**.
 
-Imagine you are standing in the vault of a bank. Around you are rows of safety deposit boxes. Each box has a **label** (a name) and **contents** (a value). This is how computers store information — and it is how you will think about data from now on.
+## The Bank Vault Analogy
+
+Imagine you're standing in a bank vault. Around you are rows of safety deposit boxes. Each box has a **label** (a name) and **contents** (a value). 
+
+This is exactly how computers store information. Every piece of data in FinGuard — account numbers, transaction amounts, timestamps — lives in a "box" with a label. In Python, we call these boxes **variables**.
 
 ## What is Data, Really?
 
-When a customer transfers $1,500, something real happens. A physical obligation is created — money must move from one account to another. Your job is to create a digital record of that obligation.
+When a customer transfers $1,500, something real happens. A physical obligation is created — money must move from one account to another. Your job as a FinGuard engineer is to create a digital record of that obligation.
 
 But here's the challenge: **computers don't understand money**. They only understand two states:
 - **High Voltage** = 1 (the switch is ON)
