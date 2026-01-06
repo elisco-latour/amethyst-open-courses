@@ -95,59 +95,14 @@ for v in values:
 # validation_code
 from decimal import Decimal
 
-# Test valid
-assert convert_to_decimal("10.5") == Decimal("10.5")
+# Test valid conversions
+assert convert_to_decimal("10.5") == Decimal("10.5"), "Should convert valid decimal"
+assert convert_to_decimal("100") == Decimal("100"), "Should convert integer string"
 
-# Test invalid
-assert convert_to_decimal("abc") is None
-assert convert_to_decimal("") is None
-
-print("Validation passed!")
-
-## The "Pro" Tip
-
-> **Catch specific exceptions, not all exceptions. `except Exception:` hides bugs.**
-
-```python
-# ❌ Too broad — hides bugs
-try:
-    process()
-except Exception:
-    pass
-
-# ✅ Specific — you know what went wrong
-try:
-    process()
-except ValueError as e:
-    log_error(f"Invalid value: {e}")
-except KeyError as e:
-    log_error(f"Missing key: {e}")
-```
-
-## Task
-
-Write code that safely parses transaction amounts from strings:
-- Handle `ValueError` if the string isn't a valid number
-- Track how many succeeded and how many failed
-
-<!-- SEPARATOR -->
-
-# seed_code
-from decimal import Decimal, InvalidOperation
-
-# Raw transaction data (some are invalid)
-raw_amounts: list[str] = [
-    "500.00",
-    "invalid",
-    "1500.50",
-    "N/A",
-    "2000.00",
-]
-
-parsed_amounts: list[Decimal] = []
-failed_count: int = 0
-
-# Parse each amount safely
+# Test invalid conversions
+assert convert_to_decimal("abc") is None, "Invalid string should return None"
+assert convert_to_decimal("") is None, "Empty string should return None"
+assert convert_to_decimal("12.34.56") is None, "Multiple decimals should return None"
 for raw in raw_amounts:
     pass  # Replace with your implementation
 

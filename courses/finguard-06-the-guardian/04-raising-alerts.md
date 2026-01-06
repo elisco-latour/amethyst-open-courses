@@ -82,110 +82,20 @@ except ValueError as e:
 # validation_code
 from decimal import Decimal
 
-# Test Negative
+# Test negative amount
 try:
     withdraw(Decimal("100"), Decimal("-1"))
     assert False, "Should have raised ValueError for negative amount"
-except ValueError:
-    pass
+except ValueError as e:
+    assert "positive" in str(e).lower(), "Error should mention 'positive'"
 
-# Test Overdraft
+# Test overdraft
 try:
     withdraw(Decimal("50"), Decimal("100"))
     assert False, "Should have raised ValueError for overdraft"
-except ValueError:
-    pass
-
-# Test Success
-assert withdraw(Decimal("100"), Decimal("40")) == Decimal("60")
-print("Validation passed!")
-    process()
 except ValueError as e:
-    logger.error(f"Validation failed: {e}")
-    raise  # Re-raise the same exception
-```
+    assert "insufficient" in str(e).lower() or "funds" in str(e).lower(), "Error should mention insufficient funds"
 
-## The "Pro" Tip
-
-> **Fail fast and fail loud. If input is invalid, raise immediately. Don't let bad data propagate through your system.**
-
-```python
-def process_payment(amount: Decimal) -> None:
-    # ✅ Validate immediately
-    if amount <= Decimal("0"):
-        raise ValueError("Amount must be positive")
-    
-    # If we get here, amount is valid
-    execute_payment(amount)
-```
-
-## Task
-
-Write a `validate_iban` function that raises `ValueError` with descriptive messages for:
-- Empty IBAN
-- IBAN shorter than 15 characters
-- IBAN longer than 34 characters
-- IBAN not starting with two letters
-
-Return `True` if valid.
-
-<!-- SEPARATOR -->
-
-# seed_code
-def validate_iban(iban: str) -> bool:
-    """
-    Validate an IBAN (International Bank Account Number).
-    
-    Raises:
-        ValueError: If IBAN is invalid
-    
-    Returns:
-        True if valid
-    """
-    pass  # Replace with your implementation
-
-
-# Test the validator
-test_ibans = [
-    "DE89370400440532013000",  # Valid German IBAN
-    "",                         # Empty
-    "DE1234567890",            # Too short
-    "12DE370400440532013000",  # Doesn't start with letters
-    "A" * 50,                   # Too long
-]
-
-print("=== IBAN Validation ===")
-for iban in test_ibans:
-    display_iban = iban if iban else "(empty)"
-    try:
-        validate_iban(iban)
-        print(f"✓ {display_iban}: Valid")
-    except ValueError as e:
-        print(f"✗ {display_iban}: {e}")
-
-<!-- SEPARATOR -->
-
-# validation_code
-# Valid IBAN should return True
-assert validate_iban("DE89370400440532013000") == True, "Valid IBAN should return True"
-
-# Empty IBAN
-try:
-    validate_iban("")
-    assert False, "Empty IBAN should raise ValueError"
-except ValueError as e:
-    assert "empty" in str(e).lower(), "Should mention empty"
-
-# Too short
-try:
-    validate_iban("DE1234567890")
-    assert False, "Short IBAN should raise ValueError"
-except ValueError as e:
-    assert "short" in str(e).lower() or "15" in str(e) or "length" in str(e).lower(), "Should mention length"
-
-# Doesn't start with letters
-try:
-    validate_iban("12DE370400440532013000")
-    assert False, "IBAN not starting with letters should raise ValueError"
-except ValueError as e:
-    assert "letter" in str(e).lower() or "start" in str(e).lower(), "Should mention letters"
+# Test successful withdrawal
+assert withdraw(Decimal("100"), Decimal("40")) == Decimal("60"), "100 - 40 should equal 60"
+assert withdraw(Decimal("500"), Decimal("500")) == Decimal("0"), "Exact balance withdrawal should work"
