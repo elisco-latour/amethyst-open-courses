@@ -70,47 +70,12 @@ print(f"Result: {valid} / {msg}")
 
 # validation_code
 from decimal import Decimal
-assert validate_transfer(Decimal("-10"), True) == (False, "Amount must be positive")
-assert validate_transfer(Decimal("2000"), False) == (False, "Verification required for amounts over $1000")
-assert validate_transfer(Decimal("2000"), True) == (True, "Approved")
-    """
-    pass  # Replace with your implementation
-
-
-# Test the validation
-print("=== Wire Transfer Validation ===")
-
-test_cases = [
-    (Decimal("500.00"), Decimal("1000.00"), "US"),
-    (Decimal("-100.00"), Decimal("1000.00"), "US"),
-    (Decimal("500.00"), Decimal("100.00"), "US"),
-    (Decimal("500.00"), Decimal("1000.00"), "NK"),
-]
-
-for amount, balance, country in test_cases:
-    is_valid, message = validate_wire_transfer(amount, balance, country)
-    status = "✓" if is_valid else "✗"
-    print(f"{status} ${amount} to {country} (balance: ${balance}): {message}")
-
-<!-- SEPARATOR -->
-
-# validation_code
-from decimal import Decimal
-# Valid transfer
-valid, msg = validate_wire_transfer(Decimal("500.00"), Decimal("1000.00"), "US")
-assert valid == True, "Valid transfer should pass"
-
-# Negative amount
-valid, msg = validate_wire_transfer(Decimal("-100.00"), Decimal("1000.00"), "US")
-assert valid == False, "Negative amount should fail"
-assert "positive" in msg.lower() or "amount" in msg.lower(), "Should mention amount issue"
-
-# Insufficient balance
-valid, msg = validate_wire_transfer(Decimal("500.00"), Decimal("100.00"), "US")
-assert valid == False, "Insufficient balance should fail"
-assert "balance" in msg.lower() or "insufficient" in msg.lower(), "Should mention balance issue"
-
-# Sanctioned country
-valid, msg = validate_wire_transfer(Decimal("500.00"), Decimal("1000.00"), "NK")
-assert valid == False, "Sanctioned country should fail"
-assert "sanction" in msg.lower() or "country" in msg.lower() or "blocked" in msg.lower(), "Should mention sanctions"
+# Negative/zero amount
+assert validate_transfer(Decimal("-10"), True) == (False, "Amount must be positive"), "Negative amount fails"
+assert validate_transfer(Decimal("0"), True) == (False, "Amount must be positive"), "Zero amount fails"
+# Over threshold, unverified
+assert validate_transfer(Decimal("2000"), False) == (False, "Verification required for amounts over $1000"), "Large unverified fails"
+# Over threshold, verified
+assert validate_transfer(Decimal("2000"), True) == (True, "Approved"), "Large verified passes"
+# Under threshold, unverified (should pass)
+assert validate_transfer(Decimal("500"), False) == (True, "Approved"), "Small unverified passes"

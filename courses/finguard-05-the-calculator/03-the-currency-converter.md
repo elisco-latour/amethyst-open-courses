@@ -77,27 +77,7 @@ print(format_currency(Decimal("1200.50"), marketing_mode=True)) # Marketing
 
 # validation_code
 from decimal import Decimal
-assert format_currency(Decimal("10.50"), "USD", False) == "$10.50"
-assert format_currency(Decimal("10.50"), "USD", True) == "$10"
-assert format_currency(Decimal("20.00"), "EUR") == "€20.00"
-
-# Test the function
-print("=== Transaction Amount Formatter ===")
-
-# Default: USD with symbol
-print(format_transaction_amount(Decimal("1234.56")))
-
-# EUR with symbol
-print(format_transaction_amount(Decimal("1234.56"), currency="EUR"))
-
-# USD without symbol
-print(format_transaction_amount(Decimal("1234.56"), show_symbol=False))
-
-<!-- SEPARATOR -->
-
-# validation_code
-from decimal import Decimal
-assert format_transaction_amount(Decimal("1234.56")) == "$1,234.56", "Default USD with symbol"
-assert format_transaction_amount(Decimal("1234.56"), currency="EUR") == "€1,234.56", "EUR with symbol"
-assert format_transaction_amount(Decimal("1234.56"), show_symbol=False) == "1,234.56 USD", "USD without symbol"
-assert format_transaction_amount(Decimal("1234.56"), currency="GBP", show_symbol=False) == "1,234.56 GBP", "GBP without symbol"
+assert format_currency(Decimal("10.50"), "USD", False) == "$10.50", "Standard format with cents"
+assert format_currency(Decimal("10.50"), "USD", True) == "$10", "Marketing mode removes cents"
+assert format_currency(Decimal("20.00"), "EUR") == "€20.00", "EUR uses Euro symbol"
+assert format_currency(Decimal("99.99"), "GBP", True) == "£99", "GBP marketing mode"

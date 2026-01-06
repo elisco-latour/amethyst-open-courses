@@ -96,11 +96,10 @@ for amount in test_amounts:
 
 # validation_code
 from decimal import Decimal
-assert calculate_wire_fee(Decimal("5000.00")) == Decimal("25.00"), "0.5% of 5000 is 25"
-assert calculate_wire_fee(Decimal("20000.00")) == Decimal("50.00"), "0.25% of 20000 is 50"
-
-# validation_code
-from decimal import Decimal
+# Edge case: exactly at threshold
+assert calculate_wire_fee(Decimal("10000.00")) == Decimal("50.00"), "10000 * 0.005 = 50.00 (at threshold, use 0.5%)"
+# Below threshold
 assert calculate_wire_fee(Decimal("5000.00")) == Decimal("25.00"), "5000 * 0.005 = 25.00"
-assert calculate_wire_fee(Decimal("10000.00")) == Decimal("50.00"), "10000 * 0.005 = 50.00"
+# Above threshold
+assert calculate_wire_fee(Decimal("20000.00")) == Decimal("50.00"), "20000 * 0.0025 = 50.00"
 assert calculate_wire_fee(Decimal("50000.00")) == Decimal("125.00"), "50000 * 0.0025 = 125.00"

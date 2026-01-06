@@ -72,51 +72,19 @@ def calculate_grand_total(items: list[Decimal]) -> Decimal:
 
 # validation_code
 from decimal import Decimal
+
+# Test individual engines
 items = [Decimal("100.00"), Decimal("200.00")]
-# Subtotal: 300
-# Tax (8%): 24 -> 324
-# Shipping: 10 -> 334
+
+# Subtotal: 100 + 200 = 300
+assert calculate_subtotal(items) == Decimal("300.00"), "Subtotal should sum all items"
+
+# Tax (8%): 300 * 0.08 = 24 -> 324
+assert apply_tax(Decimal("300.00")) == Decimal("324.00"), "Tax should add 8%"
+
+# Shipping: 324 + 10 = 334
+assert apply_shipping(Decimal("324.00")) == Decimal("334.00"), "Shipping should add $10"
+
+# Full pipeline: 300 -> 324 -> 334
 total = calculate_grand_total(items)
-assert total == Decimal("334.00")
-# Test the pipeline
-transactions: list[dict] = [
-    {"id": "TXN-001", "amount": Decimal("500.00")},
-    {"id": "TXN-002", "amount": Decimal("1500.00")},
-    {"id": "TXN-003", "amount": Decimal("1000.00")},
-]
-
-print("=== Batch Processing Pipeline ===")
-base = calculate_base_amount(transactions)
-print(f"Base Amount: ${base:,.2f}")
-
-with_fraud_fee = apply_fraud_fee(base)
-print(f"+ Fraud Fee (0.1%): ${with_fraud_fee:,.2f}")
-
-final = apply_processing_fee(with_fraud_fee)
-print(f"+ Processing Fee ($2.50): ${final:,.2f}")
-
-print(f"")
-print(f"Pipeline Result: ${process_batch(transactions):,.2f}")
-
-<!-- SEPARATOR -->
-
-# validation_code
-from decimal import Decimal
-
-transactions = [
-    {"id": "TXN-001", "amount": Decimal("500.00")},
-    {"id": "TXN-002", "amount": Decimal("1500.00")},
-    {"id": "TXN-003", "amount": Decimal("1000.00")},
-]
-
-# Base amount: 500 + 1500 + 1000 = 3000
-assert calculate_base_amount(transactions) == Decimal("3000.00"), "Base should be 3000.00"
-
-# Fraud fee: 3000 * 1.001 = 3003.00
-assert apply_fraud_fee(Decimal("3000.00")) == Decimal("3003.00"), "Fraud fee should add 0.1%"
-
-# Processing fee: 3003 + 2.50 = 3005.50
-assert apply_processing_fee(Decimal("3003.00")) == Decimal("3005.50"), "Processing fee should add $2.50"
-
-# Full pipeline: 3000 → 3003 → 3005.50
-assert process_batch(transactions) == Decimal("3005.50"), "Pipeline should return 3005.50"
+assert total == Decimal("334.00"), "Pipeline should chain: subtotal -> tax -> shipping"
