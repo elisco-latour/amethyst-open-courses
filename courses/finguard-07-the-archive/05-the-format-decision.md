@@ -58,95 +58,11 @@ print(get_format_extension("api"))    # .json
 <!-- SEPARATOR -->
 
 # validation_code
-assert get_format_extension("bulk") == ".csv"
-assert get_format_extension("api") == ".json"
-assert get_format_extension("report") == ".txt"
-assert get_format_extension("unknown") == ".dat"
-print("Validation passed!")
-    reader = csv.DictReader(StringIO(csv_content))
-    return list(reader)
-```
+# Test known use cases
+assert get_format_extension("bulk") == ".csv", "bulk data should use .csv"
+assert get_format_extension("api") == ".json", "API should use .json"
+assert get_format_extension("report") == ".txt", "reports should use .txt"
 
-## The "Pro" Tip
-
-> **Let the consumer choose the format. APIs often support `?format=json` or `?format=csv`.**
-
-## Task
-
-Build a multi-format exporter that can output transaction data in CSV, JSON, or plain text report format.
-
-<!-- SEPARATOR -->
-
-# seed_code
-import csv
-import json
-from decimal import Decimal
-from io import StringIO
-
-# Transaction data to export
-transactions: list[dict] = [
-    {"id": "TXN-001", "amount": "500.00", "type": "DEPOSIT"},
-    {"id": "TXN-002", "amount": "200.00", "type": "WITHDRAWAL"},
-    {"id": "TXN-003", "amount": "1500.00", "type": "TRANSFER"},
-]
-
-def export_csv(data: list[dict]) -> str:
-    """Export transactions to CSV format."""
-    pass  # Replace with your implementation
-
-
-def export_json(data: list[dict]) -> str:
-    """Export transactions to JSON format."""
-    pass  # Replace with your implementation
-
-
-def export_report(data: list[dict]) -> str:
-    """Export transactions to human-readable report."""
-    pass  # Replace with your implementation
-
-
-def export_transactions(data: list[dict], format: str) -> str:
-    """Export transactions in the requested format.
-    
-    Args:
-        data: List of transaction dicts
-        format: One of 'csv', 'json', 'report'
-    
-    Returns:
-        Formatted string
-    """
-    pass  # Replace with your implementation
-
-
-# Test all formats
-print("=== CSV Format ===")
-print(export_transactions(transactions, "csv"))
-
-print("\n=== JSON Format ===")
-print(export_transactions(transactions, "json"))
-
-print("\n=== Report Format ===")
-print(export_transactions(transactions, "report"))
-
-<!-- SEPARATOR -->
-
-# validation_code
-import json
-
-# Test CSV export
-csv_output = export_transactions(transactions, "csv")
-assert "id,amount,type" in csv_output or "id" in csv_output.split("\n")[0], "CSV should have header row"
-assert "TXN-001" in csv_output, "CSV should contain transaction ID"
-assert "500.00" in csv_output, "CSV should contain amount"
-
-# Test JSON export  
-json_output = export_transactions(transactions, "json")
-parsed = json.loads(json_output)
-assert isinstance(parsed, list), "JSON should be a list"
-assert len(parsed) == 3, "JSON should have 3 transactions"
-assert parsed[0]["id"] == "TXN-001", "JSON should preserve transaction ID"
-
-# Test report export
-report_output = export_transactions(transactions, "report")
-assert "TXN-001" in report_output or "3" in report_output, "Report should contain data"
-assert len(report_output) > 50, "Report should be human-readable (not just raw data)"
+# Test fallback
+assert get_format_extension("unknown") == ".dat", "unknown should default to .dat"
+assert get_format_extension("random") == ".dat", "any unknown should default to .dat"

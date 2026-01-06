@@ -81,6 +81,7 @@ import os
 test_file = "test_backup.txt"
 test_content = "Critical Data"
 
+# Cleanup before test
 if os.path.exists(test_file):
     os.remove(test_file)
 
@@ -90,63 +91,14 @@ assert os.path.exists(test_file), "File should be created"
 with open(test_file, "r") as f:
     assert f.read() == test_content, "Content should match"
 
+# Test overwrite behavior
+save_backup(test_file, "New Content")
+with open(test_file, "r") as f:
+    assert f.read() == "New Content", "Should overwrite existing content"
+
 # Cleanup
 os.remove(test_file)
 if os.path.exists("backup_001.txt"):
     os.remove("backup_001.txt")
-
-print("Validation passed!")
-
-## The Analogy: The Filing Cabinet
-
-- **Opening a file** = Opening a drawer
-- **Reading** = Looking at documents
-- **Writing** = Putting new documents in
-- **Closing** = Shutting the drawer
-
-If you leave the drawer open (forget to close), someone might trip over it (resource leak).
-
-## The "Pro" Tip
-
-> **Always use `with open()`. It guarantees the file closes even if an error occurs.**
-
-## Task
-
-Read the contents of a transaction log and count the lines.
-
-<!-- SEPARATOR -->
-
-# seed_code
-# Simulate a transaction log file
-log_content: str = """2025-01-15 09:00:00 TXN-001 DEPOSIT $500.00
-2025-01-15 09:15:00 TXN-002 WITHDRAWAL $200.00
-2025-01-15 10:30:00 TXN-003 TRANSFER $1500.00
-2025-01-15 11:00:00 TXN-004 DEPOSIT $3000.00
-2025-01-15 14:45:00 TXN-005 WITHDRAWAL $750.00"""
-
-# In a real app, you'd read from a file:
-# with open("transactions.log", "r") as file:
-#     log_content = file.read()
-
-# Process the log content
-lines: list[str] = log_content.strip().split("\n")
-line_count: int = 0
-deposit_count: int = 0
-withdrawal_count: int = 0
-
-# Count lines and transaction types
-for line in lines:
-    pass  # Replace with your implementation
-
-
-print("=== Transaction Log Analysis ===")
-print(f"Total entries: {line_count}")
-print(f"Deposits: {deposit_count}")
-print(f"Withdrawals: {withdrawal_count}")
-
-<!-- SEPARATOR -->
-
-# validation_code
-assert line_count == 5, "Should have 5 log entries"
 assert deposit_count == 2, "Should have 2 deposits"
 assert withdrawal_count == 2, "Should have 2 withdrawals"

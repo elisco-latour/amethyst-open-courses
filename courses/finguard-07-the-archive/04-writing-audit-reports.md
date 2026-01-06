@@ -72,6 +72,7 @@ with open("audit_trail.txt") as f:
 # validation_code
 import os
 
+# Cleanup before test
 if os.path.exists("audit_trail.txt"):
     os.remove("audit_trail.txt")
 
@@ -81,82 +82,16 @@ log_transaction("B", "2")
 with open("audit_trail.txt") as f:
     content = f.read()
 
-assert "A - 1\n" in content
-assert "B - 2\n" in content
-assert content.count("\n") >= 2
+assert "A - 1\n" in content, "First log entry should be formatted correctly"
+assert "B - 2\n" in content, "Second log entry should be formatted correctly"
+assert content.count("\n") >= 2, "Each entry should have a newline"
+
+# Test append behavior (not overwrite)
+log_transaction("C", "3")
+with open("audit_trail.txt") as f:
+    content = f.read()
+assert "A - 1" in content, "Append should preserve old entries"
+assert "C - 3" in content, "New entry should be added"
 
 # Cleanup
-if os.path.exists("audit_trail.txt"):
-    os.remove("audit_trail.txt")
-
-print("Validation passed!")
-=== FinGuard Daily Report ===
-Generated: {datetime.now().isoformat()}
-Total Transactions: {len(transactions)}
-Total Amount: ${total:,.2f}
-=============================
-"""
-    return report
-```
-
-## The "Pro" Tip
-
-> **Use multiline f-strings (`"""`) for report templates. They're readable and maintainable.**
-
-```python
-# ❌ Hard to read
-report = "=== Report ===\n" + "Date: " + date + "\n" + "Total: " + str(total)
-
-# ✅ Clear template
-report = f"""
-=== Report ===
-Date: {date}
-Total: {total}
-"""
-```
-
-## Task
-
-Generate a daily transaction report and store it in `report_content`.
-
-<!-- SEPARATOR -->
-
-# seed_code
-from decimal import Decimal
-
-# Daily transaction data
-transactions: list[dict] = [
-    {"id": "TXN-001", "amount": Decimal("500.00"), "type": "DEPOSIT"},
-    {"id": "TXN-002", "amount": Decimal("200.00"), "type": "WITHDRAWAL"},
-    {"id": "TXN-003", "amount": Decimal("1500.00"), "type": "TRANSFER"},
-    {"id": "TXN-004", "amount": Decimal("3000.00"), "type": "DEPOSIT"},
-]
-
-report_date: str = "2025-01-15"
-report_content: str = ""
-
-# Generate the report content
-# Include:
-# - Header with date
-# - Total transaction count
-# - Total amount
-# - Breakdown by type (count per type)
-# - List of all transactions
-
-
-
-# In real code, you'd write to a file:
-# with open(f"report_{report_date}.txt", "w") as file:
-#     file.write(report_content)
-
-print(report_content)
-
-<!-- SEPARATOR -->
-
-# validation_code
-assert "2025-01-15" in report_content, "Report should include the date"
-assert "4" in report_content, "Report should include transaction count (4)"
-assert "5200" in report_content or "5,200" in report_content, "Report should include total amount"
-assert "DEPOSIT" in report_content, "Report should mention DEPOSIT"
-assert "WITHDRAWAL" in report_content, "Report should mention WITHDRAWAL"
-assert "TXN-001" in report_content or "TXN-" in report_content, "Report should list transactions"
+os.remove("audit_trail.txt")
