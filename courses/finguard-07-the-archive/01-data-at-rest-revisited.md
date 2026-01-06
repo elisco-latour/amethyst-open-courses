@@ -1,53 +1,101 @@
 ---
 id: "finguard_07_01"
-title: "Data at Rest (Revisited)"
+title: "Persistence Layers"
 type: "coding"
 xp: 100
 ---
 
-# Data at Rest (Revisited)
+# Persistence Layers
 
-## The Bridge: From Memory to Disk
+So far, all your code has been transient. If the power goes out, your variables vanish.
+Financial records must be **Persistent**. They must survive a system reboot.
 
-In **The Signal**, you learned that data can be "at rest" (stored) or "in motion" (flowing). Now you'll work with **data at rest** directly — files on disk.
+## Volatility vs. Durability
 
-## Why Files Matter
+| Layer | Medium | Speed | Volatility | Use Case |
+|-------|--------|-------|------------|----------|
+| **Memory** | RAM | ⚡ 100ns | Volatile | Active computation |
+| **Storage** | SSD/HDD | 🐢 10ms | Durable | Long-term records |
 
-| Storage Type | Speed | Persistence | Use Case |
-|--------------|-------|-------------|----------|
-| Variables (RAM) | ⚡ Fastest | ❌ Lost on restart | Active computation |
-| Files (Disk) | 🐢 Slower | ✅ Survives restart | Long-term storage |
-| Database | 🚗 Medium | ✅ Survives restart | Structured queries |
+(Note: SSDs are 100,000x slower than RAM. That is why we load data into variables to process it, then save it back.)
 
-## Opening Files
+## The Bridge: `open()`
 
-Python uses the `open()` function:
-
-```python
-# Open for reading
-file = open("transactions.txt", "r")  # "r" = read mode
-content = file.read()
-file.close()  # Always close when done!
-```
-
-## The `with` Statement (Context Manager)
-
-**Never manually close files.** Use `with` — it closes automatically:
+To move data from Disk to RAM, we open a "stream".
 
 ```python
-with open("transactions.txt", "r") as file:
-    content = file.read()
-# File is automatically closed here
+# The Old Way (Manual Management) - DANGEROUS
+stream = open("ledger.txt", "r")
+data = stream.read()
+# If code crashes here, the file stays locked!
+stream.close()
 ```
 
-## File Modes
+## The Safe Way: Context Managers
 
-| Mode | Meaning |
-|------|---------|
-| `"r"` | Read (file must exist) |
-| `"w"` | Write (creates/overwrites) |
-| `"a"` | Append (adds to end) |
-| `"x"` | Exclusive create (fails if exists) |
+We use the `with` statement. It guarantees the file is closed, even if errors occur. It is the **Cleanup Protocol** (finally) built-in.
+
+```python
+# The Professional Way
+with open("ledger.txt", "r") as stream:
+    data = stream.read()
+    print("Reading data...")
+# Stream is auto-closed here, guaranteed.
+```
+
+## File Modes (The Access Control)
+
+| Mode | Name | Behavior |
+|------|------|----------|
+| `"r"` | Read | Errors if missing. Default. |
+| `"w"` | Write | **Destroys** existing content. Creates if new. |
+| `"a"` | Append | Adds to the end. Safe for logs. |
+
+## Task
+
+Create a `save_backup` function.
+1.  Accept `filename` and `content`.
+2.  Use `with open(..., "w")` to write the content.
+3.  Ensure it overwrites old backups.
+
+<!-- SEPARATOR -->
+
+# seed_code
+def save_backup(filename: str, content: str) -> None:
+    """
+    Saves content to a file, overwriting if exists.
+    """
+    # Use context manager
+    pass
+
+# Integration
+save_backup("backup_001.txt", "Account: 12345\nBalance: 500")
+with open("backup_001.txt", "r") as check:
+    print(check.read())
+
+<!-- SEPARATOR -->
+
+# validation_code
+import os
+
+test_file = "test_backup.txt"
+test_content = "Critical Data"
+
+if os.path.exists(test_file):
+    os.remove(test_file)
+
+save_backup(test_file, test_content)
+
+assert os.path.exists(test_file), "File should be created"
+with open(test_file, "r") as f:
+    assert f.read() == test_content, "Content should match"
+
+# Cleanup
+os.remove(test_file)
+if os.path.exists("backup_001.txt"):
+    os.remove("backup_001.txt")
+
+print("Validation passed!")
 
 ## The Analogy: The Filing Cabinet
 

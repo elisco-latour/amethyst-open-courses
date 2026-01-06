@@ -1,52 +1,85 @@
 ---
 id: "finguard_08_04"
-title: "Object Relationships"
+title: "Composition"
 type: "coding"
 xp: 100
 ---
 
-# Object Relationships
+# Composition
 
-A Customer **has** Accounts. An Account **has** Transactions. Objects relate to each other.
+Rarely does an object stand alone.
+A `Car` **has an** `Engine`.
+A `Bank` **has** `Customers`.
+A `Customer` **has** `Accounts`.
 
-## Composition: "Has-A" Relationship
+This "Has-A" relationship is called **Composition**.
+
+## Embedding Objects
+
+We store instances of other classes inside attributes (often Lists/Dicts).
 
 ```python
-from decimal import Decimal
-
 class Customer:
-    def __init__(self, customer_id: str, name: str):
-        self.customer_id: str = customer_id
-        self.name: str = name
-        self.accounts: list[BankAccount] = []  # Customer HAS accounts
-    
-    def open_account(self, account_id: str, initial_deposit: Decimal) -> BankAccount:
-        """Open a new account for this customer."""
-        account = BankAccount(account_id, initial_deposit)
-        self.accounts.append(account)
-        return account
-    
-    def get_total_balance(self) -> Decimal:
-        """Sum balances across all accounts."""
-        return sum(acc.balance for acc in self.accounts)
+    def __init__(self, name: str):
+        self.name = name
+        # The Customer "Has-Many" Accounts
+        self.accounts: list[BankAccount] = []
+
+    def open_account(self, initial_deposit: int):
+        # We create the dependent object HERE
+        new_acc = BankAccount(initial_deposit)
+        self.accounts.append(new_acc)
 ```
 
-## Using Relationships
+## Traversing the Graph
+
+We can access deep data by chaining dots.
 
 ```python
-# Create customer
-alice = Customer("CUST-001", "Alice")
+alice = Customer("Alice")
+alice.open_account(500)
 
-# Open accounts (composition)
-checking = alice.open_account("CHK-001", Decimal("1000.00"))
-savings = alice.open_account("SAV-001", Decimal("5000.00"))
-
-# Access through the relationship
-print(f"Total balance: ${alice.get_total_balance()}")  # $6000.00
-
-# Direct operations on accounts
-checking.deposit(Decimal("500.00"))
+# Access: Customer -> List -> Account -> Balance
+total = alice.accounts[0].balance
 ```
+
+## Task
+
+Create a `Portfolio` class.
+1. `__init__`: Initializes empty `holdings` (list).
+2. `add_holding(symbol: str, shares: int)`: Adds a dictionary (or object) to list.
+3. `total_shares()`: Sums up all shares.
+
+<!-- SEPARATOR -->
+
+# seed_code
+class Portfolio:
+    def __init__(self):
+        self.holdings = []
+
+    def add_holding(self, symbol: str, shares: int):
+        pass
+
+    def total_shares(self) -> int:
+        pass
+
+# Integration
+p = Portfolio()
+p.add_holding("AAPL", 10)
+p.add_holding("GOOG", 5)
+print(f"Total: {p.total_shares()}")
+
+<!-- SEPARATOR -->
+
+# validation_code
+p = Portfolio()
+assert p.total_shares() == 0
+
+p.add_holding("A", 10)
+p.add_holding("B", 20)
+assert p.total_shares() == 30
+
+print("Validation passed!")
 
 ## The Analogy: The Organization Chart
 

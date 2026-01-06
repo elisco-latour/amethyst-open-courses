@@ -1,53 +1,95 @@
 ---
 id: "finguard_07_04"
-title: "Writing Audit Reports"
+title: "The Audit Trail"
 type: "coding"
 xp: 100
 ---
 
-# Writing Audit Reports
+# The Audit Trail
 
-FinGuard generates audit reports that compliance teams can read. You'll write structured text files.
+In finance, you never delete. You only append.
+If a mistake is made, you add a correction transaction. The history must be immutable.
 
-## Writing Text Files
+Your system logs are the **Audit Trail**.
+
+## The Append Mode (`"a"`)
+
+Opening a file with `"w"` destroys it. Opening with `"a"` adds to the end.
 
 ```python
-# Write entire content at once
-with open("report.txt", "w") as file:
-    file.write("=== Daily Report ===\n")
-    file.write("Date: 2025-01-15\n")
-    file.write("Transactions: 150\n")
+# Danger: "w" wipes previous history
+with open("audit.log", "w") as f:
+    f.write("New Entry")  # Goodbye old logs!
 
-# Write line by line
-with open("report.txt", "w") as file:
-    lines = ["Line 1", "Line 2", "Line 3"]
-    for line in lines:
-        file.write(line + "\n")
-
-# Write all lines at once
-with open("report.txt", "w") as file:
-    lines = ["Line 1\n", "Line 2\n", "Line 3\n"]
-    file.writelines(lines)
+# Safe: "a" preserves history
+def log_event(message: str):
+    with open("audit.log", "a") as f:
+        # Always include newline \n
+        f.write(f"{message}\n")
 ```
 
-## Append Mode
+## Formatting Reports
+
+Reports are for humans. They need structure.
 
 ```python
-# Append to existing file (don't overwrite)
-with open("audit.log", "a") as file:
-    file.write("2025-01-15 10:30:00 - New entry\n")
+def generate_receipt(txn_id: str, amount: str) -> str:
+    # Multi-line strings (f-strings)
+    return f"""
+    --------------------------
+    RECEIPT: {txn_id}
+    AMOUNT : ${amount}
+    STATUS : CONFIRMED
+    --------------------------
+    """
 ```
 
-## Building Reports with f-strings
+## Task
 
-```python
-from decimal import Decimal
-from datetime import datetime
+Create a `log_transaction` function.
+1. Accepts `txn_id` and `status`.
+2. Appends a line to `audit_trail.txt`.
+3. Format: `[ID] - STATUS`.
+4. Ensure it has a newline at the end.
 
-def generate_report(transactions: list[dict]) -> str:
-    total = sum(t["amount"] for t in transactions)
-    
-    report = f"""
+<!-- SEPARATOR -->
+
+# seed_code
+def log_transaction(txn_id: str, status: str):
+    filename = "audit_trail.txt"
+    # Append to file
+    pass
+
+# Integration
+log_transaction("TX1", "INIT")
+log_transaction("TX1", "DONE")
+
+with open("audit_trail.txt") as f:
+    print(f.read())
+
+<!-- SEPARATOR -->
+
+# validation_code
+import os
+
+if os.path.exists("audit_trail.txt"):
+    os.remove("audit_trail.txt")
+
+log_transaction("A", "1")
+log_transaction("B", "2")
+
+with open("audit_trail.txt") as f:
+    content = f.read()
+
+assert "A - 1\n" in content
+assert "B - 2\n" in content
+assert content.count("\n") >= 2
+
+# Cleanup
+if os.path.exists("audit_trail.txt"):
+    os.remove("audit_trail.txt")
+
+print("Validation passed!")
 === FinGuard Daily Report ===
 Generated: {datetime.now().isoformat()}
 Total Transactions: {len(transactions)}

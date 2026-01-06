@@ -1,53 +1,104 @@
 ---
 id: "finguard_06_04"
-title: "Raising Alerts"
+title: "The Active Alarm"
 type: "coding"
 xp: 100
 ---
 
-# Raising Alerts
+# The Active Alarm
 
-Sometimes **you** need to signal an error. When validation fails, you raise an exception.
+So far, we've **caught** errors others made. Now, we **raise** our own.
+
+You are the guardian of your function. If someone passes you bad data, do not try to fix it. **Raise an alarm.**
 
 ## The `raise` Statement
+
+Use `raise` to stop execution immediately and signal a violation of the function's contract.
 
 ```python
 from decimal import Decimal
 
-def transfer(amount: Decimal, balance: Decimal) -> Decimal:
-    if amount <= Decimal("0"):
-        raise ValueError("Transfer amount must be positive")
+def deposit(balance: Decimal, amount: Decimal) -> Decimal:
+    if amount <= 0:
+        # Stop immediately! Do not process negative deposits.
+        raise ValueError(f"Deposit amount must be positive. Got: {amount}")
     
-    if amount > balance:
-        raise ValueError("Insufficient funds")
+    return balance + amount
+```
+
+## When to Raise?
+
+1.  **Contract Violations:** Arguments are the wrong type or range.
+2.  **Invalid State:** The system is in a state where the operation is impossible (e.g., "Account Closed").
+3.  **Fatal Errors:** Something happened that the current function cannot handle.
+
+## Re-Raising (The Observer)
+
+Sometimes you want to know an error happened, but you can't fix it. You catch it, log it, and throw it again.
+
+```python
+try:
+    process_payment()
+except ConnectionError as e:
+    logger.error(f"Payment failed: {e}")
+    raise  # 👈 Throws the exact same error up to the caller
+```
+
+## Task
+
+Implement `withdraw(balance: Decimal, amount: Decimal)`.
+1.  Check if `amount` is negative. If so, raise `ValueError("Amount must be positive")`.
+2.  Check if `amount` > `balance`. If so, raise `ValueError("Insufficient funds")`.
+3.  Return the new balance.
+
+<!-- SEPARATOR -->
+
+# seed_code
+from decimal import Decimal
+
+def withdraw(balance: Decimal, amount: Decimal) -> Decimal:
+    """
+    Withdraws amount from balance.
+    Raises ValueError on invalid inputs.
+    """
+    # 1. Validation Logic
     
+    # 2. Calculation
     return balance - amount
-```
 
-## When to Raise
-
-Raise an exception when:
-- A function receives invalid input
-- A business rule is violated
-- Something unexpected happens that the function can't handle
-
-## Catching Your Own Exceptions
-
-```python
+# Integration
 try:
-    new_balance = transfer(Decimal("-100"), Decimal("1000"))
+    withdraw(Decimal("100"), Decimal("200"))
 except ValueError as e:
-    print(f"Transfer failed: {e}")
-```
+    print(f"✅ Caught Expected Error: {e}")
 
-## The Analogy: The Fire Alarm
-
-If you see a fire, you **raise** the alarm. You don't try to put it out yourself if you can't — you alert others (the caller) to handle it.
-
-## Re-Raising After Logging
-
-```python
 try:
+    withdraw(Decimal("100"), Decimal("-50"))
+except ValueError as e:
+    print(f"✅ Caught Expected Error: {e}")
+
+<!-- SEPARATOR -->
+
+# validation_code
+from decimal import Decimal
+
+# Test Negative
+try:
+    withdraw(Decimal("100"), Decimal("-1"))
+    assert False, "Should have raised ValueError for negative amount"
+except ValueError:
+    pass
+
+# Test Overdraft
+try:
+    withdraw(Decimal("50"), Decimal("100"))
+    assert False, "Should have raised ValueError for overdraft"
+except ValueError:
+    pass
+
+# Test Success
+assert withdraw(Decimal("100"), Decimal("40")) == Decimal("60")
+print("Validation passed!")
     process()
 except ValueError as e:
     logger.error(f"Validation failed: {e}")

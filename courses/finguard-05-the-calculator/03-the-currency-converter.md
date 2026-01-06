@@ -1,103 +1,85 @@
 ---
 id: "finguard_05_03"
-title: "The Currency Converter"
+title: "Default Configurations"
 type: "coding"
 xp: 100
 ---
 
-# The Currency Converter
+# Default Configurations
 
-FinGuard handles international transactions. Functions can have **default values** for common cases.
+In complex systems, many parameters are often "standard." 
+If you send a payment, it's *usually* in **USD**.
+It's *usually* a **Standard** transfer (not Expedited).
 
-## Default Parameter Values
+We don't want to force the developer to type these "defaults" every single time.
 
-```python
-from decimal import Decimal
+## Default Arguments
 
-def convert_currency(
-    amount: Decimal,
-    from_currency: str = "USD",
-    to_currency: str = "EUR"
-) -> Decimal:
-    """Convert amount between currencies."""
-    # Simplified rates
-    rates: dict[str, Decimal] = {
-        "USD_EUR": Decimal("0.92"),
-        "USD_GBP": Decimal("0.79"),
-        "EUR_USD": Decimal("1.09"),
-    }
-    
-    rate_key = f"{from_currency}_{to_currency}"
-    rate = rates.get(rate_key, Decimal("1.00"))
-    
-    return amount * rate
-```
-
-## Using Default Values
+We can provide pre-filled values in the function definition.
 
 ```python
-# Use all defaults (USD → EUR)
-result = convert_currency(Decimal("100.00"))
-
-# Override only what you need
-result = convert_currency(Decimal("100.00"), to_currency="GBP")
-
-# Override everything
-result = convert_currency(
-    Decimal("100.00"),
-    from_currency="EUR",
-    to_currency="USD"
-)
+def create_account(owner: str, currency: str = "USD", type: str = "SAVINGS"):
+    print(f"Opening {type} account for {owner} in {currency}")
 ```
 
-## The Analogy: The Coffee Order
-
-At a coffee shop:
-- "Coffee" → You get the default (medium, black)
-- "Large coffee" → Override size, keep default flavor
-- "Large vanilla latte" → Override everything
-
-## The "Pro" Tip
-
-> **Put required parameters first, optional parameters with defaults last.**
+Now the API is flexible:
 
 ```python
-# ✅ Correct: required first, optional last
-def transfer(amount: Decimal, recipient: str, memo: str = "") -> bool:
-    ...
+# Minimalist Call (uses defaults)
+create_account("Alice") 
+# -> Opening SAVINGS account for Alice in USD
 
-# ❌ Wrong: default before required — SyntaxError!
-def transfer(memo: str = "", amount: Decimal, recipient: str) -> bool:
-    ...
+# Override Call
+create_account("Bob", type="CHECKING")
+# -> Opening CHECKING account for Bob in USD
 ```
+
+## Engineering Standard: Ordering
+
+> **Required First, Optional Last.**
+> You cannot put a parameter with a default value *before* one without it. Python will raise a SyntaxError.
 
 ## Task
 
-Write a `format_transaction_amount` function that:
-- Takes `amount: Decimal` (required)
-- Takes `currency: str` with default `"USD"`
-- Takes `show_symbol: bool` with default `True`
-- Returns formatted string like `"$1,234.56"` or `"1,234.56 USD"`
+Build a `format_currency` utility.
+
+1.  **Required:** `amount` (Decimal).
+2.  **Optional:** `currency` (str) defaulting to `"USD"`.
+3.  **Optional:** `marketing_mode` (bool) defaulting to `False`.
+
+Logic:
+*   If `marketing_mode` is True, remove the cents (e.g., "$50" instead of "$50.00") and return int-style string.
+*   Otherwise, return standard 2-decimal precision (e.g., "$50.00").
+*   Prepend the currency symbol (assume a simple map for USD/EUR/GBP).
 
 <!-- SEPARATOR -->
 
 # seed_code
 from decimal import Decimal
 
-def format_transaction_amount(
+def format_currency(
     amount: Decimal,
     currency: str = "USD",
-    show_symbol: bool = True
+    marketing_mode: bool = False
 ) -> str:
-    """Format transaction amount with currency."""
-    symbols: dict[str, str] = {
-        "USD": "$",
-        "EUR": "€",
-        "GBP": "£",
-    }
+    """Formats decimal amounts into currency strings."""
+    symbol_map = {"USD": "$", "EUR": "€", "GBP": "£"}
+    symbol = symbol_map.get(currency, "$")
     
-    pass  # Replace with your implementation
+    # Implementation
+    pass
 
+# Test
+print(format_currency(Decimal("1200.50"))) # Default
+print(format_currency(Decimal("1200.50"), marketing_mode=True)) # Marketing
+
+<!-- SEPARATOR -->
+
+# validation_code
+from decimal import Decimal
+assert format_currency(Decimal("10.50"), "USD", False) == "$10.50"
+assert format_currency(Decimal("10.50"), "USD", True) == "$10"
+assert format_currency(Decimal("20.00"), "EUR") == "€20.00"
 
 # Test the function
 print("=== Transaction Amount Formatter ===")

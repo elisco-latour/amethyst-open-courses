@@ -1,53 +1,108 @@
 ---
 id: "finguard_06_01"
-title: "When Things Go Wrong"
+title: "System Resilience"
 type: "coding"
 xp: 100
 ---
 
-# When Things Go Wrong
+# System Resilience
 
-In banking, errors can mean **lost money**, **compliance violations**, or **system outages**. Your code must handle failures gracefully.
+In critical infrastructure (banking, healthcare, aerospace), **failure is an option**, but **catastrophe is not**.
 
-## The Problem: Unhandled Errors
+Your system **will** encounter invalid data, network timeouts, and disk errors. A fragile system crashes. A resilient system **handles** the fault and recovers (or fails safely).
+
+## The Crash vs. The Catch
+
+When Python sees an error, it raises an **Exception**. If unhandled, the program crashes.
 
 ```python
-amount: str = "not a number"
-value = int(amount)  # 💥 ValueError: invalid literal for int()
-print("This line never runs")
+# ❌ Fragile: One bad value kills the entire process
+amount = int("invalid")  # CRASH!
+print("Transaction saved")  # Never runs
 ```
 
-When Python encounters an error, it **stops immediately**. In a banking system, this could leave a transaction half-complete.
+## The Safety Mechanism: `try/except`
 
-## The Solution: Try/Except
+We wrap dangerous code in a `try` block. If it fails, the `except` block catches the specific error.
 
 ```python
-amount: str = "not a number"
+def parse_amount(value_str: str) -> int:
+    try:
+        # 1. Attempt the risky operation
+        return int(value_str)
+    except ValueError:
+        # 2. Handle the specific failure
+        # Log it, return default, or re-raise
+        print(f"⚠️ Error: '{value_str}' is not a valid integer")
+        return 0  # Fallback value
 
+# The system stays alive
+print(parse_amount("100"))      # -> 100
+print(parse_amount("invalid"))  # -> 0 (No crash)
+```
+
+## Engineering Mindset: EAFP
+
+Python engineers follow **EAFP**: "It's Easier to Ask Forgiveness than Permission."
+
+**LBYL (Look Before You Leap):**
+```python
+if value.isdigit():
+    num = int(value)
+```
+
+**EAFP (Pythonic):**
+```python
 try:
-    value = int(amount)
-    print(f"Value: {value}")
+    num = int(value)
 except ValueError:
-    print("Invalid amount — could not convert to integer")
-
-print("Program continues safely")
+    handle_error()
 ```
+EAFP is often faster and handles edge cases (what if the string is empty?) more robustly.
 
-## The Analogy: The Safety Net
+## Task
 
-A trapeze artist doesn't fall to their death if they miss a catch — there's a **safety net**.
+Create a resilient `convert_to_decimal` function.
+1.  Accept a string input.
+2.  Use `try/except` to catch `InvalidOperation` (from `decimal` module).
+3.  Return `None` if conversion fails.
 
-`try/except` is your safety net. The program doesn't crash; it **catches** the error and continues.
+<!-- SEPARATOR -->
 
-## Common Error Types
+# seed_code
+from decimal import Decimal, InvalidOperation
+from typing import Optional
 
-| Error | When It Happens |
-|-------|-----------------|
-| `ValueError` | Wrong value type ("abc" → int) |
-| `KeyError` | Dict key doesn't exist |
-| `TypeError` | Wrong type for operation |
-| `ZeroDivisionError` | Division by zero |
-| `IndexError` | List index out of range |
+def convert_to_decimal(value: str) -> Optional[Decimal]:
+    """
+    Safely converts a string to Decimal.
+    Returns None if conversion fails.
+    """
+    # Implementation
+    pass
+
+# Integration
+values = ["100.50", "invalid", "500.00"]
+for v in values:
+    result = convert_to_decimal(v)
+    if result:
+        print(f"✅ Processed: {result}")
+    else:
+        print(f"❌ Failed: {v}")
+
+<!-- SEPARATOR -->
+
+# validation_code
+from decimal import Decimal
+
+# Test valid
+assert convert_to_decimal("10.5") == Decimal("10.5")
+
+# Test invalid
+assert convert_to_decimal("abc") is None
+assert convert_to_decimal("") is None
+
+print("Validation passed!")
 
 ## The "Pro" Tip
 

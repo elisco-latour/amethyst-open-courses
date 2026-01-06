@@ -1,53 +1,98 @@
 ---
 id: "finguard_08_03"
-title: "The Transaction Entity"
+title: "Domain Logic"
 type: "coding"
 xp: 100
 ---
 
-# The Transaction Entity
+# Domain Logic
 
-## The Bridge: Data Entities
+A generic `dict` lets you set `transaction["status"] = "banana"`.
+A Domain Entity prevents this.
 
-In **The Signal**, you learned about data having **meaning**. A Transaction isn't just data — it's a business **entity** with rules.
+**Domain Logic** means your code represents the business rules, not just the data structure.
 
-- A transaction amount cannot be negative
-- A transaction must have a timestamp
-- A transaction status follows a lifecycle: pending → completed/failed
+## Enforcing Invariants
 
-## Business Logic in Classes
+An **Invariant** is a truth that must always be upheld.
+Example: "A transaction amount cannot be negative."
+
+We enforce invariants in the **Constructor** and **Methods**.
 
 ```python
+class Transaction:
+    def __init__(self, amount: int):
+        # 🛡️ Guard Clause (Invariant)
+        if amount <= 0:
+            raise ValueError("Amount must be positive")
+        
+        self.amount = amount
+        self.status = "pending"
+
+    def complete(self):
+        # 🛡️ State Validation
+        if self.status != "pending":
+            raise ValueError(f"Cannot complete a {self.status} transaction")
+        
+        self.status = "completed"
+```
+
+Now, it is **impossible** to create an invalid transaction or break the lifecycle. The Class defends itself.
+
+## Task
+
+Create `Transaction` class.
+1. `__init__`: Accepts `id` and `amount`. Validator: `amount` must be positive.
+2. `process()`: Checks if status is "pending". If so, sets to "processed". Else raises `ValueError`.
+3. Initial status is "pending".
+
+<!-- SEPARATOR -->
+
+# seed_code
 from decimal import Decimal
-from datetime import datetime
 
 class Transaction:
     def __init__(self, id: str, amount: Decimal):
-        if amount <= Decimal("0"):
-            raise ValueError("Transaction amount must be positive")
-        
-        self.id: str = id
-        self.amount: Decimal = amount
-        self.status: str = "pending"
-        self.created_at: datetime = datetime.now()
-    
-    def complete(self) -> None:
-        """Mark transaction as completed."""
-        if self.status != "pending":
-            raise ValueError(f"Cannot complete {self.status} transaction")
-        self.status = "completed"
-    
-    def fail(self, reason: str) -> None:
-        """Mark transaction as failed with reason."""
-        if self.status != "pending":
-            raise ValueError(f"Cannot fail {self.status} transaction")
-        self.status = "failed"
-        self.failure_reason = reason
-```
+        self.id = id
+        self.status = "pending"
+        # validation logic here
+        self.amount = amount
 
-## State Transitions
+    def process(self):
+        # transition logic here
+        pass
 
-```
+# Integration
+t = Transaction("T1", Decimal("100"))
+t.process()
+print(t.status)
+
+<!-- SEPARATOR -->
+
+# validation_code
+from decimal import Decimal
+
+# Test Negative
+try:
+    Transaction("T1", Decimal("-10"))
+    assert False, "Should raise ValueError for negative"
+except ValueError:
+    pass
+
+# Test Transition
+t = Transaction("T1", Decimal("10"))
+assert t.status == "pending"
+t.process()
+assert t.status == "processed"
+
+# Test Double Process
+try:
+    t.process()
+    assert False, "Should raise error on double process"
+except ValueError:
+    pass
+
+print("Validation passed!")
         ┌──────────┐
         │ pending  │
         └────┬─────┘

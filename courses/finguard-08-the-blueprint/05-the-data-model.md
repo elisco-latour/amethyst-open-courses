@@ -1,53 +1,93 @@
 ---
 id: "finguard_08_05"
-title: "The Data Model"
+title: "System Architecture"
 type: "coding"
 xp: 100
 ---
 
-# The Data Model
+# System Architecture
 
-Real systems have interconnected entities. Let's model FinGuard's core domain.
+We have built the bricks:
+1. `Transaction` (Unit of work)
+2. `Account` (Container of value)
+3. `Customer` (Owner of accounts)
 
-## FinGuard Domain Model
+Now we build the **System**.
+
+## The Hierarchy
 
 ```
-┌──────────┐     ┌─────────────┐     ┌─────────────┐
-│ Customer │────▶│ BankAccount │────▶│ Transaction │
-└──────────┘     └─────────────┘     └─────────────┘
-                        │                    │
-                        │                    ▼
-                        │            ┌─────────────┐
-                        └───────────▶│ FraudAlert  │
-                                     └─────────────┘
+Bank (System)
+ └── Customer (Entity)
+      └── Account (Entity)
+           └── Transaction (Entity)
 ```
 
-- Customer has Accounts
-- Account has Transactions
-- Transaction may trigger FraudAlert
+## The Single Source of Truth
 
-## Putting It Together
+The `Bank` object holds the registry of all customers. This is the root of our object graph.
 
 ```python
-from decimal import Decimal
-from datetime import datetime
-
-# Simplified integrated model
-class FinguardSystem:
+class Bank:
     def __init__(self):
         self.customers: dict[str, Customer] = {}
-        self.alerts: list[FraudAlert] = []
+
+    def onboard_customer(self, name: str) -> Customer:
+        cust = Customer(name)
+        self.customers[name] = cust
+        return cust
+```
+
+## Task
+
+Assemble the system.
+1.  Initialize `Bank`.
+2.  Onboard customer "Alice".
+3.  Alice opens an account with $1000.
+4.  Print Alice's total balance.
+
+This is the Capstone of Level 1 (The Foundation).
+
+<!-- SEPARATOR -->
+
+# seed_code
+# Assume previous classes exist or mock them
+class Account:
+    def __init__(self, amoun: int):
+        self.balance = amoun
+
+class Customer:
+    def __init__(self, name: str):
+        self.name = name
+        self.accounts = []
     
-    def register_customer(self, customer_id: str, name: str) -> Customer:
-        customer = Customer(customer_id, name)
-        self.customers[customer_id] = customer
-        return customer
-    
-    def check_fraud(self, transaction: Transaction) -> FraudAlert | None:
-        if transaction.amount > Decimal("10000"):
-            alert = FraudAlert(
-                f"ALERT-{len(self.alerts)+1}",
-                transaction.id,
+    def open_account(self, amount: int):
+        self.accounts.append(Account(amount))
+
+class Bank:
+    def __init__(self):
+        self.customers = {}
+
+    def onboard(self, name: str) -> Customer:
+        # Create, store, return
+        pass
+
+# Integration
+bank = Bank()
+alice = bank.onboard("Alice")
+alice.open_account(1000)
+print(f"Alice Balance: {alice.accounts[0].balance}")
+
+<!-- SEPARATOR -->
+
+# validation_code
+bank = Bank()
+bob = bank.onboard("Bob")
+assert isinstance(bob, Customer)
+assert "Bob" in bank.customers
+bob.open_account(500)
+assert bob.accounts[0].balance == 500
+print("Validation passed!")
                 "HIGH"
             )
             self.alerts.append(alert)

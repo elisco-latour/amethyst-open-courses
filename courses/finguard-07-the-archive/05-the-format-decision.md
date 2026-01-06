@@ -1,53 +1,68 @@
 ---
 id: "finguard_07_05"
-title: "The Format Decision"
+title: "Format Strategy"
 type: "coding"
 xp: 100
 ---
 
-# The Format Decision
+# Format Strategy
 
-Real systems use multiple formats. Knowing **when** to use each is as important as knowing **how**.
+An architect doesn't use concrete for windows. An engineer doesn't use CSV for configs.
 
-## Format Selection Guide
+Choosing the format is the first step of **System Design**.
 
-| Scenario | Best Format | Why |
-|----------|-------------|-----|
-| Spreadsheet export | CSV | Excel-compatible |
-| API communication | JSON | Nested data, types |
-| Configuration files | JSON/YAML | Human-editable |
-| Log files | Plain text | Append-friendly |
-| Batch data exchange | CSV | Simple, universal |
-| Report for humans | Plain text | Readable |
+## The Decision Matrix
 
-## The Bridge: Data Lifecycle
+| Requirement | Format | Why? |
+|-------------|--------|------|
+| **bulk_data_ingest** | `CSV` | Compact, streamable, readable by Excel. |
+| **api_response** | `JSON` | Structured, nested, web-standard. |
+| **human_report** | `TXT` | Formatting freedom, no strict syntax. |
+| **config_file** | `YAML/JSON` | Easy to edit, hierarchical. |
 
-```
-Data Entry → [JSON API] → Processing → [CSV Export] → Archive → [Text Logs]
-```
+## The Data Pipeline
 
-Different stages of the data lifecycle need different formats.
+FinGuard data flows through transformations:
 
-## Converting Between Formats
+1.  **Ingest**: Read millions of rows from `CSV`.
+2.  **Process**: Convert to Python Objects (`dicts/classes`).
+3.  **Persist**: Save state to `Database` (or JSON for now).
+4.  **Report**: Generate `TXT` summary for humans.
 
-```python
-import csv
-import json
-from io import StringIO
+## Task
 
-# JSON → CSV (flattening nested data)
-def json_to_csv(json_data: list[dict]) -> str:
-    if not json_data:
-        return ""
-    
-    output = StringIO()
-    writer = csv.DictWriter(output, fieldnames=json_data[0].keys())
-    writer.writeheader()
-    writer.writerows(json_data)
-    return output.getvalue()
+Complete the `get_format_extension` strategy function.
+1.  Input: `use_case` (string).
+2.  Logic:
+    - "bulk" -> ".csv"
+    - "api" -> ".json"
+    - "report" -> ".txt"
+    - Anything else -> ".dat"
+3.  Return the extension string.
 
-# CSV → JSON
-def csv_to_json(csv_content: str) -> list[dict]:
+<!-- SEPARATOR -->
+
+# seed_code
+def get_format_extension(use_case: str) -> str:
+    """
+    Returns the file extension for a given use case.
+    Strategies: bulk, api, report.
+    """
+    # Use match/case or if/elif
+    pass
+
+# Integration
+print(get_format_extension("bulk"))   # .csv
+print(get_format_extension("api"))    # .json
+
+<!-- SEPARATOR -->
+
+# validation_code
+assert get_format_extension("bulk") == ".csv"
+assert get_format_extension("api") == ".json"
+assert get_format_extension("report") == ".txt"
+assert get_format_extension("unknown") == ".dat"
+print("Validation passed!")
     reader = csv.DictReader(StringIO(csv_content))
     return list(reader)
 ```

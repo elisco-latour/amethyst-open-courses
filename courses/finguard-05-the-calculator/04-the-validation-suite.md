@@ -1,103 +1,78 @@
 ---
 id: "finguard_05_04"
-title: "The Validation Suite"
+title: "The Inspector"
 type: "coding"
 xp: 100
 ---
 
-# The Validation Suite
+# The Inspector
 
-Functions can return **multiple values** or **different types** based on the situation.
+In banking, "I don't know" is not an acceptable answer.
+A validation check shouldn't just crash; it should report a detailed **Inspection Result**.
 
-## Returning Multiple Values (Tuples)
+Did the check pass? Variable `True/False`.
+If not, why? Variable `Reason`.
+
+## The Tuple Pack
+
+Python allows functions to return multiple values packed into a **Tuple**.
 
 ```python
-from decimal import Decimal
-
-def validate_transaction(amount: Decimal) -> tuple[bool, str]:
-    """Validate a transaction amount.
+def check_balance(balance: Decimal, amount: Decimal) -> tuple[bool, str]:
+    if amount > balance:
+        return (False, "Insufficient Funds")
+    if amount < 0:
+        return (False, "Negative Amount Prohibited")
     
-    Returns:
-        (is_valid, message) tuple
-    """
-    if amount <= Decimal("0"):
-        return (False, "Amount must be positive")
-    if amount > Decimal("1000000"):
-        return (False, "Amount exceeds daily limit")
-    return (True, "Transaction valid")
+    return (True, "Authorized")
 ```
 
-## Using Multiple Return Values
+## Unpacking The Result
+
+The caller receives this tuple and "unpacks" it immediately.
 
 ```python
-# Unpack into separate variables
-is_valid, message = validate_transaction(Decimal("500.00"))
+is_authorized, reason = check_balance(my_balance, my_request)
 
-if is_valid:
-    process_transaction()
-else:
-    show_error(message)
+if not is_authorized:
+    print(f"Declined: {reason}")
 ```
 
-## The Analogy: The Security Checkpoint
-
-Airport security doesn't just say "pass" or "fail". They give you:
-1. The **result**: Cleared / Not Cleared
-2. The **reason**: "All clear" or "Please remove laptop from bag"
-
-## Returning `None` for "No Result"
-
-```python
-def find_transaction(txn_id: str) -> dict | None:
-    """Find a transaction by ID.
-    
-    Returns:
-        Transaction dict if found, None if not found.
-    """
-    transactions = {"TXN-001": {"amount": Decimal("500")}}
-    
-    return transactions.get(txn_id)  # Returns None if not found
-```
-
-## The "Pro" Tip
-
-> **Use `tuple[bool, str]` for validation functions. The boolean is for code, the message is for humans.**
-
-```python
-# ✅ Clear contract
-def validate(x) -> tuple[bool, str]:
-    if not valid:
-        return (False, "Human-readable error")
-    return (True, "Success")
-```
+This pattern — `(success_flag, message_payload)` — is a cornerstone of defensive engineering.
 
 ## Task
 
-Write a `validate_wire_transfer` function that:
-- Takes `amount: Decimal`, `sender_balance: Decimal`, `recipient_country: str`
-- Returns `tuple[bool, str]` (is_valid, message)
-- Validates:
-  1. Amount must be positive
-  2. Sender must have sufficient balance
-  3. Recipient country must not be in sanctions list: `["NK", "IR", "SY"]`
+Write a `validate_transfer` function.
+
+**Inputs:** `amount` (Decimal), `is_verified` (bool).
+
+**Logic:**
+1.  If `amount` is <= 0: Fail with "Amount must be positive".
+2.  If `amount` > 1000 and user is not verified: Fail with "Verification required for amounts over $1000".
+3.  Otherwise: Succeed with "Approved".
+
+**Output:** Return `tuple[bool, str]`.
 
 <!-- SEPARATOR -->
 
 # seed_code
 from decimal import Decimal
 
-SANCTIONED_COUNTRIES: list[str] = ["NK", "IR", "SY"]
+def validate_transfer(amount: Decimal, is_verified: bool) -> tuple[bool, str]:
+    """Inspects transfer for validity."""
+    pass
 
-def validate_wire_transfer(
-    amount: Decimal,
-    sender_balance: Decimal,
-    recipient_country: str
-) -> tuple[bool, str]:
-    """
-    Validate a wire transfer.
-    
-    Returns:
-        (is_valid, message) tuple
+# Test
+valid, msg = validate_transfer(Decimal("1500.00"), False)
+print(f"Result: {valid} / {msg}")
+
+<!-- SEPARATOR -->
+
+# validation_code
+from decimal import Decimal
+assert validate_transfer(Decimal("-10"), True) == (False, "Amount must be positive")
+assert validate_transfer(Decimal("2000"), False) == (False, "Verification required for amounts over $1000")
+assert validate_transfer(Decimal("2000"), True) == (True, "Approved")
     """
     pass  # Replace with your implementation
 

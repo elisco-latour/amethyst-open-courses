@@ -1,53 +1,81 @@
 ---
 id: "finguard_07_03"
-title: "The JSON Format"
+title: "Structured Data Exchange"
 type: "coding"
 xp: 100
 ---
 
-# The JSON Format
+# Structured Data Exchange
 
-**JSON (JavaScript Object Notation)** is the format of APIs. When systems talk to each other, they usually speak JSON.
+CSV is flat. Reality is nested.
+A Customer has Accounts. Accounts have Transactions. This hierarchy requires a **Structured Format**.
 
-## JSON vs CSV
+**JSON (JavaScript Object Notation)** is the standard for APIs (Modern Banking).
 
-| Feature | CSV | JSON |
-|---------|-----|------|
-| Structure | Flat tables | Nested hierarchies |
-| Types | Everything is string | Strings, numbers, booleans, null |
-| Readability | Spreadsheet-like | Document-like |
-| Use case | Data export/import | APIs, configs |
+## The Concept: Serialization
 
-## JSON Structure
+**Serialization** is converting a live Python object (RAM) into a string (Text) that can be sent over a wire or saved to disk.
+**Deserialization** is the reverse.
 
-```json
-{
-    "transaction_id": "TXN-001",
-    "amount": 500.00,
-    "is_verified": true,
-    "tags": ["urgent", "international"],
-    "metadata": {
-        "source": "mobile_app",
-        "device_id": "iPhone-123"
-    }
-}
-```
+Memory (Dict) ➡️ `json.dumps()` ➡️ String (JSON)
+String (JSON) ➡️ `json.loads()` ➡️ Memory (Dict)
 
-## Python's `json` Module
+## Handling Types
+
+JSON supports: Strings, Numbers, Booleans, Lists, Null (`None`).
+It does **NOT** support `Decimal` or `datetime`. You must convert them manually.
 
 ```python
 import json
+from decimal import Decimal
 
-# Parse JSON string → Python dict
-data = json.loads('{"name": "Alice", "balance": 1000}')
-print(data["name"])  # "Alice"
+data = {
+    "amount": float(Decimal("10.50")),  # Convert to float (RISKY but required)
+    "is_active": True
+}
+payload = json.dumps(data)
+```
 
-# Python dict → JSON string
-output = json.dumps({"name": "Bob", "balance": 2000})
-print(output)  # '{"name": "Bob", "balance": 2000}'
+## Task
 
-# Reading JSON file
-with open("data.json", "r") as file:
+Create a `serialize_transaction` function.
+1.  Accept a dict which `amount` as a `Decimal`.
+2.  Convert `Decimal` to `str` (Safe) or `float` (Standard). Let's use `str` to preserve precision for the string payload.
+3.  Return the JSON string.
+
+<!-- SEPARATOR -->
+
+# seed_code
+import json
+from decimal import Decimal
+
+def serialize_transaction(txn: dict) -> str:
+    """
+    Converts txn dict to JSON string.
+    Converts Decimal values to string to preserve precision.
+    """
+    # 1. Prepare copy to avoid mutating input
+    # 2. Convert Decimal to str
+    # 3. json.dumps
+    pass
+
+# Integration
+t = {"id": 1, "amt": Decimal("100.00")}
+print(serialize_transaction(t))
+
+<!-- SEPARATOR -->
+
+# validation_code
+import json
+from decimal import Decimal
+
+t = {"id": 99, "val": Decimal("123.45")}
+res = serialize_transaction(t)
+parsed = json.loads(res)
+
+assert parsed["val"] == "123.45"
+assert parsed["id"] == 99
+print("Validation passed!")
     data = json.load(file)  # Note: load() not loads()
 
 # Writing JSON file

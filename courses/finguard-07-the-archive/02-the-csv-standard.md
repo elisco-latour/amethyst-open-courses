@@ -1,53 +1,92 @@
 ---
 id: "finguard_07_02"
-title: "The CSV Standard"
+title: "Flat-File Ingestion"
 type: "coding"
 xp: 100
 ---
 
-# The CSV Standard
+# Flat-File Ingestion
 
-**CSV (Comma-Separated Values)** is the lingua franca of data exchange. Every bank, every system, every spreadsheet speaks CSV.
+In high-tech banking, we still rely on low-tech files. **CSV (Comma-Separated Values)** is the industry standard for bulk data transfer.
 
-## Why CSV?
+Why? Because it's a **Flat File**. No hidden formatting, no specialized software required.
 
-- **Universal**: Excel, databases, Python — everyone reads CSV
-- **Human-readable**: You can open it in a text editor
-- **Simple**: Just text with commas between values
-
-## CSV Structure
+## The Structure
 
 ```csv
-transaction_id,date,amount,type
-TXN-001,2025-01-15,500.00,DEPOSIT
-TXN-002,2025-01-15,200.00,WITHDRAWAL
-TXN-003,2025-01-15,1500.00,TRANSFER
+id,amount,currency
+TX001,500.00,USD
+TX002,120.50,EUR
 ```
 
-First line = **headers** (column names)
-Following lines = **data rows**
+## Parsing: The Manual vs. The Tool
 
-## Python's `csv` Module
+You *could* `.split(",")` manually. Don't. You will fail on `"Smith, John"`.
+Use Python's `csv` module.
+
+## The `DictReader` Pattern
+
+Engineers prefer **named access** over positional access.
 
 ```python
 import csv
 
-# Reading CSV
-with open("transactions.csv", "r") as file:
-    reader = csv.DictReader(file)
-    for row in reader:
-        print(row["transaction_id"], row["amount"])
+# ❌ Risky: accessing by index [1]
+# If columns shift, this breaks.
+for row in csv.reader(f):
+    print(row[1])
 
-# Writing CSV
-with open("output.csv", "w", newline="") as file:
-    fieldnames = ["id", "amount"]
-    writer = csv.DictWriter(file, fieldnames=fieldnames)
-    
-    writer.writeheader()
-    writer.writerow({"id": "TXN-001", "amount": "500.00"})
+# ✅ Robust: accessing by name "amount"
+# Order doesn't matter.
+with open("data.csv") as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        print(row["amount"])
 ```
 
-## The `newline=""` Mystery
+## Task
+
+Ingest a partial CSV string and calculate the total volume.
+1.  Use `io.StringIO` to mimic a file (provided).
+2.  Use `csv.DictReader` to parse it.
+3.  Sum the `volume` column (convert to int).
+
+<!-- SEPARATOR -->
+
+# seed_code
+import csv
+from io import StringIO
+
+csv_data = """ticker,volume,price
+AAPL,100,150.00
+GOOGL,50,2800.00
+MSFT,75,300.00"""
+
+def calculate_total_volume(csv_text: str) -> int:
+    """
+    Parses CSV text and returns sum of 'volume' column.
+    """
+    val_file = StringIO(csv_text)
+    # Use csv.DictReader(val_file)
+    pass
+
+# Integration
+total = calculate_total_volume(csv_data)
+print(f"Total Volume: {total}")
+
+<!-- SEPARATOR -->
+
+# validation_code
+import csv
+from io import StringIO
+
+data = """ticker,volume
+A,10
+B,20
+C,30"""
+
+assert calculate_total_volume(data) == 60
+print("Validation passed!")
 
 On Windows, CSV files need `newline=""` to prevent double-spacing. Always include it.
 

@@ -1,103 +1,83 @@
 ---
 id: "finguard_05_05"
-title: "The Composition Pattern"
+title: "The Pipeline"
 type: "coding"
 xp: 100
 ---
 
-# The Composition Pattern
+# The Pipeline
 
-Real systems are built by combining small functions into larger workflows.
+We've accumulated several Logic Engines: Calculation, Fee Assessment, Tax.
+In a real application, data flows through all of these in a specific order. This is a **Data Pipeline**.
 
-## The Bridge
+## Composition: Building Complexity from Simplicity
 
-**Data doesn't just sit there** — it flows through transformations. Functions are the pipes that data flows through. This is the essence of **data pipelines**.
-
-## Function Composition
+Instead of writing one giant `process_transaction` function with 500 lines, we chain small functions together.
 
 ```python
-from decimal import Decimal
-
-def calculate_subtotal(items: list[Decimal]) -> Decimal:
-    """Sum all item amounts."""
-    return sum(items, Decimal("0.00"))
-
-def apply_discount(amount: Decimal, discount_rate: Decimal) -> Decimal:
-    """Apply discount to amount."""
-    return amount * (Decimal("1.00") - discount_rate)
-
-def add_tax(amount: Decimal, tax_rate: Decimal) -> Decimal:
-    """Add tax to amount."""
-    return amount * (Decimal("1.00") + tax_rate)
-
-# Compose them into a workflow
-def calculate_total(
-    items: list[Decimal],
-    discount_rate: Decimal,
-    tax_rate: Decimal
-) -> Decimal:
-    """Calculate final total: subtotal → discount → tax."""
-    subtotal = calculate_subtotal(items)
-    discounted = apply_discount(subtotal, discount_rate)
-    final = add_tax(discounted, tax_rate)
-    return final
+def process_order(price: Decimal) -> Decimal:
+    """The Pipeline"""
+    # Step 1: Base Price
+    price_with_discount = apply_discount(price)
+    
+    # Step 2: Taxes
+    price_with_tax = add_tax(price_with_discount)
+    
+    # Step 3: Shipping
+    final_price = add_shipping(price_with_tax)
+    
+    return final_price
 ```
 
-## The Analogy: The Assembly Line (Revisited)
+## Why Compose?
 
-Each station (function) does one thing:
-1. Station 1: Attach wheels
-2. Station 2: Install engine
-3. Station 3: Paint body
-
-The car flows through each station. The final car is the composition of all steps.
-
-## Why Composition?
-
-| Benefit | Explanation |
-|---------|-------------|
-| **Testable** | Test each function independently |
-| **Reusable** | Use `add_tax()` anywhere you need taxes |
-| **Readable** | Each function name explains what it does |
-| **Maintainable** | Change tax logic in one place |
-
-## The "Pro" Tip
-
-> **Build small functions that do one thing. Compose them into larger workflows. This is the foundation of data engineering.**
+1.  **Testability:** If the Tax calculation is wrong, I fix the `add_tax` engine. I don't touch the discount or shipping code.
+2.  **Readability:** The "Pipeline Function" reads like a story (or a receipt).
 
 ## Task
 
-Build a transaction processing pipeline:
-1. `calculate_base_amount(transactions)` — sum all transaction amounts
-2. `apply_fraud_fee(amount)` — add 0.1% fraud protection fee
-3. `apply_processing_fee(amount)` — add flat $2.50 processing fee
-4. `process_batch(transactions)` — compose all steps, return final amount
+Build a **Payment Pipeline**.
+
+You have 3 specialized mini-engines (implement them simply):
+1.  `calculate_subtotal(items)`: Sums the list of Decimals.
+2.  `apply_tax(amount)`: Adds 8% tax.
+3.  `apply_shipping(amount)`: Adds flat $10.00 shipping.
+
+Then, build the **Master Function**:
+4.  `calculate_grand_total(items)`: Pipes data through Subtotal -> Tax -> Shipping and returns the result.
 
 <!-- SEPARATOR -->
 
 # seed_code
 from decimal import Decimal
 
-def calculate_base_amount(transactions: list[dict]) -> Decimal:
-    """Sum all transaction amounts."""
-    pass  # Replace with your implementation
+# Mini-Engines
+def calculate_subtotal(items: list[Decimal]) -> Decimal:
+    pass
 
+def apply_tax(amount: Decimal) -> Decimal:
+    # Tax Rate: 0.08
+    pass
 
-def apply_fraud_fee(amount: Decimal) -> Decimal:
-    """Add 0.1% fraud protection fee."""
-    pass  # Replace with your implementation
+def apply_shipping(amount: Decimal) -> Decimal:
+    # Flat Rate: 10.00
+    pass
 
+# The Pipeline
+def calculate_grand_total(items: list[Decimal]) -> Decimal:
+    """Orchestrates the calculation flow."""
+    pass
 
-def apply_processing_fee(amount: Decimal) -> Decimal:
-    """Add flat $2.50 processing fee."""
-    pass  # Replace with your implementation
+<!-- SEPARATOR -->
 
-
-def process_batch(transactions: list[dict]) -> Decimal:
-    """Process a batch: sum → fraud fee → processing fee."""
-    pass  # Replace with your implementation
-
-
+# validation_code
+from decimal import Decimal
+items = [Decimal("100.00"), Decimal("200.00")]
+# Subtotal: 300
+# Tax (8%): 24 -> 324
+# Shipping: 10 -> 334
+total = calculate_grand_total(items)
+assert total == Decimal("334.00")
 # Test the pipeline
 transactions: list[dict] = [
     {"id": "TXN-001", "amount": Decimal("500.00")},
