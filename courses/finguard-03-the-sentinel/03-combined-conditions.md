@@ -1,54 +1,78 @@
 ---
 id: "finguard_03_03"
-title: "Composite Risk"
+title: "Composite Risk: Logical Operators"
 type: "coding"
 xp: 100
 ---
 
 # Composite Risk
 
-In the real world, rarely is a single factor enough to stop a transaction.
+In the real world, a single factor is rarely enough to flag a transaction.
+
 Is a $15,000 transfer suspicious?
-*   If it's to `amazon.com`, probably not.
-*   If it's to an unknown account overseas at 3 AM... **yes**.
+- If it's going to Amazon.com... probably not.
+- If it's going to an unknown overseas account at 3 AM from a new device... **yes**.
 
-To model this, we combine conditions using **Logical Operators**.
+Real fraud detection combines multiple signals. We do this with **logical operators**.
 
-## The Logic Gates
+## The Three Operators
 
-We use three primary operators to forge complex rules:
+| Operator | Meaning | True When... |
+|----------|---------|--------------|
+| `and` | Both must be true | `A and B` → both A and B are True |
+| `or` | At least one true | `A or B` → either A or B (or both) are True |
+| `not` | Flip the value | `not A` → A is False |
 
-1.  **`and` (The Strict Gate):** Both conditions must be true.
-    *   *Usage:* "High Value **AND** International".
-2.  **`or` (The Permissive Gate):** At least one condition must be true.
-    *   *Usage:* "User is an Admin **OR** User is a Manager".
-3.  **`not` (The Inverter):** Flipped logic.
-    *   *Usage:* "Account is **NOT** verified".
-
-## Engineering Clarity: Grouping
-
-When mixing `and` and `or`, code can become ambiguous.
+## Examples in Banking
 
 ```python
-# ❌ Ambiguous: Does 'and' or 'or' happen first?
-if amount > 10000 and is_international or has_fraud_history:
+# AND: Both conditions must be true
+if amount > 10000 and is_international:
+    flag = "High-value international transfer"
 
-# ✅ Explicit: Parentheses clarify intent
-if (amount > 10000 and is_international) or has_fraud_history:
+# OR: Either condition is enough
+if is_fraud_reported or is_account_frozen:
+    block_transaction()
+
+# NOT: Checking for the opposite
+if not is_verified:
+    require_verification()
 ```
 
-This second version says: "Flag it if it's a big international transfer, OR if this person is a known fraudster (regardless of amount)."
+## Grouping with Parentheses
+
+When mixing `and` and `or`, things get confusing:
+
+```python
+# ❌ Ambiguous: What happens first?
+if amount > 10000 and is_international or has_fraud_history:
+    flag = True
+
+# ✓ Clear: Parentheses show exactly what we mean
+if (amount > 10000 and is_international) or has_fraud_history:
+    flag = True
+```
+
+The second version says: "Flag if it's a big international transfer, OR if the person has fraud history (regardless of amount)."
+
+<div class="key-concept">
+<h4>🔑 Key Concept: Always Use Parentheses</h4>
+
+When combining `and` with `or`, always use parentheses to make your intent explicit. Future you (and your teammates) will thank you.
+</div>
 
 ## Task
 
-Implement the **Compound Flagging Policy**.
+Implement the **Compound Flagging Policy**:
 
-Set `is_flagged` to `True` if:
-1.  (Condition A) The `amount` is over 10,000 **AND** `is_international` is True.
-    **OR**
-2.  (Condition B) The `has_fraud_history` flag is True.
+A transaction should be flagged (`is_flagged = True`) if:
+- **Condition A:** The `amount` is over 10,000 **AND** `is_international` is True
+- **OR**
+- **Condition B:** `has_fraud_history` is True
 
-Otherwise set `is_flagged` to `False`.
+Otherwise, `is_flagged` should be `False`.
+
+Write a single `if/else` statement using `and`, `or`, and parentheses.
 
 <!-- SEPARATOR -->
 
@@ -63,7 +87,8 @@ has_fraud_history: bool = True
 # Initialize
 is_flagged: bool = False
 
-# Apply Compound Policy
+# Apply the compound policy using logical operators
+# Hint: (condition_a) or (condition_b)
 
 
 
@@ -78,8 +103,7 @@ print(f"🚨 FLAGGED: {is_flagged}")
 
 # validation_code
 from decimal import Decimal
-assert is_flagged is True, "Should be flagged because has_fraud_history is True"
-assert amount == Decimal("5000.00"), "amount should be Decimal('5000.00')"
-assert is_international == False, "is_international should be False"
-assert has_fraud_history == True, "has_fraud_history should be True"
-assert is_flagged == True, "is_flagged should be True (has fraud history)"
+assert amount == Decimal("5000.00"), "Don't modify amount"
+assert is_international == False, "Don't modify is_international"
+assert has_fraud_history == True, "Don't modify has_fraud_history"
+assert is_flagged == True, "Should be flagged because has_fraud_history is True (even though amount is under 10k)"
