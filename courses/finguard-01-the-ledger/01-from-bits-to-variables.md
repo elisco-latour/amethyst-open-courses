@@ -7,46 +7,83 @@ xp: 100
 
 # The Variable: Labeling Reality
 
-In **The Signal**, you learned that data is just bits. But you can't write software with `0b10101`.
+In **The Signal**, you learned that data is just patterns of 1s and 0s. But you can't write software by typing `0b10111011100` everywhere.
 
-You need to give those bits a **Name**.
+You need to give those bits a **name**.
 
 ## The Safety Deposit Box
 
-Imagine the FinGuard Vault. It has millions of boxes.
-If you put $5,000 in a box but don't label it, that money is gone.
+Imagine the FinGuard vault. It has millions of boxes. If you put $5,000 in a box but don't label it, that money is effectively lost — no one can find it.
 
-In Python, a **Variable** is that label.
+In Python, a **variable** is that label:
 
-*   **The Box:** A specific location in your computer's memory.
-*   **The Content:** The data (e.g., `1500`).
-*   **The Label:** The variable name (e.g., `deposit_amount`).
+- **The Box:** A specific location in your computer's memory
+- **The Content:** The data stored there (e.g., `1500`)
+- **The Label:** The variable name (e.g., `deposit_amount`)
 
-## The First Rule of Engineering: Intent
+```python
+deposit_amount = 1500
+```
+
+This line does three things:
+1. Creates a "box" in memory
+2. Puts the value `1500` inside
+3. Labels that box `deposit_amount`
+
+## The First Rule: Reveal Your Intent
 
 Amateurs name variables `x`, `y`, or `temp`.
-Engineers name variables to reveal their **Intent**.
+
+Engineers name variables to reveal **intent**.
+
+Consider these two lines — they do the same thing, but one communicates:
+
+```python
+# What does 't' mean? A temperature? A timestamp? A total?
+t = "TXN-2025-00001"
+
+# Crystal clear: this is a transaction identifier
+transaction_id = "TXN-2025-00001"
+```
 
 > **"Code is read 10 times more often than it is written."**
+> 
+> When you name a variable `t`, your teammates have to guess. When you name it `transaction_id`, you've told the truth.
 
-If you name a variable `t`, your team has to guess what it means. If you name it `transaction_timestamp`, you have told the truth.
+## Python Naming Convention
+
+In Python, we use **snake_case** for variable names:
+- All lowercase letters
+- Words separated by underscores
+
+```python
+# Good snake_case names
+account_balance = 5000
+customer_name = "Alice Chen"
+is_verified = True
+
+# Bad (not snake_case)
+AccountBalance = 5000   # This style is for class names
+customerName = "Alice"  # This is JavaScript style
+```
 
 ## Task
 
-Create a variable that represents the **Transaction ID** of a wire transfer.
-Use `snake_case` (all lowercase, underscores). This is the Python standard.
+A new wire transfer has come in. Create a variable to store its **Transaction ID**.
+
+Requirements:
+- Variable name: `transaction_id`
+- Value: `"TXN-2025-00001"` (a string)
+- Follow snake_case convention
 
 <!-- SEPARATOR -->
 
 # seed_code
-# Your first ledger entry.
-# We need to label this specific transaction so we can trace it later.
-
-# Create a variable named 'transaction_id' with value "TXN-2025-00001"
-# 
+# Your first ledger entry
+# Create the transaction_id variable below
 
 
-# Print it to verify the label sticks
+# Verify the label works
 print(f"Transaction Recorded: {transaction_id}")
 
 <!-- SEPARATOR -->

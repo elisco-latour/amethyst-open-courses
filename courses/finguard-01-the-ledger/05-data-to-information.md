@@ -1,65 +1,95 @@
 ---
 id: "finguard_01_05"
-title: "The Receipt: Formatting"
+title: "From Data to Information: Formatting"
 type: "coding"
 xp: 100
 ---
 
-# The Receipt: Formatting
+# From Data to Information
 
-A database stores raw data (`12500`).
-Customers want **Information** (`$12,500.00`).
+A database stores raw data: `12500`
 
-As a Data Engineer, you control how data is presented.
+A customer wants **information**: `$12,500.00`
 
-## f-strings
+The difference? **Formatting**. As a data engineer, you control how raw data becomes readable information.
 
-The `f-string` is your tool for crafting reports. It allows you to inject variables into text.
+## f-strings: Your Formatting Tool
+
+An **f-string** (formatted string) lets you insert variables directly into text. Just put `f` before the quotes and wrap variables in `{curly braces}`:
 
 ```python
 amount = 500
-print(f"I have {amount} dollars.") 
+print(f"Your balance is {amount} dollars.")
+# Output: Your balance is 500 dollars.
 ```
 
-## Number Formatting Code
+## Formatting Numbers for Finance
 
-FinGuard has strict rules for money display.
-*   Must show 2 decimal places.
-*   Must use commas for thousands.
+FinGuard has strict rules for displaying money:
+- Always show **2 decimal places** (even for round numbers)
+- Use **commas** for thousands
 
-We use the format specifier `{:,.2f}` inside the f-string.
+We use a **format specifier** inside the braces: `{value:,.2f}`
 
-*   `,`: Add commas.
-*   `.2f`: Show 2 decimal places fixed.
+Let's break that down:
+- `,` — Add commas as thousand separators
+- `.2f` — Show exactly 2 decimal places (f = fixed-point)
 
 ```python
 amount = 12500
-print(f"${amount:,.2f}") # -> $12,500.00
+print(f"${amount:,.2f}")
+# Output: $12,500.00
+
+amount = 50
+print(f"${amount:,.2f}")  
+# Output: $50.00
 ```
+
+## Multi-line Strings
+
+For longer output like receipts, use triple quotes `"""`:
+
+```python
+name = "Alice"
+message = f"""Hello {name},
+
+Your order has been confirmed.
+Thank you for shopping with us."""
+```
+
+This preserves line breaks exactly as you write them.
 
 ## Task
 
-Generate the Customer Receipt. Match the format exactly.
+Generate a transaction receipt. You're given the transaction data — build the formatted receipt string.
+
+Requirements for the receipt:
+- Include the transaction ID
+- Show sender and recipient accounts
+- Format the amount with commas and 2 decimal places (use `${amount:,.2f}`)
+- Include the status
 
 <!-- SEPARATOR -->
 
 # seed_code
 from decimal import Decimal
 
-# Transaction data
+# Transaction data (provided)
 transaction_id: str = "TXN-2025-00042"
 sender: str = "ACC-1001"
-recipient: str = "ACC-2002" # Renamed from receiver for clarity
+recipient: str = "ACC-2002"
 amount: Decimal = Decimal("12500.00")
 status: str = "PENDING"
 
-# Build the receipt using f-strings
-receipt: str = f"""=== FINGUARD TRANSACTION RECEIPT ===
-Transaction ID: {transaction_id}
-From: {sender} -> To: {recipient}
-Amount: ${amount:,.2f}
-Status: {status}
-====================================="""
+# Build the receipt using an f-string
+# Use triple quotes for multi-line output
+# Format the amount with :,.2f
+receipt: str = f"""=== FINGUARD RECEIPT ===
+Transaction: 
+From:  -> To: 
+Amount: 
+Status: 
+========================"""
 
 print(receipt)
 
@@ -68,14 +98,9 @@ print(receipt)
 # validation_code
 from decimal import Decimal
 
-assert transaction_id == "TXN-2025-00042", "transaction_id should be 'TXN-2025-00042'"
-assert "ACC-1001" in receipt, "Receipt must contain sender"
-assert "12,500.00" in receipt, "Receipt must format amount with commas"
-assert status == "PENDING", "status should be 'PENDING'"
-
-# Verify the receipt contains key elements
-assert "TXN-2025-00042" in receipt, "receipt should contain the transaction ID"
-assert "ACC-1001" in receipt, "receipt should contain the sender"
-assert "ACC-2002" in receipt, "receipt should contain the receiver"
-assert "12,500.00" in receipt, "receipt should contain formatted amount with commas"
-assert "PENDING" in receipt, "receipt should contain the status"
+# Verify the receipt contains all required information
+assert "TXN-2025-00042" in receipt, "Receipt must contain the transaction ID"
+assert "ACC-1001" in receipt, "Receipt must contain the sender account"
+assert "ACC-2002" in receipt, "Receipt must contain the recipient account"
+assert "12,500.00" in receipt, "Receipt must format amount with commas and 2 decimal places"
+assert "PENDING" in receipt, "Receipt must contain the status"
