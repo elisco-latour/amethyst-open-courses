@@ -7,66 +7,102 @@ xp: 100
 
 # The Record: Dictionaries
 
-A List is good for sequences. But a List is bad for **Details**.
-If I give you `["Alice", "ACC-101", 500]`, you have to guess what "500" means. Is it a balance? A limit? A credit score?
+A list is great for sequences, but terrible for **details**.
 
-## Explicit Data Modeling
+Look at this list: `["Alice Chen", "ACC-101", 5000, True]`
 
-In FinGuard, we want our data to explain itself.
-We use **Dictionaries** (`dict`).
+What does `5000` mean? A balance? A credit limit? An account number? You have to guess.
+
+## Self-Describing Data
+
+In FinGuard, we want data that **explains itself**. We use **dictionaries** — collections of labeled values:
 
 ```python
-# Self-Describing Data
 account = {
-    "name": "Alice", 
-    "id": "ACC-101", 
-    "balance_usd": 500
+    "holder_name": "Alice Chen",
+    "account_id": "ACC-101",
+    "balance": 5000,
+    "is_active": True
 }
 ```
 
-Now, `account["balance_usd"]` is unambiguous. We call this a **Key-Value Pair**.
+Now there's no guessing. `account["balance"]` is obviously the balance.
 
-## The Safety of `.get()`
+## Key-Value Pairs
 
-In a real bank, data is sometimes messy. A field might be missing.
-If you try `account["email"]` and it's not there, Python crashes (KeyError).
-Engineers usage `.get("email")` which returns `None` instead of crashing.
+A dictionary stores **key-value pairs**:
+- **Key:** The label (like `"balance"`)
+- **Value:** The data (like `5000`)
 
-> **Engineering Principle:** Defaults over Crashes.
+```python
+account["balance"]      # Get the value for key "balance" → 5000
+account["holder_name"]  # Get the value for key "holder_name" → "Alice Chen"
+```
+
+## Safe Access with `.get()`
+
+What happens if you ask for a key that doesn't exist?
+
+```python
+account["email"]  # KeyError! Program crashes.
+```
+
+In real banking systems, data is sometimes incomplete. We use `.get()` for safe access:
+
+```python
+account.get("email")               # Returns None (no crash)
+account.get("email", "N/A")        # Returns "N/A" as default
+```
+
+<div class="key-concept">
+<h4>🔑 Key Concept: Defaults Over Crashes</h4>
+
+Professional systems handle missing data gracefully. Use `.get()` with a default value rather than risking crashes from missing keys.
+</div>
 
 ## Task
 
-Model a Customer Record. Use explicit Keys.
+Create a complete account record dictionary with these details:
+- Account ID: `"ACC-2002"`
+- Holder name: `"Bob Johnson"`
+- Balance: `12500.50`
+- Account type: `"checking"`
+- Is active: `True`
+
+Then safely retrieve the balance and attempt to get a missing "email" field.
 
 <!-- SEPARATOR -->
 
 # seed_code
-# A complete Account Record
+# Create the account record dictionary
 account: dict = {
-    "account_id": "ACC-2002",
-    "holder_name": "Bob Johnson",
-    "balance": 12500.50,
-    "status": "Active"
+    # Add the 5 key-value pairs here:
+    # account_id, holder_name, balance, account_type, is_active
+    
 }
 
-# 1. Retrieve the Balance safely
-balance = account.get("balance")
+# Safely retrieve the balance using .get()
+retrieved_balance = 
 
-# 2. Try to retrieve a missing field (email) without crashing
-email = account.get("email", "Not Provided")
+# Try to get the email (doesn't exist) - use a default value of "Not Provided"
+email = 
 
-print(f"User: {account['holder_name']}")
-print(f"Balance: ${balance}")
+# Display the record
+print(f"Account: {account['account_id']}")
+print(f"Holder: {account['holder_name']}")
+print(f"Balance: ${retrieved_balance:,.2f}")
+print(f"Type: {account['account_type']}")
+print(f"Active: {account['is_active']}")
 print(f"Email: {email}")
 
 <!-- SEPARATOR -->
 
 # validation_code
 assert account["account_id"] == "ACC-2002", "account_id should be 'ACC-2002'"
-assert balance == 12500.50, "balance retrieval failed"
-assert email == "Not Provided", "default value for email failed"assert account["holder_name"] == "Bob Johnson", "holder_name should be 'Bob Johnson'"
+assert account["holder_name"] == "Bob Johnson", "holder_name should be 'Bob Johnson'"
 assert account["balance"] == 12500.50, "balance should be 12500.50"
 assert account["account_type"] == "checking", "account_type should be 'checking'"
 assert account["is_active"] == True, "is_active should be True"
-assert retrieved_balance == 12500.50, "retrieved_balance should be 12500.50"
+assert retrieved_balance == 12500.50, "Use .get('balance') to retrieve the balance"
+assert email == "Not Provided", "Use .get('email', 'Not Provided') for missing keys"
 assert isinstance(account, dict), "account must be a dictionary"
