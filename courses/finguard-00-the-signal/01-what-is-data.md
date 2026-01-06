@@ -7,49 +7,52 @@ xp: 100
 
 # The Raw Material
 
-Welcome to the FinGuard Residency. You are here to learn the **Architecture of Truth**.
+Welcome to the FinGuard Residency.
 
-In a financial system, we do not deal with "files" or "numbers" in the abstract. We deal with **Representations of Liability**. When a customer transfers $1,500, a physical obligation is created. Your job as a Data Architect is to generate a digital representation of that obligation that is **lossless** and **immutable**.
+Imagine you are standing in the vault of a bank. Around you are rows of safety deposit boxes. Each box has a **label** (a name) and **contents** (a value). This is how computers store information — and it is how you will think about data from now on.
 
-### The Mapping Problem
+## What is Data, Really?
 
-The machine knows nothing of currency, debt, or value. It knows only state: `High Voltage` (1) or `Low Voltage` (0).
+When a customer transfers $1,500, something real happens. A physical obligation is created — money must move from one account to another. Your job is to create a digital record of that obligation.
 
-Our first challenge in the **Data Generation** phase of the lifecycle is mapping the complex domain concept ("Value") to the constrained hardware reality ("Bits").
+But here's the challenge: **computers don't understand money**. They only understand two states:
+- **High Voltage** = 1 (the switch is ON)
+- **Low Voltage** = 0 (the switch is OFF)
 
-*   **The Domain:** A transaction of $1,500.00.
-*   **The Representation:** A sequence of bits (switches) in memory.
+Everything — every dollar amount, every customer name, every transaction — must be translated into patterns of 1s and 0s.
 
-If this map is inaccurate even by a single bit, the ledger is corrupt. We do not "imagine" data; we rigorously **encode** it.
+## Your First Encoding
 
-### The Storage Layer
+Python makes this translation easy. When you write `1500`, Python converts it into binary (a pattern of switches) behind the scenes.
 
-At the lowest level of the **Data Engineering Lifecycle**, we interact with raw primitives. Python handles the memory allocation for you, but you must acknowledge the cost.
+You can peek at this hidden representation using `bin()`:
+```python
+bin(1500)  # Returns '0b10111011100'
+```
 
-*   **Integer:** Exact precision. Safe for counting cents.
-*   **Float:** Approximate precision. Dangerous for currency.
-*   **Binary:** The ultimate truth on the disk.
+The `0b` prefix means "this is binary." The rest is the actual switch pattern.
 
-### Task
+## Task
 
-Refactor the naive view of a number into an inspection of its storage state. We will observe the implicit **dependency** between the human-readable decimal and the machine-readable binary.
+A customer has deposited $2,750 into their account. Your task:
+1. Create a variable called `deposit_amount` and assign it the value `2750`
+2. Create a variable called `binary_representation` that stores the binary form of the deposit amount (use the `bin()` function)
 
 <!-- SEPARATOR -->
 
 # seed_code
-# A ledger entry representing a credit of $1,500
-# We treat this as a raw integer for now to ensure precision.
-ledger_credit_amount = 1500
+# Record the deposit amount (in whole dollars)
+deposit_amount = 
 
-# Inspect the binary representation (The raw storage state)
-# This reveals the underlying switch configuration of the memory address.
-storage_state_binary = bin(ledger_credit_amount)
+# Inspect how the computer actually stores this number
+binary_representation = 
 
-print(f"Domain Value: ${ledger_credit_amount}")
-print(f"Storage State: {storage_state_binary}")
+# Verify your work
+print(f"Deposit Amount: ${deposit_amount}")
+print(f"Stored As: {binary_representation}")
 
 <!-- SEPARATOR -->
 
 # validation_code
-assert ledger_credit_amount == 1500, "Ensure the ledger entry reflects the exact domain value of 1500."
-assert "0b" in storage_state_binary, "The storage state must be inspected in binary format."
+assert deposit_amount == 2750, "The deposit amount should be 2750"
+assert binary_representation == bin(2750), "Use bin() to get the binary representation of deposit_amount"
