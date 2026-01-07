@@ -3,5 +3,5 @@ id: finguard-09-the-hierarchy
 path_id: finguard-foundation
 title: "The Hierarchy: Inheritance & Polymorphism"
 description: "Build account families. Learn inheritance to create specialized accounts (Checking, Savings, Business) from a common base — the foundation of extensible systems."
-xp: 500
+xp: 550
 sort_order: 9
