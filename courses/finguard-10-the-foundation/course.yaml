@@ -5,3 +5,5 @@ title: "The Foundation: SOLID Principles"
 description: "Build maintainable systems. Learn the five principles that separate professional code from amateur code — Single Responsibility, Open/Closed, and more."
 xp: 550
 sort_order: 10
+skills:
+  - architecture

@@ -5,3 +5,6 @@ title: "The Calculator: Functions & Modularity"
 description: "Build reusable calculation modules. Learn to write functions for interest rates, fees, and currency conversion — the building blocks of financial computation."
 xp: 500
 sort_order: 5
+skills:
+  - modular_design
+  - python_fundamentals
