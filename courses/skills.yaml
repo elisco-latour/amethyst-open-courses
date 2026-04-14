@@ -1,0 +1,24 @@
+skills:
+  - id: python_fundamentals
+    name: "Python Fundamentals"
+    description: "Core language mechanics: variables, types, collections, control flow, loops"
+
+  - id: modular_design
+    name: "Modular Design"
+    description: "Structuring code for reuse: functions, classes, inheritance"
+
+  - id: software_quality
+    name: "Software Quality"
+    description: "Making code reliable: error handling, testing"
+
+  - id: data_engineering
+    name: "Data Engineering"
+    description: "Working with data: concepts, file I/O, data pipelines"
+
+  - id: architecture
+    name: "Architecture"
+    description: "System-level design: SOLID principles, design patterns"
+
+  - id: applied_engineering
+    name: "Applied Engineering"
+    description: "Putting it all together: capstone projects, integration"

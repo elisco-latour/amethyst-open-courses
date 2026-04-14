@@ -5,3 +5,5 @@ title: "The Hierarchy: Inheritance & Polymorphism"
 description: "Build account families. Learn inheritance to create specialized accounts (Checking, Savings, Business) from a common base — the foundation of extensible systems."
 xp: 550
 sort_order: 9
+skills:
+  - modular_design

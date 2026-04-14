@@ -5,3 +5,5 @@ title: "The Assembly: Design Patterns"
 description: "Reusable solutions to common problems. Learn battle-tested patterns that make code flexible, maintainable, and extensible."
 xp: 550
 sort_order: 12
+skills:
+  - architecture
