@@ -1,0 +1,9 @@
+- id: python_fundamentals_v1
+  title: "Python Fundamentals Assessment"
+  skill_area_id: data-engineering-with-python
+  description: "A focused checkpoint covering Python language mechanics, modular design, software quality, and basic data handling."
+  duration_minutes: 30
+  passing_threshold: 0.7
+  sort_order: 1
+  shuffle_questions: true
+  expire_after_secs: 2400
