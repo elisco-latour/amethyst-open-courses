@@ -1,25 +1,37 @@
 # Learning Paths Configuration
 # This file defines all available learning paths in the application.
 # Courses reference paths via path_id in their course.yaml files.
+#
+# `skill_area_id` is the slugified path title and references an `id`
+# in skills.yaml's skill_areas list. Mapping (Phase A elevation):
+#   "Data Engineering with Python"  -> data-engineering-with-python
+#   "Data Analysis with Python"     -> data-analysis-with-python
+#   "FinGuard: The Foundation"      -> finguard-the-foundation
+#   "FinGuard: The Elevation"       -> finguard-the-elevation
 
-- id: python-data-engineering-repo
-  title: "Data Engineering with Python Repo"
+- id: python-data-engineering
+  title: "Data Engineering with Python"
+  skill_area_id: data-engineering-with-python
   description: "Master Python by building a complete offline Data Engineering pipeline with PostgreSQL, DuckDB, and AI Agents."
   project_summary: "In this learning path, you will build an end-to-end data analytics pipeline leveraging local AI/ML capabilities."
 
-- id: python-data-analysis-repo
-  title: "Data Analysis with Python Repo"
+- id: python-data-analysis
+  title: "Data Analysis with Python"
+  skill_area_id: data-analysis-with-python
   description: "Learn to analyze data, create visualizations, and derive insights."
   project_summary: null
 
 # FinGuard: Zero to Architect Curriculum
-# A residency building a Real-Time Fraud Detection & Regulatory Reporting System
+# A 6-month residency building a Real-Time Fraud Detection & Regulatory Reporting System
+
 - id: finguard-foundation
-  title: "Software Engineering with Python"
-  description: "Master Software Engineering by building FinGuard — a fraud detection system for banking. Learn Python fundamentals, OOP, SOLID principles, testing with pytest, and design patterns through real financial use cases."
-  project_summary: "You will build FinGuard v1.0 — a batch fraud processor that reads transactions, applies detection rules, and generates compliance reports. Every concept you learn is immediately applied to detect suspicious activity and protect financial systems."
+  title: "FinGuard: The Foundation"
+  skill_area_id: finguard-the-foundation
+  description: "Build a fraud detection system from scratch. Master Software Craftsmanship through Python: variables, functions, OOP, testing, and design patterns."
+  project_summary: "Semester 1 (Weeks 0-12): You will build FinGuard v1.0 — a complete fraud detection application with CLI interface, test suite, and documentation. Every line of code serves the mission: detect suspicious transactions and generate regulatory reports."
 
 - id: finguard-elevation
-  title: "Platform Engineering with Python"
-  description: "Transform FinGuard into a production-grade platform. Master high-performance data processing with Polars, database design with PostgreSQL, event streaming with Kafka, and workflow orchestration with Airflow."
-  project_summary: "You will evolve FinGuard into a scalable framework processing millions of transactions in real-time. This is the infrastructure that powers modern banking systems and AI-driven fraud detection."
+  title: "FinGuard: The Elevation"
+  skill_area_id: finguard-the-elevation
+  description: "Transform FinGuard into a high-performance framework. Master Platform Engineering: Polars, PostgreSQL, Kafka, Airflow, and production deployment."
+  project_summary: "Semester 2 (Weeks 13-24): You will refactor FinGuard into FinGuard Core v2.0 — a scalable framework processing millions of transactions in real-time. This is what powers modern banking infrastructure and AI systems."
