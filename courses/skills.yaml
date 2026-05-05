@@ -1,24 +1,99 @@
-skills:
-  - id: python_fundamentals
-    name: "Python Fundamentals"
-    description: "Core language mechanics: variables, types, collections, control flow, loops"
+# Skill Areas Registry (Phase A: skill area elevation)
+# Top-level entities: each skill_area corresponds to a learning path's domain.
+# Sub-skills are nested dimensions of mastery within an area.
+# The set of sub_skill ids is unchanged from the previous flat list — only
+# their nesting changed. Sub-skills can recur across areas because
+# course.yaml's `skills:` field is what attaches a sub-skill to a course;
+# the nested list here is the registry of allowable dimensions per area.
+skill_areas:
+  - id: data-engineering-with-python
+    name: "Data Engineering with Python"
+    description: "Master Python by building offline data pipelines with PostgreSQL, DuckDB, and AI agents."
+    sub_skills:
+      - id: python_fundamentals
+        name: "Python Fundamentals"
+        description: "Core language mechanics: variables, types, collections, control flow, loops"
+      - id: modular_design
+        name: "Modular Design"
+        description: "Structuring code for reuse: functions, classes, inheritance"
+      - id: software_quality
+        name: "Software Quality"
+        description: "Making code reliable: error handling, testing"
+      - id: data_engineering
+        name: "Data Engineering"
+        description: "Working with data: concepts, file I/O, data pipelines"
+      - id: architecture
+        name: "Architecture"
+        description: "System-level design: SOLID principles, design patterns"
+      - id: applied_engineering
+        name: "Applied Engineering"
+        description: "Putting it all together: capstone projects, integration"
 
-  - id: modular_design
-    name: "Modular Design"
-    description: "Structuring code for reuse: functions, classes, inheritance"
+  - id: data-analysis-with-python
+    name: "Data Analysis with Python"
+    description: "Analyze data, create visualizations, and derive insights."
+    sub_skills:
+      - id: python_fundamentals
+        name: "Python Fundamentals"
+        description: "Core language mechanics: variables, types, collections, control flow, loops"
+      - id: modular_design
+        name: "Modular Design"
+        description: "Structuring code for reuse: functions, classes, inheritance"
+      - id: software_quality
+        name: "Software Quality"
+        description: "Making code reliable: error handling, testing"
+      - id: data_engineering
+        name: "Data Engineering"
+        description: "Working with data: concepts, file I/O, data pipelines"
+      - id: architecture
+        name: "Architecture"
+        description: "System-level design: SOLID principles, design patterns"
+      - id: applied_engineering
+        name: "Applied Engineering"
+        description: "Putting it all together: capstone projects, integration"
 
-  - id: software_quality
-    name: "Software Quality"
-    description: "Making code reliable: error handling, testing"
+  - id: finguard-the-foundation
+    name: "FinGuard: The Foundation"
+    description: "Build a fraud detection system from scratch — Python craftsmanship."
+    sub_skills:
+      - id: python_fundamentals
+        name: "Python Fundamentals"
+        description: "Core language mechanics: variables, types, collections, control flow, loops"
+      - id: modular_design
+        name: "Modular Design"
+        description: "Structuring code for reuse: functions, classes, inheritance"
+      - id: software_quality
+        name: "Software Quality"
+        description: "Making code reliable: error handling, testing"
+      - id: data_engineering
+        name: "Data Engineering"
+        description: "Working with data: concepts, file I/O, data pipelines"
+      - id: architecture
+        name: "Architecture"
+        description: "System-level design: SOLID principles, design patterns"
+      - id: applied_engineering
+        name: "Applied Engineering"
+        description: "Putting it all together: capstone projects, integration"
 
-  - id: data_engineering
-    name: "Data Engineering"
-    description: "Working with data: concepts, file I/O, data pipelines"
-
-  - id: architecture
-    name: "Architecture"
-    description: "System-level design: SOLID principles, design patterns"
-
-  - id: applied_engineering
-    name: "Applied Engineering"
-    description: "Putting it all together: capstone projects, integration"
+  - id: finguard-the-elevation
+    name: "FinGuard: The Elevation"
+    description: "Refactor FinGuard into a high-performance framework — platform engineering."
+    sub_skills:
+      - id: python_fundamentals
+        name: "Python Fundamentals"
+        description: "Core language mechanics: variables, types, collections, control flow, loops"
+      - id: modular_design
+        name: "Modular Design"
+        description: "Structuring code for reuse: functions, classes, inheritance"
+      - id: software_quality
+        name: "Software Quality"
+        description: "Making code reliable: error handling, testing"
+      - id: data_engineering
+        name: "Data Engineering"
+        description: "Working with data: concepts, file I/O, data pipelines"
+      - id: architecture
+        name: "Architecture"
+        description: "System-level design: SOLID principles, design patterns"
+      - id: applied_engineering
+        name: "Applied Engineering"
+        description: "Putting it all together: capstone projects, integration"
